@@ -5,7 +5,7 @@ declare(strict_types=1);
 $configurator = require __DIR__ .'/vendor/sigwin/infra/resources/PHP/php-cs-fixer.php';
 
 $header = <<<'EOF'
-This file is part of the yassg project.
+This file is part of the ariadne project.
 
 (c) sigwin.hr
 
@@ -14,8 +14,5 @@ with this source code in the file LICENSE.
 EOF;
 
 $config = $configurator(__DIR__, $header);
-$config
-    ->getFinder()
-        ->exclude('resources/init/demo/src');
 
 return $config;

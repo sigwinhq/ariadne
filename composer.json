@@ -1,5 +1,9 @@
 {
+    "name": "sigwin/ariadne",
+    "description": "Find the common thread on all of your Glabyrinth projects",
+    "license": "MIT",
     "require": {
+        "php": "^8.1",
         "zeichen32/gitlabapibundle": "^6.0"
     },
     "require-dev": {
