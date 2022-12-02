@@ -1,0 +1,6 @@
+/composer.lock
+/tests/functional/init
+!/tests/functional/init/vendor/sigwin/infra/resources/YASSG/default.mk
+!/tests/functional/site/vendor/sigwin/infra/resources/YASSG/default.mk
+/var/
+/vendor/

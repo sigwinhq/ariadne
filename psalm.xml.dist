@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<psalm xmlns="https://getpsalm.org/schema/config"
+       cacheDirectory="var/phpqa/psalm"
+       errorLevel="1"
+       findUnusedPsalmSuppress="true"
+       findUnusedVariablesAndParams="true">
+    <projectFiles>
+        <directory name="./"/>
+        <ignoreFiles allowMissingFiles="true">
+            <file name=".php-cs-fixer.dist.php"/>
+            <directory name="vendor/"/>
+            <directory name="var/"/>
+        </ignoreFiles>
+    </projectFiles>
+
+    <plugins>
+        <pluginClass class="Psalm\SymfonyPsalmPlugin\Plugin"/>
+        <pluginClass class="Psalm\PhpUnitPlugin\Plugin"/>
+    </plugins>
+</psalm>
