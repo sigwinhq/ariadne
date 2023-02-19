@@ -21,6 +21,9 @@ final class ClientFactory
     {
     }
 
+    /**
+     * @param array{type: string, name: string, auth: array{type: string, token: string}} $spec
+     */
     public function create(array $spec): Client
     {
         return match ($spec['type']) {

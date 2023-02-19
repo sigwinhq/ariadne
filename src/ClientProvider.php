@@ -27,7 +27,7 @@ final class ClientProvider implements \IteratorAggregate
     public function getIterator(): \Traversable
     {
         // TODO: placeholder
-        /** @var list<array{type: string, name: string, auth: array}> $config */
+        /** @var list<array{type: string, name: string, auth: array{type: string, token: string}}> $config */
         $config = Yaml::parseFile('ariadne.yaml');
 
         foreach ($config as $spec) {

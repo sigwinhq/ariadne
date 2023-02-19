@@ -18,6 +18,9 @@ use Sigwin\Ariadne\Model\CurrentUser;
 
 interface Client
 {
+    /**
+     * @param array{name: string, auth: array{type: string, token: string}} $spec
+     */
     public static function fromSpec(ClientInterface $client, array $spec): self;
 
     public function getCurrentUser(): CurrentUser;

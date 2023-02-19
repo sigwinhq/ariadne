@@ -25,6 +25,9 @@ final class GitlabClient implements Client
     {
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public static function fromSpec(ClientInterface $client, array $spec): self
     {
         $sdk = \Gitlab\Client::createWithHttpClient($client);

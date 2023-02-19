@@ -25,6 +25,9 @@ final class GithubClient implements Client
     {
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public static function fromSpec(ClientInterface $client, array $spec): self
     {
         $sdk = \Github\Client::createWithHttpClient($client);
@@ -40,6 +43,7 @@ final class GithubClient implements Client
 
     public function getCurrentUser(): CurrentUser
     {
+        /** @var array{login: string} $me */
         $me = $this->client->me()->show();
 
         return new CurrentUser($me['login']);
