@@ -17,7 +17,10 @@ use Psr\Http\Client\ClientInterface;
 
 final class ClientFactory
 {
-    public function __construct(private readonly ClientInterface $httpClient)
+    /**
+     * @param array<string, class-string<\Sigwin\Ariadne\Client>> $clientsMap
+     */
+    public function __construct(private readonly array $clientsMap, private readonly ClientInterface $httpClient)
     {
     }
 
@@ -26,11 +29,11 @@ final class ClientFactory
      */
     public function create(string $type, array $spec): Client
     {
-        return match ($type) {
-            // TODO: detect clients via attribute autoconfiguration
-            'gitlab' => \Sigwin\Ariadne\Bridge\Gitlab\GitlabClient::fromSpec($this->httpClient, $spec),
-            'github' => \Sigwin\Ariadne\Bridge\Github\GithubClient::fromSpec($this->httpClient, $spec),
-            default => throw new \LogicException(sprintf('Unknown client type "%1$s"', $type)),
-        };
+        if (! \array_key_exists($type, $this->clientsMap)) {
+            throw new \LogicException(sprintf('Unknown client type "%1$s"', $type));
+        }
+        $className = $this->clientsMap[$type];
+
+        return $className::fromSpec($this->httpClient, $spec);
     }
 }
