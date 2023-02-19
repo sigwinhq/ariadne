@@ -26,7 +26,8 @@ final class ClientProvider implements \IteratorAggregate
 
     public function getIterator(): \Traversable
     {
-        // TODO: placeholder
+        // TODO: placeholder config loader
+        // TODO: validate config to confirm it conforms to this type
         /** @var list<array{type: string, name: string, auth: array{type: string, token: string}}> $config */
         $config = Yaml::parseFile('ariadne.yaml');
 
