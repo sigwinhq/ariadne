@@ -22,15 +22,15 @@ final class ClientFactory
     }
 
     /**
-     * @param array{type: string, name: string, auth: array{type: string, token: string}} $spec
+     * @param array{name: string, auth: array{type: string, token: string}} $spec
      */
-    public function create(array $spec): Client
+    public function create(string $type, array $spec): Client
     {
-        return match ($spec['type']) {
+        return match ($type) {
             // TODO: detect clients via attribute autoconfiguration
             'gitlab' => \Sigwin\Ariadne\Bridge\Gitlab\GitlabClient::fromSpec($this->httpClient, $spec),
             'github' => \Sigwin\Ariadne\Bridge\Github\GithubClient::fromSpec($this->httpClient, $spec),
-            default => throw new \LogicException(sprintf('Unknown client type "%1$s"', $spec['type'])),
+            default => throw new \LogicException(sprintf('Unknown client type "%1$s"', $type)),
         };
     }
 }

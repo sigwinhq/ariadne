@@ -31,7 +31,10 @@ final class ClientProvider implements \IteratorAggregate
         $config = Yaml::parseFile('ariadne.yaml');
 
         foreach ($config as $spec) {
-            yield $this->clientFactory->create($spec);
+            $type = $spec['type'];
+            unset($spec['type']);
+
+            yield $this->clientFactory->create($type, $spec);
         }
     }
 }
