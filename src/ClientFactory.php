@@ -27,7 +27,7 @@ final class ClientFactory
             // TODO: detect clients via attribute autoconfiguration
             'gitlab' => \Sigwin\Ariadne\Bridge\Gitlab\GitlabClient::fromSpec($this->httpClient, $spec),
             'github' => \Sigwin\Ariadne\Bridge\Github\GithubClient::fromSpec($this->httpClient, $spec),
-            default => throw new \LogicException('Invalid client type'),
+            default => throw new \LogicException(sprintf('Unknown client type "%1$s"', $spec['type'])),
         };
     }
 }
