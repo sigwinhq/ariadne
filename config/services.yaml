@@ -1,6 +1,3 @@
-imports:
-    - {resource: parameters.yaml}
-
 services:
     _defaults:
         autoconfigure: true
@@ -8,8 +5,3 @@ services:
 
     Sigwin\Ariadne\:
         resource: ../src
-
-    Gitlab\Client:
-        factory: [Gitlab\Client, createWithHttpClient]
-        calls:
-            - [authenticate, ['%sigwin_ariadne.gitlab.token%', http_token]]
