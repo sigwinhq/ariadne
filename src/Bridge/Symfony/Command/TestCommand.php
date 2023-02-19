@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * This file is part of the ariadne project.
+ * This file is part of the Sigwin Ariadne project.
  *
  * (c) sigwin.hr
  *
@@ -13,18 +13,17 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne\Bridge\Symfony\Command;
 
-use Sigwin\Ariadne\ClientFactory;
+use Sigwin\Ariadne\ClientProvider;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\Yaml\Yaml;
 
 #[AsCommand(name: 'ariadne:test', aliases: ['test'])]
 final class TestCommand extends Command
 {
-    public function __construct(private readonly ClientFactory $clientFactory)
+    public function __construct(private readonly ClientProvider $clients)
     {
         parent::__construct();
     }
@@ -34,11 +33,7 @@ final class TestCommand extends Command
         $style = new SymfonyStyle($input, $output);
         $style->title('Sigwin Ariadne');
 
-        $config = Yaml::parseFile('ariadne.yaml');
-
-        foreach ($config as $spec) {
-            $client = $this->clientFactory->create($spec);
-
+        foreach ($this->clients as $client) {
             $style->section($client->getName());
             $style->horizontalTable(
                 ['API Version', 'User'],

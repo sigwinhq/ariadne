@@ -5,7 +5,7 @@ declare(strict_types=1);
 $configurator = require __DIR__ .'/vendor/sigwin/infra/resources/PHP/php-cs-fixer.php';
 
 $header = <<<'EOF'
-This file is part of the ariadne project.
+This file is part of the Sigwin Ariadne project.
 
 (c) sigwin.hr
 
