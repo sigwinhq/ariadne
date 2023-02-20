@@ -25,7 +25,7 @@ final class ClientFactory
     }
 
     /**
-     * @param array{name: string, auth: array{type: string, token: string}} $spec
+     * @param array{name: string, auth: array{type: string, token: string}, parameters: array} $spec
      */
     public function create(string $type, array $spec): Client
     {

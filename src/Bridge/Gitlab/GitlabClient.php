@@ -20,12 +20,24 @@ use Sigwin\Ariadne\Client;
 use Sigwin\Ariadne\Model\CurrentUser;
 use Sigwin\Ariadne\Model\Repositories;
 use Sigwin\Ariadne\Model\Repository;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 #[AsClient(name: 'gitlab')]
 final class GitlabClient implements Client
 {
-    private function __construct(private readonly \Gitlab\Client $client, private readonly string $name)
+    private readonly array $parameters;
+
+    private function __construct(private readonly \Gitlab\Client $client, private readonly string $name, array $parameters)
     {
+        $resolver = new OptionsResolver();
+        $resolver
+            ->setDefined('membership')
+            ->setAllowedTypes('membership', ['boolean']);
+        $resolver
+            ->setDefined('owned')
+            ->setAllowedTypes('owned', ['boolean']);
+
+        $this->parameters = $resolver->resolve($parameters);
     }
 
     /**
@@ -36,7 +48,7 @@ final class GitlabClient implements Client
         $sdk = \Gitlab\Client::createWithHttpClient($client);
         $sdk->authenticate($spec['auth']['token'], $spec['auth']['type']);
 
-        return new self($sdk, $spec['name']);
+        return new self($sdk, $spec['name'], $spec['parameters']);
     }
 
     public function getApiVersion(): string
@@ -64,7 +76,7 @@ final class GitlabClient implements Client
     {
         $pager = new ResultPager($this->client);
         /** @var list<array{path_with_namespace: string}> $response */
-        $response = $pager->fetchAllLazy($this->client->projects(), 'all', ['parameters' => ['simple' => true,  'membership' => true]]);
+        $response = $pager->fetchAllLazy($this->client->projects(), 'all', ['parameters' => $this->parameters]);
 
         $repositories = [];
         foreach ($response as $repository) {
