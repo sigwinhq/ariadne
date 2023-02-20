@@ -6,7 +6,7 @@ services:
     Sigwin\Ariadne\:
         resource: ../src
 
-    Sigwin\Ariadne\Client\ClassmapClientFactory:
+    Sigwin\Ariadne\Client\Factory\ClassmapClientFactory:
         arguments:
             # TODO: auto-configure this from found classes
             $clientsMap:

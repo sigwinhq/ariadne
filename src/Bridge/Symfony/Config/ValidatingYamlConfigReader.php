@@ -17,7 +17,7 @@ use Sigwin\Ariadne\ConfigReader;
 use Sigwin\Ariadne\Model\Config;
 use Symfony\Component\Yaml\Yaml;
 
-final class YamlConfigReader implements ConfigReader
+final class ValidatingYamlConfigReader implements ConfigReader
 {
     public function read(?string $url = null): Config
     {
