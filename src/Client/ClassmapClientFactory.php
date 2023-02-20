@@ -16,26 +16,27 @@ namespace Sigwin\Ariadne\Client;
 use Psr\Http\Client\ClientInterface;
 use Sigwin\Ariadne\Client;
 use Sigwin\Ariadne\ClientFactory;
+use Sigwin\Ariadne\Model\ClientConfig;
 
 final class ClassmapClientFactory implements ClientFactory
 {
     /**
      * @param array<string, class-string<Client>> $clientsMap
      */
-    public function __construct(private readonly ClientInterface $httpClient, private readonly array $clientsMap)
+    public function __construct(private readonly array $clientsMap, private readonly ClientInterface $httpClient)
     {
     }
 
     /**
      * {@inheritDoc}
      */
-    public function create(string $type, array $spec): Client
+    public function create(ClientConfig $config): Client
     {
-        if (! \array_key_exists($type, $this->clientsMap)) {
-            throw new \LogicException(sprintf('Unknown client type "%1$s"', $type));
+        if (! \array_key_exists($config->type, $this->clientsMap)) {
+            throw new \LogicException(sprintf('Unknown client type "%1$s"', $config->type));
         }
-        $className = $this->clientsMap[$type];
+        $className = $this->clientsMap[$config->type];
 
-        return $className::fromSpec($this->httpClient, $spec);
+        return $className::fromConfig($this->httpClient, $config);
     }
 }

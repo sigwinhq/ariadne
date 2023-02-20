@@ -13,9 +13,9 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne;
 
-use Sigwin\Ariadne\Model\ClientConfig;
-
-interface ClientFactory
+/**
+ * @extends \IteratorAggregate<\Sigwin\Ariadne\Client>
+ */
+interface ClientCollection extends \IteratorAggregate
 {
-    public function create(ClientConfig $config): Client;
 }

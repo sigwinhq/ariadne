@@ -17,6 +17,7 @@ use Gitlab\ResultPager;
 use Psr\Http\Client\ClientInterface;
 use Sigwin\Ariadne\Bridge\Attribute\AsClient;
 use Sigwin\Ariadne\Client;
+use Sigwin\Ariadne\Model\ClientConfig;
 use Sigwin\Ariadne\Model\CurrentUser;
 use Sigwin\Ariadne\Model\Repositories;
 use Sigwin\Ariadne\Model\Repository;
@@ -45,12 +46,12 @@ final class GitlabClient implements Client
     /**
      * {@inheritDoc}
      */
-    public static function fromSpec(ClientInterface $client, array $spec): self
+    public static function fromConfig(ClientInterface $client, ClientConfig $config): self
     {
         $sdk = \Gitlab\Client::createWithHttpClient($client);
-        $sdk->authenticate($spec['auth']['token'], $spec['auth']['type']);
+        $sdk->authenticate($config->auth['token'], $config->auth['type']);
 
-        return new self($sdk, $spec['name'], $spec['parameters']);
+        return new self($sdk, $config->name, $config->parameters);
     }
 
     public function getApiVersion(): string

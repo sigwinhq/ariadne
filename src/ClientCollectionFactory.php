@@ -13,9 +13,9 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne;
 
-use Sigwin\Ariadne\Model\ClientConfig;
+use Sigwin\Ariadne\Model\Config;
 
-interface ClientFactory
+interface ClientCollectionFactory
 {
-    public function create(ClientConfig $config): Client;
+    public function create(Config $config): ClientCollection;
 }

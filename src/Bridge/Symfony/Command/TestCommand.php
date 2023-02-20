@@ -13,7 +13,8 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne\Bridge\Symfony\Command;
 
-use Sigwin\Ariadne\Client\IterableClientProvider;
+use Sigwin\Ariadne\ClientCollectionFactory;
+use Sigwin\Ariadne\ConfigReader;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -23,7 +24,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 #[AsCommand(name: 'ariadne:test', aliases: ['test'])]
 final class TestCommand extends Command
 {
-    public function __construct(private readonly IterableClientProvider $clients)
+    public function __construct(private readonly ConfigReader $configReader, private readonly ClientCollectionFactory $clientCollectionFactory)
     {
         parent::__construct();
     }
@@ -33,7 +34,9 @@ final class TestCommand extends Command
         $style = new SymfonyStyle($input, $output);
         $style->title('Sigwin Ariadne');
 
-        foreach ($this->clients as $client) {
+        $clients = $this->clientCollectionFactory->create($this->configReader->read());
+
+        foreach ($clients as $client) {
             $style->section($client->getName());
             $style->horizontalTable(
                 ['API Version', 'User', 'Repos'],

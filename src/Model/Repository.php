@@ -15,7 +15,7 @@ namespace Sigwin\Ariadne\Model;
 
 final class Repository
 {
-    public function __construct(public readonly string $path)
+    public function __construct(public string $path)
     {
     }
 }
