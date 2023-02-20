@@ -19,12 +19,21 @@ use Sigwin\Ariadne\Client;
 use Sigwin\Ariadne\Model\CurrentUser;
 use Sigwin\Ariadne\Model\Repositories;
 use Sigwin\Ariadne\Model\Repository;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 #[AsClient(name: 'github')]
 final class GithubClient implements Client
 {
-    private function __construct(private readonly \Github\Client $client, private readonly string $name)
+    private readonly array $parameters;
+
+    private function __construct(private readonly \Github\Client $client, private readonly string $name, array $parameters)
     {
+        $resolver = new OptionsResolver();
+        $resolver
+            ->setDefined('organizations')
+            ->setAllowedTypes('organizations', ['boolean']);
+
+        $this->parameters = $resolver->resolve($parameters);
     }
 
     /**
@@ -35,7 +44,7 @@ final class GithubClient implements Client
         $sdk = \Github\Client::createWithHttpClient($client);
         $sdk->authenticate($spec['auth']['token'], $spec['auth']['type']);
 
-        return new self($sdk, $spec['name']);
+        return new self($sdk, $spec['name'], $spec['parameters']);
     }
 
     public function getApiVersion(): string
@@ -66,13 +75,15 @@ final class GithubClient implements Client
             $repositories[] = new Repository($userRepository['full_name']);
         }
 
-        /** @var list<array{login: string}> $organizations */
-        $organizations = $this->client->currentUser()->organizations();
-        foreach ($organizations as $organization) {
-            /** @var list<array{full_name: string}> $organizationRepositories */
-            $organizationRepositories = $this->client->organizations()->repositories($organization['login']);
-            foreach ($organizationRepositories as $organizationRepository) {
-                $repositories[] = new Repository($organizationRepository['full_name']);
+        if ($this->parameters['organizations'] ?? false) {
+            /** @var list<array{login: string}> $organizations */
+            $organizations = $this->client->currentUser()->organizations();
+            foreach ($organizations as $organization) {
+                /** @var list<array{full_name: string}> $organizationRepositories */
+                $organizationRepositories = $this->client->organizations()->repositories($organization['login']);
+                foreach ($organizationRepositories as $organizationRepository) {
+                    $repositories[] = new Repository($organizationRepository['full_name']);
+                }
             }
         }
 

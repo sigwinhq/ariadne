@@ -20,7 +20,7 @@ use Sigwin\Ariadne\Model\Repositories;
 interface Client
 {
     /**
-     * @param array{name: string, auth: array{type: string, token: string}} $spec
+     * @param array{name: string, auth: array{type: string, token: string}, parameters: array} $spec
      */
     public static function fromSpec(ClientInterface $client, array $spec): self;
 

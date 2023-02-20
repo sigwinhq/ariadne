@@ -28,7 +28,7 @@ final class ClientProvider implements \IteratorAggregate
     {
         // TODO: placeholder config loader
         // TODO: validate config to confirm it conforms to this type
-        /** @var list<array{type: string, name: string, auth: array{type: string, token: string}}> $config */
+        /** @var list<array{type: string, name: string, auth: array{type: string, token: string}, parameters: array}> $config */
         $config = Yaml::parseFile('ariadne.yaml');
 
         foreach ($config as $spec) {
