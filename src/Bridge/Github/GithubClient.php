@@ -43,8 +43,22 @@ final class GithubClient implements Client
      */
     public static function fromConfig(ClientInterface $client, ClientConfig $config): self
     {
+        $resolver = new OptionsResolver();
+        $resolver
+            ->setDefined('type')
+            ->setDefault('type', 'access_token_header')
+            ->setAllowedTypes('type', 'string')
+            ->setAllowedValues('type', ['access_token_header'])
+        ;
+        $resolver
+            ->setDefined('token')
+            ->setAllowedTypes('token', 'string')
+        ;
+        /** @var array{type: string, token: string} $auth */
+        $auth = $resolver->resolve($config->auth);
+
         $sdk = \Github\Client::createWithHttpClient($client);
-        $sdk->authenticate($config->auth['token'], $config->auth['type']);
+        $sdk->authenticate($auth['token'], $auth['type']);
 
         return new self($sdk, $config->name, $config->parameters);
     }

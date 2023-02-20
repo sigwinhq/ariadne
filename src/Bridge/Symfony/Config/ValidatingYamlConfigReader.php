@@ -15,15 +15,63 @@ namespace Sigwin\Ariadne\Bridge\Symfony\Config;
 
 use Sigwin\Ariadne\ConfigReader;
 use Sigwin\Ariadne\Model\Config;
+use Symfony\Component\Config\Definition\Builder\TreeBuilder;
+use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\Yaml\Yaml;
 
 final class ValidatingYamlConfigReader implements ConfigReader
 {
+    public function __construct(private readonly array $clientsMap)
+    {
+    }
+
     public function read(?string $url = null): Config
     {
-        /** @var list<array{type: string, name: string, auth: array{type: string, token: string}, parameters: array}> $config */
-        $config = Yaml::parseFile($url ?? 'ariadne.yaml');
+        // TODO: support .yml, .yaml.dist, .yml.dist
+        $url ??= 'ariadne.yaml';
+        $url = realpath($url);
+        if ($url === false) {
+            throw new \InvalidArgumentException('File not found');
+        }
 
-        return Config::fromArray($config);
+        $builder = new TreeBuilder('ariadne');
+        $builder
+            ->getRootNode()
+            ->requiresAtLeastOneElement()
+            ->arrayPrototype()
+                ->children()
+                    ->enumNode('type')
+                        ->values(array_keys($this->clientsMap))
+                        ->isRequired()
+                    ->end()
+                    ->scalarNode('name')
+                        ->isRequired()
+                        ->cannotBeEmpty()
+                    ->end()
+                    ->arrayNode('auth')
+                        ->isRequired()
+                        ->children()
+                            ->scalarNode('type')
+                            ->end()
+                            ->scalarNode('token')
+                                ->isRequired()
+                                ->cannotBeEmpty()
+                            ->end()
+                        ->end()
+                    ->end()
+                    ->arrayNode('parameters')
+                        ->scalarPrototype()
+                        ->end()
+                    ->end()
+                ->end()
+            ->end()
+        ;
+
+        $processor = new Processor();
+
+        /** @var list<array{type: string, name: string, auth: array{type: string, token: string}, parameters: array}> $config */
+        $config = $processor->process($builder->buildTree(), [Yaml::parseFile($url)]);
+
+        return Config::fromArray($url, $config);
     }
 }

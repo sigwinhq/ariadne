@@ -18,21 +18,21 @@ namespace Sigwin\Ariadne\Model;
  */
 final class Config implements \IteratorAggregate
 {
-    private function __construct(private readonly array $clientConfig)
+    private function __construct(public readonly string $url, private readonly array $clientConfig)
     {
     }
 
     /**
      * @param list<array{type: string, name: string, auth: array{type: string, token: string}, parameters: array}> $config
      */
-    public static function fromArray(array $config): self
+    public static function fromArray(string $url, array $config): self
     {
         $clients = [];
         foreach ($config as $clientConfig) {
             $clients[] = ClientConfig::fromArray($clientConfig);
         }
 
-        return new self($clients);
+        return new self($url, $clients);
     }
 
     public function getIterator(): \Traversable
