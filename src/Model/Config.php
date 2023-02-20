@@ -22,6 +22,9 @@ final class Config implements \IteratorAggregate
     {
     }
 
+    /**
+     * @param list<array{type: string, name: string, auth: array{type: string, token: string}, parameters: array}> $config
+     */
     public static function fromArray(array $config): self
     {
         $clients = [];
