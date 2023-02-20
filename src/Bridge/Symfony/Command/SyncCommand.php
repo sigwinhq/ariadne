@@ -24,17 +24,22 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 #[AsCommand(name: 'ariadne:sync', aliases: ['sync'])]
 final class SyncCommand extends Command
 {
+    use CommandTrait;
+
     public function __construct(private readonly ConfigReader $configReader, private readonly ClientCollectionFactory $clientCollectionFactory)
     {
         parent::__construct();
     }
 
+    public function configure(): void
+    {
+        $this->createConfiguration();
+    }
+
     public function execute(InputInterface $input, OutputInterface $output): int
     {
         $style = new SymfonyStyle($input, $output);
-        $style->title('Sigwin Ariadne');
-
-        $clients = $this->clientCollectionFactory->create($this->configReader->read());
+        $clients = $this->getClientCollection($input, $style);
 
         foreach ($clients as $client) {
             dump($client->getCurrentUser());
