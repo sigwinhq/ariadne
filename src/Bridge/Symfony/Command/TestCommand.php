@@ -36,11 +36,12 @@ final class TestCommand extends Command
         foreach ($this->clients as $client) {
             $style->section($client->getName());
             $style->horizontalTable(
-                ['API Version', 'User'],
+                ['API Version', 'User', 'Repos'],
                 [
                     [
                         $client->getApiVersion(),
                         $client->getCurrentUser()->username,
+                        $client->getRepositories()->getSummary(),
                     ],
                 ]
             );

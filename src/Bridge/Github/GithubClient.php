@@ -17,6 +17,8 @@ use Psr\Http\Client\ClientInterface;
 use Sigwin\Ariadne\Bridge\Attribute\AsClient;
 use Sigwin\Ariadne\Client;
 use Sigwin\Ariadne\Model\CurrentUser;
+use Sigwin\Ariadne\Model\Repositories;
+use Sigwin\Ariadne\Model\Repository;
 
 #[AsClient(name: 'github')]
 final class GithubClient implements Client
@@ -52,5 +54,28 @@ final class GithubClient implements Client
     public function getName(): string
     {
         return $this->name;
+    }
+
+    public function getRepositories(): Repositories
+    {
+        $repositories = [];
+
+        /** @var list<array{full_name: string}> $userRepositories */
+        $userRepositories = $this->client->user()->myRepositories();
+        foreach ($userRepositories as $userRepository) {
+            $repositories[] = new Repository($userRepository['full_name']);
+        }
+
+        /** @var list<array{login: string}> $organizations */
+        $organizations = $this->client->currentUser()->organizations();
+        foreach ($organizations as $organization) {
+            /** @var list<array{full_name: string}> $organizationRepositories */
+            $organizationRepositories = $this->client->organizations()->repositories($organization['login']);
+            foreach ($organizationRepositories as $organizationRepository) {
+                $repositories[] = new Repository($organizationRepository['full_name']);
+            }
+        }
+
+        return new Repositories($repositories);
     }
 }
