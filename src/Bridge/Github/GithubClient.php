@@ -31,7 +31,8 @@ final class GithubClient implements Client
         $resolver = new OptionsResolver();
         $resolver
             ->setDefined('organizations')
-            ->setAllowedTypes('organizations', ['boolean']);
+            ->setAllowedTypes('organizations', ['boolean'])
+        ;
 
         $this->parameters = $resolver->resolve($parameters);
     }

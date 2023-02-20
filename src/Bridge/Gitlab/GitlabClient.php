@@ -32,10 +32,12 @@ final class GitlabClient implements Client
         $resolver = new OptionsResolver();
         $resolver
             ->setDefined('membership')
-            ->setAllowedTypes('membership', ['boolean']);
+            ->setAllowedTypes('membership', ['boolean'])
+        ;
         $resolver
             ->setDefined('owned')
-            ->setAllowedTypes('owned', ['boolean']);
+            ->setAllowedTypes('owned', ['boolean'])
+        ;
 
         $this->parameters = $resolver->resolve($parameters);
     }
