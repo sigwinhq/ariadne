@@ -17,6 +17,7 @@ use Psr\Http\Client\ClientInterface;
 use Sigwin\Ariadne\Bridge\Attribute\AsClient;
 use Sigwin\Ariadne\Client;
 use Sigwin\Ariadne\Model\CurrentUser;
+use Sigwin\Ariadne\Model\Repositories;
 
 #[AsClient(name: 'github')]
 final class GithubClient implements Client
@@ -52,5 +53,10 @@ final class GithubClient implements Client
     public function getName(): string
     {
         return $this->name;
+    }
+
+    public function getRepositories(): Repositories
+    {
+        return new Repositories([]);
     }
 }

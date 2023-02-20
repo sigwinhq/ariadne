@@ -13,10 +13,13 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne\Bridge\Gitlab;
 
+use Gitlab\ResultPager;
 use Psr\Http\Client\ClientInterface;
 use Sigwin\Ariadne\Bridge\Attribute\AsClient;
 use Sigwin\Ariadne\Client;
 use Sigwin\Ariadne\Model\CurrentUser;
+use Sigwin\Ariadne\Model\Repositories;
+use Sigwin\Ariadne\Model\Repository;
 
 #[AsClient(name: 'gitlab')]
 final class GitlabClient implements Client
@@ -55,5 +58,19 @@ final class GitlabClient implements Client
     public function getName(): string
     {
         return $this->name;
+    }
+
+    public function getRepositories(): Repositories
+    {
+        $pager = new ResultPager($this->client);
+        /** @var list<array{path_with_namespace: string}> $response */
+        $response = $pager->fetchAllLazy($this->client->projects(), 'all', ['parameters' => ['simple' => true,  'membership' => true]]);
+
+        $repositories = [];
+        foreach ($response as $repository) {
+            $repositories[] = new Repository($repository['path_with_namespace']);
+        }
+
+        return new Repositories($repositories);
     }
 }

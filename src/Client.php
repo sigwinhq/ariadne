@@ -15,6 +15,7 @@ namespace Sigwin\Ariadne;
 
 use Psr\Http\Client\ClientInterface;
 use Sigwin\Ariadne\Model\CurrentUser;
+use Sigwin\Ariadne\Model\Repositories;
 
 interface Client
 {
@@ -28,4 +29,6 @@ interface Client
     public function getApiVersion(): string;
 
     public function getName(): string;
+
+    public function getRepositories(): Repositories;
 }
