@@ -13,7 +13,10 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne\Model;
 
-final class Template implements \Countable, \Stringable
+/**
+ * @implements \IteratorAggregate<Repository>
+ */
+final class Template implements \Countable, \IteratorAggregate, \Stringable
 {
     public function __construct(public readonly string $name, public readonly RepositoryCollection $repositories)
     {
@@ -27,5 +30,10 @@ final class Template implements \Countable, \Stringable
     public function count(): int
     {
         return \count($this->repositories);
+    }
+
+    public function getIterator(): \Traversable
+    {
+        return $this->repositories;
     }
 }
