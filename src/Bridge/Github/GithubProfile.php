@@ -32,6 +32,8 @@ final class GithubProfile implements Profile
      */
     private readonly array $options;
 
+    private Repositories $repositories;
+
     private function __construct(private readonly Client $client, private readonly string $name, private readonly ProfileConfig $config)
     {
         $this->options = $this->validateOptions($this->config->clientConfig->options);
@@ -67,7 +69,7 @@ final class GithubProfile implements Profile
         return $this->client->getApiVersion();
     }
 
-    public function getCurrentUser(): ProfileUser
+    public function getApiUser(): ProfileUser
     {
         /** @var array{login: string} $me */
         $me = $this->client->me()->show();
@@ -87,27 +89,30 @@ final class GithubProfile implements Profile
 
     private function getRepositories(): Repositories
     {
-        $repositories = [];
+        if (! isset($this->repositories)) {
+            $repositories = [];
 
-        /** @var list<array{full_name: string}> $userRepositories */
-        $userRepositories = $this->client->user()->myRepositories();
-        foreach ($userRepositories as $userRepository) {
-            $repositories[] = new Repository($userRepository['full_name']);
-        }
+            /** @var list<array{full_name: string}> $userRepositories */
+            $userRepositories = $this->client->user()->myRepositories();
+            foreach ($userRepositories as $userRepository) {
+                $repositories[] = new Repository($userRepository['full_name']);
+            }
 
-        if ($this->options['organizations'] ?? false) {
-            /** @var list<array{login: string}> $organizations */
-            $organizations = $this->client->currentUser()->organizations();
-            foreach ($organizations as $organization) {
-                /** @var list<array{full_name: string}> $organizationRepositories */
-                $organizationRepositories = $this->client->organizations()->repositories($organization['login']);
-                foreach ($organizationRepositories as $organizationRepository) {
-                    $repositories[] = new Repository($organizationRepository['full_name']);
+            if ($this->options['organizations'] ?? false) {
+                /** @var list<array{login: string}> $organizations */
+                $organizations = $this->client->currentUser()->organizations();
+                foreach ($organizations as $organization) {
+                    /** @var list<array{full_name: string}> $organizationRepositories */
+                    $organizationRepositories = $this->client->organizations()->repositories($organization['login']);
+                    foreach ($organizationRepositories as $organizationRepository) {
+                        $repositories[] = new Repository($organizationRepository['full_name']);
+                    }
                 }
             }
+            $this->repositories = new Repositories($repositories);
         }
 
-        return new Repositories($repositories);
+        return $this->repositories;
     }
 
     /**

@@ -48,7 +48,7 @@ final class TestCommand extends Command
                 [
                     [
                         $profile->getApiVersion(),
-                        $profile->getCurrentUser(),
+                        $profile->getApiUser(),
                         $profile->getSummary(),
                     ],
                 ]

@@ -31,6 +31,8 @@ final class GitlabProfile implements Profile
     /** @var array{membership: bool, owned: bool} */
     private readonly array $options;
 
+    private Repositories $repositories;
+
     private function __construct(private readonly Client $client, private readonly string $name, private readonly ProfileConfig $config)
     {
         $this->options = $this->validateOptions($this->config->clientConfig->options);
@@ -69,7 +71,7 @@ final class GitlabProfile implements Profile
         return $info['version'];
     }
 
-    public function getCurrentUser(): ProfileUser
+    public function getApiUser(): ProfileUser
     {
         /** @var array{username: string} $me */
         $me = $this->client->users()->me();
@@ -89,16 +91,20 @@ final class GitlabProfile implements Profile
 
     private function getRepositories(): Repositories
     {
-        $pager = new ResultPager($this->client);
-        /** @var list<array{path_with_namespace: string}> $response */
-        $response = $pager->fetchAllLazy($this->client->projects(), 'all', ['parameters' => $this->options]);
+        if (! isset($this->repositories)) {
+            $pager = new ResultPager($this->client);
+            /** @var list<array{path_with_namespace: string}> $response */
+            $response = $pager->fetchAllLazy($this->client->projects(), 'all', ['parameters' => $this->options]);
 
-        $repositories = [];
-        foreach ($response as $repository) {
-            $repositories[] = new Repository($repository['path_with_namespace']);
+            $repositories = [];
+            foreach ($response as $repository) {
+                $repositories[] = new Repository($repository['path_with_namespace']);
+            }
+
+            $this->repositories = new Repositories($repositories);
         }
 
-        return new Repositories($repositories);
+        return $this->repositories;
     }
 
     /**

@@ -15,12 +15,12 @@ namespace Sigwin\Ariadne\Model;
 
 final class ProfileSummary implements \Stringable
 {
-    public function __construct(private readonly Repositories $repositories)
+    public function __construct(public readonly Repositories $repositories)
     {
     }
 
     public function __toString(): string
     {
-        return $this->repositories->getSummary();
+        return $this->repositories->__toString();
     }
 }

@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne\Model;
 
-final class Repositories
+final class Repositories implements \Stringable
 {
     /**
      * @param iterable<Repository> $repositories
@@ -22,7 +22,7 @@ final class Repositories
     {
     }
 
-    public function getSummary(): string
+    public function __toString(): string
     {
         $summary = [];
         foreach ($this->repositories as $repository) {

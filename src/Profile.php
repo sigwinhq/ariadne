@@ -22,7 +22,7 @@ interface Profile
 {
     public static function fromConfig(ClientInterface $client, ProfileConfig $config): self;
 
-    public function getCurrentUser(): ProfileUser;
+    public function getApiUser(): ProfileUser;
 
     public function getApiVersion(): string;
 
