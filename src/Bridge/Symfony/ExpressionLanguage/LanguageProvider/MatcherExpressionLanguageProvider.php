@@ -37,7 +37,7 @@ final class MatcherExpressionLanguageProvider implements ExpressionFunctionProvi
                         $value = $repository->{$property};
                     }
 
-                    return preg_match(sprintf('@%1$s@', preg_quote($regex, '@')), $value) === 1;
+                    return preg_match(sprintf('@%1$s@', $regex), $value) === 1;
                 }
             ),
         ];
