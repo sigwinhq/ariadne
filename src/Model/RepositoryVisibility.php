@@ -13,9 +13,13 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne\Model;
 
-final class Repository
+enum RepositoryVisibility: string
 {
-    public function __construct(public readonly string $path, public readonly RepositoryVisibility $visibility)
+    case PUBLIC = 'public';
+    case PRIVATE = 'private';
+
+    public static function fromPrivate(bool $private): self
     {
+        return $private ? self::PRIVATE : self::PUBLIC;
     }
 }

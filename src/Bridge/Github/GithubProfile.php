@@ -21,6 +21,7 @@ use Sigwin\Ariadne\Model\ProfileConfig;
 use Sigwin\Ariadne\Model\ProfileUser;
 use Sigwin\Ariadne\Model\Repository;
 use Sigwin\Ariadne\Model\RepositoryCollection;
+use Sigwin\Ariadne\Model\RepositoryVisibility;
 use Sigwin\Ariadne\Profile;
 use Sigwin\Ariadne\ProfileTemplateFactory;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -90,20 +91,20 @@ final class GithubProfile implements Profile
         if (! isset($this->repositories)) {
             $repositories = [];
 
-            /** @var list<array{full_name: string}> $userRepositories */
+            /** @var list<array{full_name: string, private: bool}> $userRepositories */
             $userRepositories = $this->client->user()->myRepositories();
             foreach ($userRepositories as $userRepository) {
-                $repositories[] = new Repository($userRepository['full_name']);
+                $repositories[] = new Repository($userRepository['full_name'], RepositoryVisibility::fromPrivate($userRepository['private']));
             }
 
             if ($this->options['organizations'] ?? false) {
                 /** @var list<array{login: string}> $organizations */
                 $organizations = $this->client->currentUser()->organizations();
                 foreach ($organizations as $organization) {
-                    /** @var list<array{full_name: string}> $organizationRepositories */
+                    /** @var list<array{full_name: string, private: bool}> $organizationRepositories */
                     $organizationRepositories = $this->client->organizations()->repositories($organization['login']);
                     foreach ($organizationRepositories as $organizationRepository) {
-                        $repositories[] = new Repository($organizationRepository['full_name']);
+                        $repositories[] = new Repository($organizationRepository['full_name'], RepositoryVisibility::fromPrivate($organizationRepository['private']));
                     }
                 }
             }

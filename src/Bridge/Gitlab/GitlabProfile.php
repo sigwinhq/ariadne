@@ -22,6 +22,7 @@ use Sigwin\Ariadne\Model\ProfileConfig;
 use Sigwin\Ariadne\Model\ProfileUser;
 use Sigwin\Ariadne\Model\Repository;
 use Sigwin\Ariadne\Model\RepositoryCollection;
+use Sigwin\Ariadne\Model\RepositoryVisibility;
 use Sigwin\Ariadne\Profile;
 use Sigwin\Ariadne\ProfileTemplateFactory;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -96,7 +97,7 @@ final class GitlabProfile implements Profile
 
             $repositories = [];
             foreach ($response as $repository) {
-                $repositories[] = new Repository($repository['path_with_namespace']);
+                $repositories[] = new Repository($repository['path_with_namespace'], RepositoryVisibility::tryFrom($repository['visibility']));
             }
 
             $this->repositories = new RepositoryCollection($repositories);
