@@ -26,6 +26,6 @@ final class ProfileGeneratorCollectionFactory implements \Sigwin\Ariadne\Profile
 
     public function create(Config $config): ProfileCollection
     {
-        return new ProfileGeneratorCollection($config, $this->clientFactory);
+        return new ProfileGeneratorCollection($this->clientFactory, $config);
     }
 }

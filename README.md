@@ -27,20 +27,44 @@ profiles:
             type: http_token
             # create your own: https://gitlab.com/-/profile/personal_access_tokens
             token: glpat-my-t0k3n
+        # default, can be omitted
         options:
             # membership: true
             owned: true
+    templates:
+    -
+        name: My Org Project 1 repos
+        filter:
+            path: match('^my-org/project1')
+    -
+        name: My Org Project 2 repos
+        filter:
+            path: match('^my-org/project2')
 -
     type: github
-    name: My GitHub
+    name: My Github
     client:
         auth:
             # default, can be omitted
             type: access_token_header
             # create your own: https://github.com/settings/tokens
             token: ghp_my-t0k3n
+        # default, can be omitted
         options:
             organizations: true
+    templates:
+    -
+        name: My Org OSS private source repos
+        filter:
+            path: match('^my-org')
+            visibility: private # public/private
+            type: source        # source/fork
+    -
+        name: My Org OSS public forks
+        filter:
+            path: match('^my-org')
+            visibility: public
+            type: fork
 ```
 
 When you run `bin/ariadne test` in the same dir as the config file, it will tell you how the target platform sees you and what repos you have access to:

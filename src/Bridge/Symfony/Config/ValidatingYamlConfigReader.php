@@ -15,6 +15,8 @@ namespace Sigwin\Ariadne\Bridge\Symfony\Config;
 
 use Sigwin\Ariadne\ConfigReader;
 use Sigwin\Ariadne\Model\Config;
+use Sigwin\Ariadne\Model\RepositoryType;
+use Sigwin\Ariadne\Model\RepositoryVisibility;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\Yaml\Yaml;
@@ -72,6 +74,30 @@ final class ValidatingYamlConfigReader implements ConfigReader
                                     ->end()
                                 ->end()
                             ->end()
+                            ->arrayNode('templates')
+                                ->isRequired()
+                                ->requiresAtLeastOneElement()
+                                ->arrayPrototype()
+                                    ->children()
+                                        ->scalarNode('name')
+                                            ->isRequired()
+                                            ->cannotBeEmpty()
+                                        ->end()
+                                        ->arrayNode('filter')
+                                            ->children()
+                                                ->enumNode('type')
+                                                    ->values(array_map(static fn (RepositoryType $case) => $case->value, RepositoryType::cases()))
+                                                ->end()
+                                                ->scalarNode('path')
+                                                ->end()
+                                                ->enumNode('visibility')
+                                                    ->values(array_map(static fn (RepositoryVisibility $case) => $case->value, RepositoryVisibility::cases()))
+                                                ->end()
+                                            ->end()
+                                        ->end()
+                                    ->end()
+                                ->end()
+                            ->end()
                         ->end()
                     ->end()
                 ->end()
@@ -80,7 +106,13 @@ final class ValidatingYamlConfigReader implements ConfigReader
 
         $processor = new Processor();
 
-        /** @var array{profiles: list<array{type: string, name: string, client: array{auth: array{type: string, token: string}, options: array<string, bool|string>}}>} $config */
+        /** @var array{
+         *     profiles: list<array{
+         *          type: string,
+         *          name: string,
+         *          client: array{auth: array{type: string, token: string}, options: array<string, bool|string>},
+         *          templates: list<array{name: string, filter: array{type: value-of<RepositoryType>, path: ?string, visibility: value-of<RepositoryVisibility>}}>
+         *     }>} $config */
         $config = $processor->process($builder->buildTree(), [Yaml::parseFile($url)]);
 
         return Config::fromArray($url, $config);

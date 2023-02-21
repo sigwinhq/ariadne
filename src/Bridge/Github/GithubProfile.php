@@ -16,30 +16,38 @@ namespace Sigwin\Ariadne\Bridge\Github;
 use Github\Client;
 use Psr\Http\Client\ClientInterface;
 use Sigwin\Ariadne\Bridge\Attribute\AsProfile;
-use Sigwin\Ariadne\Model\CurrentUser;
+use Sigwin\Ariadne\Bridge\ProfileTrait;
 use Sigwin\Ariadne\Model\ProfileConfig;
-use Sigwin\Ariadne\Model\Repositories;
+use Sigwin\Ariadne\Model\ProfileUser;
 use Sigwin\Ariadne\Model\Repository;
+use Sigwin\Ariadne\Model\RepositoryCollection;
+use Sigwin\Ariadne\Model\RepositoryType;
+use Sigwin\Ariadne\Model\RepositoryVisibility;
 use Sigwin\Ariadne\Profile;
+use Sigwin\Ariadne\ProfileTemplateFactory;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 #[AsProfile(type: 'github')]
 final class GithubProfile implements Profile
 {
+    use ProfileTrait;
+
     /**
-     * @var array{organizations: ?bool}
+     * @var array{organizations: bool}
      */
     private readonly array $options;
 
-    private function __construct(private readonly Client $client, private readonly string $name, private readonly ProfileConfig $config)
+    private RepositoryCollection $repositories;
+
+    private function __construct(private readonly Client $client, private readonly ProfileTemplateFactory $templateFactory, private readonly string $name, private readonly ProfileConfig $config)
     {
-        $this->options = $this->validateOptions($this->config->clientConfig->options);
+        $this->options = $this->validateOptions($this->config->client->options);
     }
 
     /**
      * {@inheritDoc}
      */
-    public static function fromConfig(ClientInterface $client, ProfileConfig $config): self
+    public static function fromConfig(ClientInterface $client, ProfileTemplateFactory $templateFactory, ProfileConfig $config): self
     {
         $resolver = new OptionsResolver();
         $resolver
@@ -53,12 +61,12 @@ final class GithubProfile implements Profile
             ->setAllowedTypes('token', 'string')
         ;
         /** @var array{type: string, token: string} $auth */
-        $auth = $resolver->resolve($config->clientConfig->auth);
+        $auth = $resolver->resolve($config->client->auth);
 
         $sdk = Client::createWithHttpClient($client);
         $sdk->authenticate($auth['token'], $auth['type']);
 
-        return new self($sdk, $config->name, $config);
+        return new self($sdk, $templateFactory, $config->name, $config);
     }
 
     public function getApiVersion(): string
@@ -66,12 +74,12 @@ final class GithubProfile implements Profile
         return $this->client->getApiVersion();
     }
 
-    public function getCurrentUser(): CurrentUser
+    public function getApiUser(): ProfileUser
     {
         /** @var array{login: string} $me */
         $me = $this->client->me()->show();
 
-        return new CurrentUser($me['login']);
+        return new ProfileUser($me['login']);
     }
 
     public function getName(): string
@@ -79,44 +87,48 @@ final class GithubProfile implements Profile
         return $this->name;
     }
 
-    public function getRepositories(): Repositories
+    private function getRepositories(): RepositoryCollection
     {
-        $repositories = [];
+        if (! isset($this->repositories)) {
+            $repositories = [];
 
-        /** @var list<array{full_name: string}> $userRepositories */
-        $userRepositories = $this->client->user()->myRepositories();
-        foreach ($userRepositories as $userRepository) {
-            $repositories[] = new Repository($userRepository['full_name']);
-        }
+            /** @var list<array{fork: bool, full_name: string, private: bool}> $userRepositories */
+            $userRepositories = $this->client->user()->myRepositories();
+            foreach ($userRepositories as $userRepository) {
+                $repositories[] = new Repository(RepositoryType::fromFork($userRepository['fork']), $userRepository['full_name'], RepositoryVisibility::fromPrivate($userRepository['private']));
+            }
 
-        if ($this->options['organizations'] ?? false) {
-            /** @var list<array{login: string}> $organizations */
-            $organizations = $this->client->currentUser()->organizations();
-            foreach ($organizations as $organization) {
-                /** @var list<array{full_name: string}> $organizationRepositories */
-                $organizationRepositories = $this->client->organizations()->repositories($organization['login']);
-                foreach ($organizationRepositories as $organizationRepository) {
-                    $repositories[] = new Repository($organizationRepository['full_name']);
+            if ($this->options['organizations'] ?? false) {
+                /** @var list<array{login: string}> $organizations */
+                $organizations = $this->client->currentUser()->organizations();
+                foreach ($organizations as $organization) {
+                    /** @var list<array{fork: bool, full_name: string, private: bool}> $organizationRepositories */
+                    $organizationRepositories = $this->client->organizations()->repositories($organization['login']);
+                    foreach ($organizationRepositories as $organizationRepository) {
+                        $repositories[] = new Repository(RepositoryType::fromFork($organizationRepository['fork']), $organizationRepository['full_name'], RepositoryVisibility::fromPrivate($organizationRepository['private']));
+                    }
                 }
             }
+            $this->repositories = new RepositoryCollection($repositories);
         }
 
-        return new Repositories($repositories);
+        return $this->repositories;
     }
 
     /**
      * @param array<string, bool|string> $options
      *
-     * @return array{organizations: ?bool}
+     * @return array{organizations: bool}
      */
     private function validateOptions(array $options): array
     {
         $resolver = new OptionsResolver();
         $resolver
             ->setDefined('organizations')
+            ->setDefault('organizations', true)
             ->setAllowedTypes('organizations', ['boolean'])
         ;
-        /** @var array{organizations: ?bool} $options */
+        /** @var array{organizations: bool} $options */
         $options = $resolver->resolve($options);
 
         return $options;

@@ -13,9 +13,13 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne\Model;
 
-final class CurrentUser
+enum RepositoryType: string
 {
-    public function __construct(public readonly string $username)
+    case SOURCE = 'source';
+    case FORK = 'fork';
+
+    public static function fromFork(bool $fork): self
     {
+        return $fork ? self::FORK : self::SOURCE;
     }
 }

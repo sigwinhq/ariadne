@@ -44,12 +44,13 @@ final class TestCommand extends Command
         foreach ($profiles as $profile) {
             $style->section($profile->getName());
             $style->horizontalTable(
-                ['API Version', 'User', 'Repos'],
+                ['API Version', 'API User', 'Repositories', 'Templates'],
                 [
                     [
                         $profile->getApiVersion(),
-                        $profile->getCurrentUser()->username,
-                        $profile->getRepositories()->getSummary(),
+                        $profile->getApiUser(),
+                        $profile->getSummary()->repositories,
+                        $profile->getSummary()->templates,
                     ],
                 ]
             );

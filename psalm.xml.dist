@@ -30,6 +30,18 @@
                 <referencedMethod name="Symfony\Component\Config\Definition\Builder\VariableNodeDefinition::scalarNode"/>
             </errorLevel>
         </PossiblyUndefinedMethod>
+        <PropertyNotSetInConstructor>
+            <errorLevel type="suppress">
+                <referencedProperty name="Sigwin\Ariadne\Bridge\Github\GithubProfile::$repositories"/>
+                <referencedProperty name="Sigwin\Ariadne\Bridge\Gitlab\GitlabProfile::$repositories"/>
+            </errorLevel>
+        </PropertyNotSetInConstructor>
+        <RedundantPropertyInitializationCheck>
+            <errorLevel type="suppress">
+                <file name="src/Bridge/Github/GithubProfile.php"/>
+                <file name="src/Bridge/Gitlab/GitlabProfile.php"/>
+            </errorLevel>
+        </RedundantPropertyInitializationCheck>
     </issueHandlers>
 
     <plugins>

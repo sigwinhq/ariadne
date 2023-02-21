@@ -14,19 +14,22 @@ declare(strict_types=1);
 namespace Sigwin\Ariadne;
 
 use Psr\Http\Client\ClientInterface;
-use Sigwin\Ariadne\Model\CurrentUser;
 use Sigwin\Ariadne\Model\ProfileConfig;
-use Sigwin\Ariadne\Model\Repositories;
+use Sigwin\Ariadne\Model\ProfileSummary;
+use Sigwin\Ariadne\Model\ProfileUser;
 
-interface Profile
+/**
+ * @extends \IteratorAggregate<\Sigwin\Ariadne\Model\Template>
+ */
+interface Profile extends \IteratorAggregate
 {
-    public static function fromConfig(ClientInterface $client, ProfileConfig $config): self;
+    public static function fromConfig(ClientInterface $client, ProfileTemplateFactory $templateFactory, ProfileConfig $config): self;
 
-    public function getCurrentUser(): CurrentUser;
+    public function getApiUser(): ProfileUser;
 
     public function getApiVersion(): string;
 
     public function getName(): string;
 
-    public function getRepositories(): Repositories;
+    public function getSummary(): ProfileSummary;
 }

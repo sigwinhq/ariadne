@@ -17,13 +17,14 @@ use Psr\Http\Client\ClientInterface;
 use Sigwin\Ariadne\Model\ProfileConfig;
 use Sigwin\Ariadne\Profile;
 use Sigwin\Ariadne\ProfileFactory;
+use Sigwin\Ariadne\ProfileTemplateFactory;
 
 final class ClassmapProfileFactory implements ProfileFactory
 {
     /**
      * @param array<string, class-string<Profile>> $profilesMap
      */
-    public function __construct(private readonly array $profilesMap, private readonly ClientInterface $httpClient)
+    public function __construct(private readonly array $profilesMap, private readonly ClientInterface $httpClient, private readonly ProfileTemplateFactory $templateFactory)
     {
     }
 
@@ -37,6 +38,6 @@ final class ClassmapProfileFactory implements ProfileFactory
         }
         $className = $this->profilesMap[$config->type];
 
-        return $className::fromConfig($this->httpClient, $config);
+        return $className::fromConfig($this->httpClient, $this->templateFactory, $config);
     }
 }

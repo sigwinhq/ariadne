@@ -13,9 +13,14 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne\Model;
 
-final class Repository
+final class ProfileUser implements \Stringable
 {
-    public function __construct(public readonly RepositoryType $type, public readonly string $path, public readonly RepositoryVisibility $visibility)
+    public function __construct(public readonly string $username)
     {
+    }
+
+    public function __toString(): string
+    {
+        return $this->username;
     }
 }
