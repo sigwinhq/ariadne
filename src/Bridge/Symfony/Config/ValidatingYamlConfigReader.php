@@ -15,6 +15,7 @@ namespace Sigwin\Ariadne\Bridge\Symfony\Config;
 
 use Sigwin\Ariadne\ConfigReader;
 use Sigwin\Ariadne\Model\Config;
+use Sigwin\Ariadne\Model\RepositoryVisibility;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\Yaml\Yaml;
@@ -84,7 +85,9 @@ final class ValidatingYamlConfigReader implements ConfigReader
                                         ->arrayNode('filter')
                                             ->children()
                                                 ->scalarNode('path')
-                                                    ->cannotBeEmpty()
+                                                ->end()
+                                                ->enumNode('visibility')
+                                                    ->values(array_map(static fn (RepositoryVisibility $case) => $case->value, RepositoryVisibility::cases()))
                                                 ->end()
                                             ->end()
                                         ->end()
@@ -104,7 +107,7 @@ final class ValidatingYamlConfigReader implements ConfigReader
          *          type: string,
          *          name: string,
          *          client: array{auth: array{type: string, token: string}, options: array<string, bool|string>},
-         *          templates: list<array{name: string, filter: array{path: ?string}}>
+         *          templates: list<array{name: string, filter: array{path: ?string, visibility: value-of<RepositoryVisibility>}}>
          *     }>} $config */
         $config = $processor->process($builder->buildTree(), [Yaml::parseFile($url)]);
 

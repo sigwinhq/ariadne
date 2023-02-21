@@ -92,12 +92,12 @@ final class GitlabProfile implements Profile
     {
         if (! isset($this->repositories)) {
             $pager = new ResultPager($this->client);
-            /** @var list<array{path_with_namespace: string}> $response */
+            /** @var list<array{path_with_namespace: string, visibility: string}> $response */
             $response = $pager->fetchAllLazy($this->client->projects(), 'all', ['parameters' => $this->options]);
 
             $repositories = [];
             foreach ($response as $repository) {
-                $repositories[] = new Repository($repository['path_with_namespace'], RepositoryVisibility::tryFrom($repository['visibility']));
+                $repositories[] = new Repository($repository['path_with_namespace'], RepositoryVisibility::from($repository['visibility']));
             }
 
             $this->repositories = new RepositoryCollection($repositories);

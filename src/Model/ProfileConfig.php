@@ -27,7 +27,7 @@ final class ProfileConfig
      *     type: string,
      *     name: string,
      *     client: array{auth: array{type: string, token: string}, options: array<string, bool|string>},
-     *     templates: list<array{name: string, filter: array{path: ?string}}>
+     *     templates: list<array{name: string, filter: array{path: ?string, visibility: value-of<RepositoryVisibility>}}>
      * } $config
      */
     public static function fromArray(array $config): self
