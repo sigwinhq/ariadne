@@ -16,14 +16,14 @@ namespace Sigwin\Ariadne\Model;
 final class ProfileTemplateConfig
 {
     /**
-     * @param array<string, string> $filter
+     * @param array{path: ?string} $filter
      */
     public function __construct(public readonly string $name, public readonly array $filter)
     {
     }
 
     /**
-     * @param array{name: string, filter: array<string, string>} $config
+     * @param array{name: string, filter: array{path: ?string}} $config
      */
     public static function fromArray(array $config): self
     {

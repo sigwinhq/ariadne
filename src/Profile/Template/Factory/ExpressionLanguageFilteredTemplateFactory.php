@@ -30,6 +30,9 @@ final class ExpressionLanguageFilteredTemplateFactory implements ProfileTemplate
     {
         return new Template($config->name, $repositories->filter(function (Repository $repository) use ($config): bool {
             foreach ($config->filter as $name => $value) {
+                if ($value === null) {
+                    continue;
+                }
                 if ($this->expressionLanguage->evaluate($value, [
                     'property' => $name,
                     'repository' => $repository,

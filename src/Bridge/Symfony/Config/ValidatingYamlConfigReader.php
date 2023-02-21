@@ -104,7 +104,7 @@ final class ValidatingYamlConfigReader implements ConfigReader
          *          type: string,
          *          name: string,
          *          client: array{auth: array{type: string, token: string}, options: array<string, bool|string>},
-         *          templates: list<array{name: string, filter: array<string, string>}>
+         *          templates: list<array{name: string, filter: array{path: ?string}}>
          *     }>} $config */
         $config = $processor->process($builder->buildTree(), [Yaml::parseFile($url)]);
 
