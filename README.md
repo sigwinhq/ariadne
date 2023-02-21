@@ -54,10 +54,17 @@ profiles:
             organizations: true
     templates:
     -
-        name: My Org OSS source repos
+        name: My Org OSS private source repos
+        filter:
+            path: match('^my-org')
+            visibility: private # public/private
+            type: source        # source/fork
+    -
+        name: My Org OSS public forks
         filter:
             path: match('^my-org')
             visibility: public
+            type: fork
 ```
 
 When you run `bin/ariadne test` in the same dir as the config file, it will tell you how the target platform sees you and what repos you have access to:
