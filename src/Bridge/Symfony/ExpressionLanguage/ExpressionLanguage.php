@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Sigwin\Ariadne\Bridge\Symfony\ExpressionLanguage;
 
 use Psr\Cache\CacheItemPoolInterface;
+use Sigwin\Ariadne\Bridge\Symfony\ExpressionLanguage\LanguageProvider\MatcherExpressionLanguageProvider;
 use Symfony\Component\ExpressionLanguage\ExpressionFunctionProviderInterface;
 
 final class ExpressionLanguage extends \Symfony\Component\ExpressionLanguage\ExpressionLanguage
