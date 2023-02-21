@@ -16,6 +16,6 @@ namespace Sigwin\Ariadne;
 /**
  * @extends \IteratorAggregate<\Sigwin\Ariadne\Client>
  */
-interface ClientCollection extends \IteratorAggregate
+interface ProfileCollection extends \IteratorAggregate
 {
 }

@@ -14,13 +14,13 @@ declare(strict_types=1);
 namespace Sigwin\Ariadne;
 
 use Psr\Http\Client\ClientInterface;
-use Sigwin\Ariadne\Model\ClientConfig;
 use Sigwin\Ariadne\Model\CurrentUser;
+use Sigwin\Ariadne\Model\ProfileConfig;
 use Sigwin\Ariadne\Model\Repositories;
 
 interface Client
 {
-    public static function fromConfig(ClientInterface $client, ClientConfig $config): self;
+    public static function fromConfig(ClientInterface $client, ProfileConfig $config): self;
 
     public function getCurrentUser(): CurrentUser;
 

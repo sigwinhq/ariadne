@@ -13,6 +13,25 @@
         </ignoreFiles>
     </projectFiles>
 
+    <issueHandlers>
+        <!-- TODO: false positives -->
+        <MixedMethodCall>
+            <errorLevel type="suppress">
+                <file name="src/Bridge/Symfony/Config/ValidatingYamlConfigReader.php"/>
+            </errorLevel>
+        </MixedMethodCall>
+        <PossiblyNullReference>
+            <errorLevel type="suppress">
+                <file name="src/Bridge/Symfony/Config/ValidatingYamlConfigReader.php"/>
+            </errorLevel>
+        </PossiblyNullReference>
+        <PossiblyUndefinedMethod>
+            <errorLevel type="suppress">
+                <referencedMethod name="Symfony\Component\Config\Definition\Builder\VariableNodeDefinition::scalarNode"/>
+            </errorLevel>
+        </PossiblyUndefinedMethod>
+    </issueHandlers>
+
     <plugins>
         <pluginClass class="Psalm\SymfonyPsalmPlugin\Plugin"/>
         <pluginClass class="Psalm\PhpUnitPlugin\Plugin"/>

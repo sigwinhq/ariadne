@@ -13,20 +13,20 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne\Model;
 
-final class ClientConfig
+final class ProfileClientConfig
 {
     /**
      * @param array{type: string, token: string} $auth
      */
-    private function __construct(public readonly string $type, public readonly string $name, public readonly array $auth, public readonly array $parameters)
+    private function __construct(public readonly array $auth, public readonly array $options)
     {
     }
 
     /**
-     * @param array{type: string, name: string, auth: array{type: string, token: string}, parameters: array} $config
+     * @param array{auth: array{type: string, token: string}, options: array} $config
      */
     public static function fromArray(array $config): self
     {
-        return new self($config['type'], $config['name'], $config['auth'], $config['parameters']);
+        return new self($config['auth'], $config['options']);
     }
 }

@@ -16,7 +16,7 @@ namespace Sigwin\Ariadne\Client\Factory;
 use Psr\Http\Client\ClientInterface;
 use Sigwin\Ariadne\Client;
 use Sigwin\Ariadne\ClientFactory;
-use Sigwin\Ariadne\Model\ClientConfig;
+use Sigwin\Ariadne\Model\ProfileConfig;
 
 final class ClassmapClientFactory implements ClientFactory
 {
@@ -30,7 +30,7 @@ final class ClassmapClientFactory implements ClientFactory
     /**
      * {@inheritDoc}
      */
-    public function create(ClientConfig $config): Client
+    public function create(ProfileConfig $config): Client
     {
         if (! \array_key_exists($config->type, $this->clientsMap)) {
             throw new \LogicException(sprintf('Unknown client type "%1$s"', $config->type));

@@ -15,7 +15,7 @@ namespace Sigwin\Ariadne;
 
 use Sigwin\Ariadne\Model\Config;
 
-interface ClientCollectionFactory
+interface ProfileCollectionFactory
 {
-    public function create(Config $config): ClientCollection;
+    public function create(Config $config): ProfileCollection;
 }

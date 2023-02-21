@@ -16,8 +16,8 @@ namespace Sigwin\Ariadne\Bridge\Github;
 use Psr\Http\Client\ClientInterface;
 use Sigwin\Ariadne\Bridge\Attribute\AsClient;
 use Sigwin\Ariadne\Client;
-use Sigwin\Ariadne\Model\ClientConfig;
 use Sigwin\Ariadne\Model\CurrentUser;
+use Sigwin\Ariadne\Model\ProfileConfig;
 use Sigwin\Ariadne\Model\Repositories;
 use Sigwin\Ariadne\Model\Repository;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -25,9 +25,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 #[AsClient(name: 'github')]
 final class GithubClient implements Client
 {
-    private readonly array $parameters;
+    private readonly array $options;
 
-    private function __construct(private readonly \Github\Client $client, private readonly string $name, array $parameters)
+    private function __construct(private readonly \Github\Client $client, private readonly string $name, private readonly ProfileConfig $config)
     {
         $resolver = new OptionsResolver();
         $resolver
@@ -35,13 +35,13 @@ final class GithubClient implements Client
             ->setAllowedTypes('organizations', ['boolean'])
         ;
 
-        $this->parameters = $resolver->resolve($parameters);
+        $this->options = $resolver->resolve($this->config->clientConfig->options);
     }
 
     /**
      * {@inheritDoc}
      */
-    public static function fromConfig(ClientInterface $client, ClientConfig $config): self
+    public static function fromConfig(ClientInterface $client, ProfileConfig $config): self
     {
         $resolver = new OptionsResolver();
         $resolver
@@ -55,12 +55,12 @@ final class GithubClient implements Client
             ->setAllowedTypes('token', 'string')
         ;
         /** @var array{type: string, token: string} $auth */
-        $auth = $resolver->resolve($config->auth);
+        $auth = $resolver->resolve($config->clientConfig->auth);
 
         $sdk = \Github\Client::createWithHttpClient($client);
         $sdk->authenticate($auth['token'], $auth['type']);
 
-        return new self($sdk, $config->name, $config->parameters);
+        return new self($sdk, $config->name, $config);
     }
 
     public function getApiVersion(): string
@@ -91,7 +91,7 @@ final class GithubClient implements Client
             $repositories[] = new Repository($userRepository['full_name']);
         }
 
-        if ($this->parameters['organizations'] ?? false) {
+        if ($this->options['organizations'] ?? false) {
             /** @var list<array{login: string}> $organizations */
             $organizations = $this->client->currentUser()->organizations();
             foreach ($organizations as $organization) {

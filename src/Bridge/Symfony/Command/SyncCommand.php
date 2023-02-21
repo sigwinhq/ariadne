@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne\Bridge\Symfony\Command;
 
-use Sigwin\Ariadne\ClientCollectionFactory;
 use Sigwin\Ariadne\ConfigReader;
+use Sigwin\Ariadne\ProfileCollectionFactory;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -26,7 +26,7 @@ final class SyncCommand extends Command
 {
     use CommandTrait;
 
-    public function __construct(private readonly ConfigReader $configReader, private readonly ClientCollectionFactory $clientCollectionFactory)
+    public function __construct(private readonly ConfigReader $configReader, private readonly ProfileCollectionFactory $clientCollectionFactory)
     {
         parent::__construct();
     }

@@ -11,21 +11,21 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sigwin\Ariadne\Client\Collection\Factory;
+namespace Sigwin\Ariadne\Profile\Collection\Factory;
 
-use Sigwin\Ariadne\Client\Collection\ClientGeneratorCollection;
-use Sigwin\Ariadne\ClientCollection;
 use Sigwin\Ariadne\ClientFactory;
 use Sigwin\Ariadne\Model\Config;
+use Sigwin\Ariadne\Profile\Collection\ProfileGeneratorCollection;
+use Sigwin\Ariadne\ProfileCollection;
 
-final class ClientGeneratorCollectionFactory implements \Sigwin\Ariadne\ClientCollectionFactory
+final class ProfileGeneratorCollectionFactory implements \Sigwin\Ariadne\ProfileCollectionFactory
 {
     public function __construct(private readonly ClientFactory $clientFactory)
     {
     }
 
-    public function create(Config $config): ClientCollection
+    public function create(Config $config): ProfileCollection
     {
-        return new ClientGeneratorCollection($config, $this->clientFactory);
+        return new ProfileGeneratorCollection($config, $this->clientFactory);
     }
 }

@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne\Bridge\Symfony\Command;
 
-use Sigwin\Ariadne\ClientCollection;
+use Sigwin\Ariadne\ProfileCollection;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Style\StyleInterface;
@@ -27,12 +27,12 @@ trait CommandTrait
         ;
     }
 
-    private function getClientCollection(InputInterface $input, StyleInterface $style): ClientCollection
+    private function getClientCollection(InputInterface $input, StyleInterface $style): ProfileCollection
     {
         $style->title('Sigwin Ariadne');
 
         /**
-         * @phpstan-var null|string $configFile
+         * @var null|string $configFile
          *
          * @psalm-suppress UnnecessaryVarAnnotation
          */

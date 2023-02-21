@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Sigwin\Ariadne\Model;
 
 /**
- * @implements \IteratorAggregate<\Sigwin\Ariadne\Model\ClientConfig>
+ * @implements \IteratorAggregate<\Sigwin\Ariadne\Model\ProfileConfig>
  */
 final class Config implements \IteratorAggregate
 {
@@ -23,16 +23,16 @@ final class Config implements \IteratorAggregate
     }
 
     /**
-     * @param list<array{type: string, name: string, auth: array{type: string, token: string}, parameters: array}> $config
+     * @param array{profiles: list<array{type: string, name: string, client: array{auth: array{type: string, token: string}, options: array}}>} $config
      */
     public static function fromArray(string $url, array $config): self
     {
-        $clients = [];
-        foreach ($config as $clientConfig) {
-            $clients[] = ClientConfig::fromArray($clientConfig);
+        $profiles = [];
+        foreach ($config['profiles'] as $profile) {
+            $profiles[] = ProfileConfig::fromArray($profile);
         }
 
-        return new self($url, $clients);
+        return new self($url, $profiles);
     }
 
     public function getIterator(): \Traversable
