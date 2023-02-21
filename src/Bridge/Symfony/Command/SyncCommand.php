@@ -39,10 +39,10 @@ final class SyncCommand extends Command
     public function execute(InputInterface $input, OutputInterface $output): int
     {
         $style = new SymfonyStyle($input, $output);
-        $clients = $this->getClientCollection($input, $style);
+        $profiles = $this->getProfileCollection($input, $style);
 
-        foreach ($clients as $client) {
-            dump($client->getCurrentUser());
+        foreach ($profiles as $profile) {
+            dump($profile->getCurrentUser());
         }
 
         return 0;

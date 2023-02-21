@@ -27,7 +27,7 @@ trait CommandTrait
         ;
     }
 
-    private function getClientCollection(InputInterface $input, StyleInterface $style): ProfileCollection
+    private function getProfileCollection(InputInterface $input, StyleInterface $style): ProfileCollection
     {
         $style->title('Sigwin Ariadne');
 

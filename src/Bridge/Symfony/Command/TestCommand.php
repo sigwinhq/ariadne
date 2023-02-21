@@ -39,17 +39,17 @@ final class TestCommand extends Command
     public function execute(InputInterface $input, OutputInterface $output): int
     {
         $style = new SymfonyStyle($input, $output);
-        $clients = $this->getClientCollection($input, $style);
+        $profiles = $this->getProfileCollection($input, $style);
 
-        foreach ($clients as $client) {
-            $style->section($client->getName());
+        foreach ($profiles as $profile) {
+            $style->section($profile->getName());
             $style->horizontalTable(
                 ['API Version', 'User', 'Repos'],
                 [
                     [
-                        $client->getApiVersion(),
-                        $client->getCurrentUser()->username,
-                        $client->getRepositories()->getSummary(),
+                        $profile->getApiVersion(),
+                        $profile->getCurrentUser()->username,
+                        $profile->getRepositories()->getSummary(),
                     ],
                 ]
             );
