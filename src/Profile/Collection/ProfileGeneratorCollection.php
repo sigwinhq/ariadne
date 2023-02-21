@@ -19,14 +19,14 @@ use Sigwin\Ariadne\ProfileFactory;
 
 final class ProfileGeneratorCollection implements ProfileCollection
 {
-    public function __construct(private readonly Config $config, private readonly ProfileFactory $clientFactory)
+    public function __construct(private readonly Config $config, private readonly ProfileFactory $profileFactory)
     {
     }
 
     public function getIterator(): \Traversable
     {
-        foreach ($this->config as $clientConfig) {
-            yield $this->clientFactory->create($clientConfig);
+        foreach ($this->config as $profileConfig) {
+            yield $this->profileFactory->create($profileConfig);
         }
     }
 }

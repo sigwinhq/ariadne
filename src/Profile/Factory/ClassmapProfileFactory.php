@@ -33,7 +33,7 @@ final class ClassmapProfileFactory implements ProfileFactory
     public function create(ProfileConfig $config): Profile
     {
         if (! \array_key_exists($config->type, $this->profilesMap)) {
-            throw new \LogicException(sprintf('Unknown client type "%1$s"', $config->type));
+            throw new \LogicException(sprintf('Unable to create profile type "%1$s", unknown profile type', $config->type));
         }
         $className = $this->profilesMap[$config->type];
 
