@@ -18,7 +18,7 @@ use Sigwin\Ariadne\Model\Repositories;
 use Sigwin\Ariadne\Model\Template;
 use Sigwin\Ariadne\ProfileTemplateFactory;
 
-final class RegularTemplateFactory implements ProfileTemplateFactory
+final class ExpressionLanguageFilteredTemplateFactory implements ProfileTemplateFactory
 {
     public function create(ProfileTemplateConfig $config, Repositories $repositories): Template
     {
