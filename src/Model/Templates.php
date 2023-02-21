@@ -19,9 +19,9 @@ namespace Sigwin\Ariadne\Model;
 final class Templates implements \IteratorAggregate
 {
     /**
-     * @param iterable<Template> $templates
+     * @param array<Template> $templates
      */
-    public function __construct(private readonly iterable $templates)
+    public function __construct(private readonly array $templates)
     {
     }
 

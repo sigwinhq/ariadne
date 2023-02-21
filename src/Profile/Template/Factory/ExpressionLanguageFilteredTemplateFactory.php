@@ -22,6 +22,8 @@ final class ExpressionLanguageFilteredTemplateFactory implements ProfileTemplate
 {
     public function create(ProfileTemplateConfig $config, Repositories $repositories): Template
     {
+        // TODO: filter repositories against config and only pass matching ones
+
         return new Template($config->name);
     }
 }

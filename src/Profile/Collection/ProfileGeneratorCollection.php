@@ -19,7 +19,7 @@ use Sigwin\Ariadne\ProfileFactory;
 
 final class ProfileGeneratorCollection implements ProfileCollection
 {
-    public function __construct(private readonly Config $config, private readonly ProfileFactory $profileFactory)
+    public function __construct(private readonly ProfileFactory $profileFactory, private readonly Config $config)
     {
     }
 
