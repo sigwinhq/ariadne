@@ -14,10 +14,10 @@ declare(strict_types=1);
 namespace Sigwin\Ariadne;
 
 use Sigwin\Ariadne\Model\ProfileTemplateConfig;
-use Sigwin\Ariadne\Model\Repositories;
+use Sigwin\Ariadne\Model\RepositoryCollection;
 use Sigwin\Ariadne\Model\Template;
 
 interface ProfileTemplateFactory
 {
-    public function create(ProfileTemplateConfig $config, Repositories $repositories): Template;
+    public function create(ProfileTemplateConfig $config, RepositoryCollection $repositories): Template;
 }

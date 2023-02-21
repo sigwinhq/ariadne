@@ -19,9 +19,9 @@ use Sigwin\Ariadne\Bridge\Attribute\AsProfile;
 use Sigwin\Ariadne\Model\ProfileConfig;
 use Sigwin\Ariadne\Model\ProfileSummary;
 use Sigwin\Ariadne\Model\ProfileUser;
-use Sigwin\Ariadne\Model\Repositories;
 use Sigwin\Ariadne\Model\Repository;
-use Sigwin\Ariadne\Model\Templates;
+use Sigwin\Ariadne\Model\RepositoryCollection;
+use Sigwin\Ariadne\Model\TemplateCollection;
 use Sigwin\Ariadne\Profile;
 use Sigwin\Ariadne\ProfileTemplateFactory;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -34,7 +34,7 @@ final class GithubProfile implements Profile
      */
     private readonly array $options;
 
-    private Repositories $repositories;
+    private RepositoryCollection $repositories;
 
     private function __construct(private readonly Client $client, private readonly ProfileTemplateFactory $templateFactory, private readonly string $name, private readonly ProfileConfig $config)
     {
@@ -96,10 +96,10 @@ final class GithubProfile implements Profile
             $templates[] = $this->templateFactory->create($config, $this->getRepositories());
         }
 
-        return new Templates($templates);
+        return new TemplateCollection($templates);
     }
 
-    private function getRepositories(): Repositories
+    private function getRepositories(): RepositoryCollection
     {
         if (! isset($this->repositories)) {
             $repositories = [];
@@ -121,7 +121,7 @@ final class GithubProfile implements Profile
                     }
                 }
             }
-            $this->repositories = new Repositories($repositories);
+            $this->repositories = new RepositoryCollection($repositories);
         }
 
         return $this->repositories;

@@ -15,7 +15,7 @@ namespace Sigwin\Ariadne\Model;
 
 final class Template implements \Stringable
 {
-    public function __construct(public readonly string $name)
+    public function __construct(public readonly string $name, public readonly RepositoryCollection $repositories)
     {
     }
 

@@ -16,7 +16,7 @@ namespace Sigwin\Ariadne\Model;
 /**
  * @implements \IteratorAggregate<Template>
  */
-final class Templates implements \IteratorAggregate
+final class TemplateCollection implements \Countable, \IteratorAggregate
 {
     /**
      * @param array<Template> $templates
@@ -28,5 +28,10 @@ final class Templates implements \IteratorAggregate
     public function getIterator(): \Traversable
     {
         return new \ArrayIterator($this->templates);
+    }
+
+    public function count(): int
+    {
+        return \count($this->templates);
     }
 }

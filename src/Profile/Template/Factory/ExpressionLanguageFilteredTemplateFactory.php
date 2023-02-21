@@ -13,17 +13,32 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne\Profile\Template\Factory;
 
+use Sigwin\Ariadne\Bridge\Symfony\ExpressionLanguage\ExpressionLanguage;
 use Sigwin\Ariadne\Model\ProfileTemplateConfig;
-use Sigwin\Ariadne\Model\Repositories;
+use Sigwin\Ariadne\Model\Repository;
+use Sigwin\Ariadne\Model\RepositoryCollection;
 use Sigwin\Ariadne\Model\Template;
 use Sigwin\Ariadne\ProfileTemplateFactory;
 
 final class ExpressionLanguageFilteredTemplateFactory implements ProfileTemplateFactory
 {
-    public function create(ProfileTemplateConfig $config, Repositories $repositories): Template
+    public function __construct(private readonly ExpressionLanguage $expressionLanguage)
     {
-        // TODO: filter repositories against config and only pass matching ones
+    }
 
-        return new Template($config->name);
+    public function create(ProfileTemplateConfig $config, RepositoryCollection $repositories): Template
+    {
+        return new Template($config->name, $repositories->filter(function (Repository $repository) use ($config): bool {
+            foreach ($config->filter as $name => $value) {
+                if ($this->expressionLanguage->evaluate($value, [
+                    'property' => $name,
+                    'repository' => $repository,
+                ]) !== true) {
+                    return false;
+                }
+            }
+
+            return true;
+        }));
     }
 }

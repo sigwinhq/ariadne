@@ -15,15 +15,18 @@ namespace Sigwin\Ariadne\Model;
 
 final class ProfileTemplateConfig
 {
-    public function __construct(public readonly string $name)
+    /**
+     * @param array<string, string> $filter
+     */
+    public function __construct(public readonly string $name, public readonly array $filter)
     {
     }
 
     /**
-     * @param array{name: string} $config
+     * @param array{name: string, filter: array<string, string>} $config
      */
     public static function fromArray(array $config): self
     {
-        return new self($config['name']);
+        return new self($config['name'], $config['filter']);
     }
 }

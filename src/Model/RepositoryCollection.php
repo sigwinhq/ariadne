@@ -13,13 +13,31 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne\Model;
 
-final class Repositories implements \Stringable
+final class RepositoryCollection implements \Countable, \Stringable
 {
     /**
-     * @param iterable<Repository> $repositories
+     * @param array<Repository> $repositories
      */
-    public function __construct(private readonly iterable $repositories)
+    public function __construct(private readonly array $repositories)
     {
+    }
+
+    public function filter(callable $filter): self
+    {
+        $repositories = [];
+
+        foreach ($this->repositories as $repository) {
+            if ($filter($repository)) {
+                $repositories[] = $repository;
+            }
+        }
+
+        return new self($repositories);
+    }
+
+    public function count(): int
+    {
+        return \count($this->repositories);
     }
 
     public function __toString(): string

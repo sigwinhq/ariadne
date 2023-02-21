@@ -15,7 +15,7 @@ namespace Sigwin\Ariadne\Model;
 
 final class ProfileSummary implements \Stringable
 {
-    public function __construct(public readonly Repositories $repositories)
+    public function __construct(public readonly RepositoryCollection $repositories)
     {
     }
 
