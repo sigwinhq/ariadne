@@ -15,7 +15,7 @@ namespace Sigwin\Ariadne\Model;
 
 final class CurrentUser
 {
-    public function __construct(public string $username)
+    public function __construct(public readonly string $username)
     {
     }
 }
