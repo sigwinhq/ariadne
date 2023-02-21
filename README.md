@@ -31,9 +31,18 @@ profiles:
         options:
             # membership: true
             owned: true
+    templates:
+    -
+        name: My Org Project 1 repos
+        filter:
+            path: match('^my-org/project1')
+    -
+        name: My Org Project 2 repos
+        filter:
+            path: match('^my-org/project2')
 -
     type: github
-    name: My GitHub
+    name: My Github
     client:
         auth:
             # default, can be omitted
@@ -43,6 +52,12 @@ profiles:
         # default, can be omitted
         options:
             organizations: true
+    templates:
+    -
+        name: My Org OSS source repos
+        filter:
+            path: match('^my-org')
+            visibility: public
 ```
 
 When you run `bin/ariadne test` in the same dir as the config file, it will tell you how the target platform sees you and what repos you have access to:
