@@ -35,7 +35,7 @@ final class GitlabProfile implements Profile
 
     private Repositories $repositories;
 
-    private function __construct(private readonly Client $client, private readonly string $name, private readonly ProfileConfig $config)
+    private function __construct(private readonly Client $client, private readonly ProfileTemplateFactory $templateFactory, private readonly string $name, private readonly ProfileConfig $config)
     {
         $this->options = $this->validateOptions($this->config->client->options);
     }
@@ -62,7 +62,7 @@ final class GitlabProfile implements Profile
         $sdk = Client::createWithHttpClient($client);
         $sdk->authenticate($auth['token'], $auth['type']);
 
-        return new self($sdk, $config->name, $config);
+        return new self($sdk, $templateFactory, $config->name, $config);
     }
 
     public function getApiVersion(): string
@@ -93,7 +93,12 @@ final class GitlabProfile implements Profile
 
     public function getIterator(): \Traversable
     {
-        return new Templates([]);
+        $templates = [];
+        foreach ($this->config->templates as $config) {
+            $templates[] = $this->templateFactory->create($config, $this->getRepositories());
+        }
+
+        return new Templates($templates);
     }
 
     private function getRepositories(): Repositories

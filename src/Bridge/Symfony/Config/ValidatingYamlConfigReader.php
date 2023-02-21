@@ -73,6 +73,7 @@ final class ValidatingYamlConfigReader implements ConfigReader
                                 ->end()
                             ->end()
                             ->arrayNode('templates')
+                                ->isRequired()
                                 ->requiresAtLeastOneElement()
                                 ->arrayPrototype()
                                     ->children()

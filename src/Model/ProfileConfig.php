@@ -20,7 +20,11 @@ final class ProfileConfig
     }
 
     /**
-     * @param array{type: string, name: string, client: array{auth: array{type: string, token: string}, options: array<string, bool|string>}} $config
+     * @param array{
+     *     type: string,
+     *     name: string,
+     *     client: array{auth: array{type: string, token: string}, options: array<string, bool|string>}
+     * } $config
      */
     public static function fromArray(array $config): self
     {
