@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne\Model;
 
-final class Template implements \Stringable
+final class Template implements \Countable, \Stringable
 {
     public function __construct(public readonly string $name, public readonly RepositoryCollection $repositories)
     {
@@ -22,5 +22,10 @@ final class Template implements \Stringable
     public function __toString(): string
     {
         return $this->name;
+    }
+
+    public function count(): int
+    {
+        return \count($this->repositories);
     }
 }

@@ -37,6 +37,6 @@ final class TemplateCollection implements \Countable, \IteratorAggregate, \Strin
 
     public function __toString(): string
     {
-        return __METHOD__;
+        return implode(\PHP_EOL, array_map(static fn (Template $template): string => sprintf('%1$s: %2$d', $template->name, \count($template)), $this->templates));
     }
 }
