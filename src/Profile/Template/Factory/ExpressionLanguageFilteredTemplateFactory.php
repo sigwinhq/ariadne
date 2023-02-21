@@ -19,6 +19,7 @@ use Sigwin\Ariadne\Model\Repository;
 use Sigwin\Ariadne\Model\RepositoryCollection;
 use Sigwin\Ariadne\Model\Template;
 use Sigwin\Ariadne\ProfileTemplateFactory;
+use Symfony\Component\ExpressionLanguage\SyntaxError;
 
 final class ExpressionLanguageFilteredTemplateFactory implements ProfileTemplateFactory
 {
@@ -33,10 +34,34 @@ final class ExpressionLanguageFilteredTemplateFactory implements ProfileTemplate
                 if ($value === null) {
                     continue;
                 }
-                if ($this->expressionLanguage->evaluate($value, [
-                    'property' => $name,
-                    'repository' => $repository,
-                ]) !== true) {
+
+                try {
+                    $expressionValue = $this->expressionLanguage->evaluate($value, [
+                        'property' => $name,
+                        'repository' => $repository,
+                    ]);
+                    if ($expressionValue !== true) {
+                        return false;
+                    }
+                    continue;
+                } catch (SyntaxError $e) {
+                    // not a valid expression, compare as a literal
+                }
+
+                /**
+                 * @var null|string|\UnitEnum $repositoryValue
+                 *
+                 * @phpstan-ignore-next-line
+                 */
+                $repositoryValue = $repository->{$name};
+                if ($repositoryValue instanceof \BackedEnum) {
+                    if ($repositoryValue->value !== $value) {
+                        return false;
+                    }
+                    continue;
+                }
+
+                if ($repositoryValue !== $value) {
                     return false;
                 }
             }
