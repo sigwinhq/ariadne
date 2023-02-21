@@ -17,8 +17,9 @@ use Gitlab\Client;
 use Gitlab\ResultPager;
 use Psr\Http\Client\ClientInterface;
 use Sigwin\Ariadne\Bridge\Attribute\AsProfile;
-use Sigwin\Ariadne\Model\CurrentUser;
 use Sigwin\Ariadne\Model\ProfileConfig;
+use Sigwin\Ariadne\Model\ProfileSummary;
+use Sigwin\Ariadne\Model\ProfileUser;
 use Sigwin\Ariadne\Model\Repositories;
 use Sigwin\Ariadne\Model\Repository;
 use Sigwin\Ariadne\Profile;
@@ -68,12 +69,12 @@ final class GitlabProfile implements Profile
         return $info['version'];
     }
 
-    public function getCurrentUser(): CurrentUser
+    public function getCurrentUser(): ProfileUser
     {
         /** @var array{username: string} $me */
         $me = $this->client->users()->me();
 
-        return new CurrentUser($me['username']);
+        return new ProfileUser($me['username']);
     }
 
     public function getName(): string
@@ -81,7 +82,12 @@ final class GitlabProfile implements Profile
         return $this->name;
     }
 
-    public function getRepositories(): Repositories
+    public function getSummary(): ProfileSummary
+    {
+        return new ProfileSummary($this->getRepositories());
+    }
+
+    private function getRepositories(): Repositories
     {
         $pager = new ResultPager($this->client);
         /** @var list<array{path_with_namespace: string}> $response */

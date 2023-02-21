@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne\Model;
 
-final class CurrentUser
+final class ProfileUser
 {
     public function __construct(public readonly string $username)
     {

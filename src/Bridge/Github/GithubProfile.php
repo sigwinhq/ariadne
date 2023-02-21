@@ -16,8 +16,9 @@ namespace Sigwin\Ariadne\Bridge\Github;
 use Github\Client;
 use Psr\Http\Client\ClientInterface;
 use Sigwin\Ariadne\Bridge\Attribute\AsProfile;
-use Sigwin\Ariadne\Model\CurrentUser;
 use Sigwin\Ariadne\Model\ProfileConfig;
+use Sigwin\Ariadne\Model\ProfileSummary;
+use Sigwin\Ariadne\Model\ProfileUser;
 use Sigwin\Ariadne\Model\Repositories;
 use Sigwin\Ariadne\Model\Repository;
 use Sigwin\Ariadne\Profile;
@@ -66,12 +67,12 @@ final class GithubProfile implements Profile
         return $this->client->getApiVersion();
     }
 
-    public function getCurrentUser(): CurrentUser
+    public function getCurrentUser(): ProfileUser
     {
         /** @var array{login: string} $me */
         $me = $this->client->me()->show();
 
-        return new CurrentUser($me['login']);
+        return new ProfileUser($me['login']);
     }
 
     public function getName(): string
@@ -79,7 +80,12 @@ final class GithubProfile implements Profile
         return $this->name;
     }
 
-    public function getRepositories(): Repositories
+    public function getSummary(): ProfileSummary
+    {
+        return new ProfileSummary($this->getRepositories());
+    }
+
+    private function getRepositories(): Repositories
     {
         $repositories = [];
 

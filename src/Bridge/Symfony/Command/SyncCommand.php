@@ -42,7 +42,7 @@ final class SyncCommand extends Command
         $profiles = $this->getProfileCollection($input, $style);
 
         foreach ($profiles as $profile) {
-            dump($profile->getCurrentUser());
+            $style->section($profile->getName());
         }
 
         return 0;
