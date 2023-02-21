@@ -32,13 +32,7 @@ final class GithubClient implements Client
 
     private function __construct(private readonly \Github\Client $client, private readonly string $name, private readonly ProfileConfig $config)
     {
-        $resolver = new OptionsResolver();
-        $resolver
-            ->setDefined('organizations')
-            ->setAllowedTypes('organizations', ['boolean'])
-        ;
-
-        $this->options = $resolver->resolve($this->config->clientConfig->options);
+        $this->options = $this->validateOptions($this->config->clientConfig->options);
     }
 
     /**
@@ -107,5 +101,23 @@ final class GithubClient implements Client
         }
 
         return new Repositories($repositories);
+    }
+
+    /**
+     * @param array<string, bool|string> $options
+     *
+     * @return array{organizations: ?bool}
+     */
+    private function validateOptions(array $options): array
+    {
+        $resolver = new OptionsResolver();
+        $resolver
+            ->setDefined('organizations')
+            ->setAllowedTypes('organizations', ['boolean'])
+        ;
+        /** @var array{organizations: ?bool} $options */
+        $options = $resolver->resolve($options);
+
+        return $options;
     }
 }

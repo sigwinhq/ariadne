@@ -18,7 +18,6 @@ use Psr\Http\Client\ClientInterface;
 use Sigwin\Ariadne\Bridge\Attribute\AsClient;
 use Sigwin\Ariadne\Client;
 use Sigwin\Ariadne\Model\CurrentUser;
-use Sigwin\Ariadne\Model\ProfileClientConfig;
 use Sigwin\Ariadne\Model\ProfileConfig;
 use Sigwin\Ariadne\Model\Repositories;
 use Sigwin\Ariadne\Model\Repository;
@@ -30,19 +29,9 @@ final class GitlabClient implements Client
     /** @var array{membership: ?bool, owned: ?bool} */
     private readonly array $options;
 
-    private function __construct(private readonly \Gitlab\Client $client, private readonly string $name, private readonly ProfileClientConfig $config)
+    private function __construct(private readonly \Gitlab\Client $client, private readonly string $name, private readonly ProfileConfig $config)
     {
-        $resolver = new OptionsResolver();
-        $resolver
-            ->setDefined('membership')
-            ->setAllowedTypes('membership', ['boolean'])
-        ;
-        $resolver
-            ->setDefined('owned')
-            ->setAllowedTypes('owned', ['boolean'])
-        ;
-
-        $this->options = $resolver->resolve($this->config->options);
+        $this->options = $this->validateOptions($this->config->clientConfig->options);
     }
 
     /**
@@ -67,7 +56,7 @@ final class GitlabClient implements Client
         $sdk = \Gitlab\Client::createWithHttpClient($client);
         $sdk->authenticate($auth['token'], $auth['type']);
 
-        return new self($sdk, $config->name, $config->clientConfig);
+        return new self($sdk, $config->name, $config);
     }
 
     public function getApiVersion(): string
@@ -103,5 +92,28 @@ final class GitlabClient implements Client
         }
 
         return new Repositories($repositories);
+    }
+
+    /**
+     * @param array<string, bool|string> $options
+     *
+     * @return array{membership: ?bool, owned: ?bool}
+     */
+    private function validateOptions(array $options): array
+    {
+        $resolver = new OptionsResolver();
+        $resolver
+            ->setDefined('membership')
+            ->setAllowedTypes('membership', ['boolean'])
+        ;
+        $resolver
+            ->setDefined('owned')
+            ->setAllowedTypes('owned', ['boolean'])
+        ;
+
+        /** @var array{membership: ?bool, owned: ?bool} $options */
+        $options = $resolver->resolve($options);
+
+        return $options;
     }
 }
