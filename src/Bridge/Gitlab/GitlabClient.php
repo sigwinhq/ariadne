@@ -27,6 +27,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 #[AsClient(name: 'gitlab')]
 final class GitlabClient implements Client
 {
+    /** @var array{membership: ?bool, owned: ?bool} */
     private readonly array $options;
 
     private function __construct(private readonly \Gitlab\Client $client, private readonly string $name, private readonly ProfileClientConfig $config)

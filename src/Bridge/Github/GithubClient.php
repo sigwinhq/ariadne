@@ -25,6 +25,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 #[AsClient(name: 'github')]
 final class GithubClient implements Client
 {
+    /**
+     * @var array{organizations: ?bool}
+     */
     private readonly array $options;
 
     private function __construct(private readonly \Github\Client $client, private readonly string $name, private readonly ProfileConfig $config)

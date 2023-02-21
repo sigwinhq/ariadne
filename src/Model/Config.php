@@ -18,12 +18,15 @@ namespace Sigwin\Ariadne\Model;
  */
 final class Config implements \IteratorAggregate
 {
+    /**
+     * @param array<ProfileConfig> $clientConfig
+     */
     private function __construct(public readonly string $url, private readonly array $clientConfig)
     {
     }
 
     /**
-     * @param array{profiles: list<array{type: string, name: string, client: array{auth: array{type: string, token: string}, options: array}}>} $config
+     * @param array{profiles: list<array{type: string, name: string, client: array{auth: array{type: string, token: string}, options: array<string, bool|string>}}>} $config
      */
     public static function fromArray(string $url, array $config): self
     {

@@ -21,6 +21,9 @@ use Symfony\Component\Yaml\Yaml;
 
 final class ValidatingYamlConfigReader implements ConfigReader
 {
+    /**
+     * @param array<string, class-string<\Sigwin\Ariadne\Client>> $clientsMap
+     */
     public function __construct(private readonly array $clientsMap)
     {
     }
@@ -77,7 +80,7 @@ final class ValidatingYamlConfigReader implements ConfigReader
 
         $processor = new Processor();
 
-        /** @var array{profiles: list<array{type: string, name: string, client: array{auth: array{type: string, token: string}, options: array}}>} $config */
+        /** @var array{profiles: list<array{type: string, name: string, client: array{auth: array{type: string, token: string}, options: array<string, bool|string>}}>} $config */
         $config = $processor->process($builder->buildTree(), [Yaml::parseFile($url)]);
 
         return Config::fromArray($url, $config);
