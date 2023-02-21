@@ -16,12 +16,11 @@ namespace Sigwin\Ariadne\Bridge\Github;
 use Github\Client;
 use Psr\Http\Client\ClientInterface;
 use Sigwin\Ariadne\Bridge\Attribute\AsProfile;
+use Sigwin\Ariadne\Bridge\ProfileTrait;
 use Sigwin\Ariadne\Model\ProfileConfig;
-use Sigwin\Ariadne\Model\ProfileSummary;
 use Sigwin\Ariadne\Model\ProfileUser;
 use Sigwin\Ariadne\Model\Repository;
 use Sigwin\Ariadne\Model\RepositoryCollection;
-use Sigwin\Ariadne\Model\TemplateCollection;
 use Sigwin\Ariadne\Profile;
 use Sigwin\Ariadne\ProfileTemplateFactory;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -29,6 +28,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 #[AsProfile(type: 'github')]
 final class GithubProfile implements Profile
 {
+    use ProfileTrait;
+
     /**
      * @var array{organizations: bool}
      */
@@ -82,21 +83,6 @@ final class GithubProfile implements Profile
     public function getName(): string
     {
         return $this->name;
-    }
-
-    public function getSummary(): ProfileSummary
-    {
-        return new ProfileSummary($this->getRepositories());
-    }
-
-    public function getIterator(): \Traversable
-    {
-        $templates = [];
-        foreach ($this->config->templates as $config) {
-            $templates[] = $this->templateFactory->create($config, $this->getRepositories());
-        }
-
-        return new TemplateCollection($templates);
     }
 
     private function getRepositories(): RepositoryCollection

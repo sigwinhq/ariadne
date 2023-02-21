@@ -16,7 +16,7 @@ namespace Sigwin\Ariadne\Model;
 /**
  * @implements \IteratorAggregate<Template>
  */
-final class TemplateCollection implements \Countable, \IteratorAggregate
+final class TemplateCollection implements \Countable, \IteratorAggregate, \Stringable
 {
     /**
      * @param array<Template> $templates
@@ -33,5 +33,10 @@ final class TemplateCollection implements \Countable, \IteratorAggregate
     public function count(): int
     {
         return \count($this->templates);
+    }
+
+    public function __toString(): string
+    {
+        return __METHOD__;
     }
 }
