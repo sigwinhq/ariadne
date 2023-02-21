@@ -99,7 +99,13 @@ final class ValidatingYamlConfigReader implements ConfigReader
 
         $processor = new Processor();
 
-        /** @var array{profiles: list<array{type: string, name: string, client: array{auth: array{type: string, token: string}, options: array<string, bool|string>}}>} $config */
+        /** @var array{
+         *     profiles: list<array{
+         *          type: string,
+         *          name: string,
+         *          client: array{auth: array{type: string, token: string}, options: array<string, bool|string>},
+         *          templates: list<array{name: string}>
+         *     }>} $config */
         $config = $processor->process($builder->buildTree(), [Yaml::parseFile($url)]);
 
         return Config::fromArray($url, $config);

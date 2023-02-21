@@ -19,8 +19,11 @@ final class ProfileTemplateConfig
     {
     }
 
-    public static function fromArray(string $name, array $config): self
+    /**
+     * @param array{name: string} $config
+     */
+    public static function fromArray(array $config): self
     {
-        return new self($name);
+        return new self($config['name']);
     }
 }
