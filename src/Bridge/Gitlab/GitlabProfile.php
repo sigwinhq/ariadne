@@ -27,7 +27,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 #[AsProfile(type: 'gitlab')]
 final class GitlabProfile implements Profile
 {
-    /** @var array{membership: ?bool, owned: ?bool} */
+    /** @var array{membership: bool, owned: bool} */
     private readonly array $options;
 
     private function __construct(private readonly Client $client, private readonly string $name, private readonly ProfileConfig $config)
@@ -98,21 +98,23 @@ final class GitlabProfile implements Profile
     /**
      * @param array<string, bool|string> $options
      *
-     * @return array{membership: ?bool, owned: ?bool}
+     * @return array{membership: bool, owned: bool}
      */
     private function validateOptions(array $options): array
     {
         $resolver = new OptionsResolver();
         $resolver
             ->setDefined('membership')
+            ->setDefault('membership', false)
             ->setAllowedTypes('membership', ['boolean'])
         ;
         $resolver
             ->setDefined('owned')
+            ->setDefault('owned', true)
             ->setAllowedTypes('owned', ['boolean'])
         ;
 
-        /** @var array{membership: ?bool, owned: ?bool} $options */
+        /** @var array{membership: bool, owned: bool} $options */
         $options = $resolver->resolve($options);
 
         return $options;

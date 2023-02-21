@@ -27,7 +27,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 final class GithubProfile implements Profile
 {
     /**
-     * @var array{organizations: ?bool}
+     * @var array{organizations: bool}
      */
     private readonly array $options;
 
@@ -107,16 +107,17 @@ final class GithubProfile implements Profile
     /**
      * @param array<string, bool|string> $options
      *
-     * @return array{organizations: ?bool}
+     * @return array{organizations: bool}
      */
     private function validateOptions(array $options): array
     {
         $resolver = new OptionsResolver();
         $resolver
             ->setDefined('organizations')
+            ->setDefault('organizations', true)
             ->setAllowedTypes('organizations', ['boolean'])
         ;
-        /** @var array{organizations: ?bool} $options */
+        /** @var array{organizations: bool} $options */
         $options = $resolver->resolve($options);
 
         return $options;

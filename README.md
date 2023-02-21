@@ -27,6 +27,7 @@ profiles:
             type: http_token
             # create your own: https://gitlab.com/-/profile/personal_access_tokens
             token: glpat-my-t0k3n
+        # default, can be omitted
         options:
             # membership: true
             owned: true
@@ -39,6 +40,7 @@ profiles:
             type: access_token_header
             # create your own: https://github.com/settings/tokens
             token: ghp_my-t0k3n
+        # default, can be omitted
         options:
             organizations: true
 ```
