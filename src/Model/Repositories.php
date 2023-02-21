@@ -18,7 +18,7 @@ final class Repositories
     /**
      * @param iterable<Repository> $repositories
      */
-    public function __construct(private iterable $repositories)
+    public function __construct(private readonly iterable $repositories)
     {
     }
 
