@@ -13,7 +13,10 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne\Model;
 
-final class RepositoryCollection implements \Countable, \Stringable
+/**
+ * @implements \IteratorAggregate<Repository>
+ */
+final class RepositoryCollection implements \Countable, \IteratorAggregate, \Stringable
 {
     /**
      * @param array<Repository> $repositories
@@ -59,5 +62,10 @@ final class RepositoryCollection implements \Countable, \Stringable
         $summary = array_map(static fn (string $key, int $value): string => sprintf('%1$s: %2$d', $key, $value), array_keys($summary), array_values($summary));
 
         return implode(\PHP_EOL, $summary);
+    }
+
+    public function getIterator(): \Traversable
+    {
+        return new \ArrayIterator($this->repositories);
     }
 }

@@ -46,6 +46,10 @@ final class SyncCommand extends Command
 
             foreach ($profile as $template) {
                 $style->note($template->name);
+
+                foreach ($template as $repository) {
+                    $style->writeln($repository->path);
+                }
             }
         }
 
