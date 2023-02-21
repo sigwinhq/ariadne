@@ -43,6 +43,10 @@ final class SyncCommand extends Command
 
         foreach ($profiles as $profile) {
             $style->section($profile->getName());
+
+            foreach ($profile as $template) {
+                $style->note($template);
+            }
         }
 
         return 0;

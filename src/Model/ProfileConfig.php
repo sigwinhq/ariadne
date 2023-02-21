@@ -15,7 +15,7 @@ namespace Sigwin\Ariadne\Model;
 
 final class ProfileConfig
 {
-    private function __construct(public readonly string $type, public readonly string $name, public readonly ProfileClientConfig $clientConfig)
+    private function __construct(public readonly string $type, public readonly string $name, public readonly ProfileClientConfig $client, public readonly array $templates)
     {
     }
 
@@ -24,6 +24,11 @@ final class ProfileConfig
      */
     public static function fromArray(array $config): self
     {
-        return new self($config['type'], $config['name'], ProfileClientConfig::fromArray($config['client']));
+        $templates = [];
+        foreach ($config['templates'] as $name => $template) {
+            $templates[] = ProfileTemplateConfig::fromArray($name, $template);
+        }
+
+        return new self($config['type'], $config['name'], ProfileClientConfig::fromArray($config['client']), $templates);
     }
 }

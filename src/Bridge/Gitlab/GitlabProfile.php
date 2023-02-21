@@ -22,7 +22,9 @@ use Sigwin\Ariadne\Model\ProfileSummary;
 use Sigwin\Ariadne\Model\ProfileUser;
 use Sigwin\Ariadne\Model\Repositories;
 use Sigwin\Ariadne\Model\Repository;
+use Sigwin\Ariadne\Model\Templates;
 use Sigwin\Ariadne\Profile;
+use Sigwin\Ariadne\ProfileTemplateFactory;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 #[AsProfile(type: 'gitlab')]
@@ -35,13 +37,13 @@ final class GitlabProfile implements Profile
 
     private function __construct(private readonly Client $client, private readonly string $name, private readonly ProfileConfig $config)
     {
-        $this->options = $this->validateOptions($this->config->clientConfig->options);
+        $this->options = $this->validateOptions($this->config->client->options);
     }
 
     /**
      * {@inheritDoc}
      */
-    public static function fromConfig(ClientInterface $client, ProfileConfig $config): self
+    public static function fromConfig(ClientInterface $client, ProfileTemplateFactory $templateFactory, ProfileConfig $config): self
     {
         $resolver = new OptionsResolver();
         $resolver
@@ -55,7 +57,7 @@ final class GitlabProfile implements Profile
             ->setAllowedTypes('token', 'string')
         ;
         /** @var array{type: string, token: string} $auth */
-        $auth = $resolver->resolve($config->clientConfig->auth);
+        $auth = $resolver->resolve($config->client->auth);
 
         $sdk = Client::createWithHttpClient($client);
         $sdk->authenticate($auth['token'], $auth['type']);
@@ -87,6 +89,11 @@ final class GitlabProfile implements Profile
     public function getSummary(): ProfileSummary
     {
         return new ProfileSummary($this->getRepositories());
+    }
+
+    public function getIterator(): \Traversable
+    {
+        return new Templates([]);
     }
 
     private function getRepositories(): Repositories
