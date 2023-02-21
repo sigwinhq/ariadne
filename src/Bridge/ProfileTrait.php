@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Sigwin\Ariadne\Bridge;
 
 use Sigwin\Ariadne\Model\ProfileSummary;
+use Sigwin\Ariadne\Model\Template;
 use Sigwin\Ariadne\Model\TemplateCollection;
 
 trait ProfileTrait
@@ -23,6 +24,9 @@ trait ProfileTrait
         return new ProfileSummary($this->getRepositories(), $this->getTemplates());
     }
 
+    /**
+     * @return \Traversable<Template>
+     */
     public function getIterator(): \Traversable
     {
         return $this->getTemplates();

@@ -21,6 +21,6 @@ final class ProfileSummary implements \Stringable
 
     public function __toString(): string
     {
-        return sprintf('Repositories: %1$s, Templates: %2$s', $this->repositories, $this->templates);
+        return sprintf('Repositories: %1$s, Templates: %2$s', $this->repositories->__toString(), $this->templates->__toString());
     }
 }
