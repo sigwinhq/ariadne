@@ -22,6 +22,7 @@ use Sigwin\Ariadne\Model\ProfileConfig;
 use Sigwin\Ariadne\Model\ProfileUser;
 use Sigwin\Ariadne\Model\Repository;
 use Sigwin\Ariadne\Model\RepositoryCollection;
+use Sigwin\Ariadne\Model\RepositoryType;
 use Sigwin\Ariadne\Model\RepositoryVisibility;
 use Sigwin\Ariadne\Profile;
 use Sigwin\Ariadne\ProfileTemplateFactory;
@@ -92,12 +93,12 @@ final class GitlabProfile implements Profile
     {
         if (! isset($this->repositories)) {
             $pager = new ResultPager($this->client);
-            /** @var list<array{path_with_namespace: string, visibility: string}> $response */
+            /** @var list<array{path_with_namespace: string, visibility: string, forked_from_project: ?array<string, int|string>}> $response */
             $response = $pager->fetchAllLazy($this->client->projects(), 'all', ['parameters' => $this->options]);
 
             $repositories = [];
             foreach ($response as $repository) {
-                $repositories[] = new Repository($repository['path_with_namespace'], RepositoryVisibility::from($repository['visibility']));
+                $repositories[] = new Repository(RepositoryType::fromFork(isset($repository['forked_from_project'])), $repository['path_with_namespace'], RepositoryVisibility::from($repository['visibility']));
             }
 
             $this->repositories = new RepositoryCollection($repositories);

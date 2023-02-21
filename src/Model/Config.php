@@ -31,7 +31,7 @@ final class Config implements \IteratorAggregate
      *          type: string,
      *          name: string,
      *          client: array{auth: array{type: string, token: string}, options: array<string, bool|string>},
-     *          templates: list<array{name: string, filter: array{path: ?string, visibility: value-of<RepositoryVisibility>}}>
+     *          templates: list<array{name: string, filter: array{type: value-of<RepositoryType>, path: ?string, visibility: value-of<RepositoryVisibility>}}>
      *     }>} $config
      */
     public static function fromArray(string $url, array $config): self
