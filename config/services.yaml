@@ -3,9 +3,9 @@ services:
         autoconfigure: true
         autowire: true
         bind:
-            $clientsMap:
-                github: Sigwin\Ariadne\Bridge\Github\GithubClient
-                gitlab: Sigwin\Ariadne\Bridge\Gitlab\GitlabClient
+            $profilesMap:
+                github: Sigwin\Ariadne\Bridge\Github\GithubProfile
+                gitlab: Sigwin\Ariadne\Bridge\Gitlab\GitlabProfile
 
     Sigwin\Ariadne\:
         resource: ../src

@@ -18,7 +18,7 @@ use Sigwin\Ariadne\Model\CurrentUser;
 use Sigwin\Ariadne\Model\ProfileConfig;
 use Sigwin\Ariadne\Model\Repositories;
 
-interface Client
+interface Profile
 {
     public static function fromConfig(ClientInterface $client, ProfileConfig $config): self;
 

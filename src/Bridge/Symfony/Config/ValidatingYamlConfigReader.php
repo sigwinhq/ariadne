@@ -22,9 +22,9 @@ use Symfony\Component\Yaml\Yaml;
 final class ValidatingYamlConfigReader implements ConfigReader
 {
     /**
-     * @param array<string, class-string<\Sigwin\Ariadne\Client>> $clientsMap
+     * @param array<string, class-string<\Sigwin\Ariadne\Profile>> $profilesMap
      */
-    public function __construct(private readonly array $clientsMap)
+    public function __construct(private readonly array $profilesMap)
     {
     }
 
@@ -46,7 +46,7 @@ final class ValidatingYamlConfigReader implements ConfigReader
                     ->arrayPrototype()
                         ->children()
                             ->enumNode('type')
-                                ->values(array_keys($this->clientsMap))
+                                ->values(array_keys($this->profilesMap))
                                 ->isRequired()
                             ->end()
                             ->scalarNode('name')

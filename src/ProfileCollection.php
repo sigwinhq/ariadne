@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Sigwin\Ariadne;
 
 /**
- * @extends \IteratorAggregate<\Sigwin\Ariadne\Client>
+ * @extends \IteratorAggregate<\Sigwin\Ariadne\Profile>
  */
 interface ProfileCollection extends \IteratorAggregate
 {

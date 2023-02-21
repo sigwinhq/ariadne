@@ -11,25 +11,27 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sigwin\Ariadne\Bridge\Gitlab;
+namespace Sigwin\Ariadne\Bridge\Github;
 
-use Gitlab\ResultPager;
+use Github\Client;
 use Psr\Http\Client\ClientInterface;
-use Sigwin\Ariadne\Bridge\Attribute\AsClient;
-use Sigwin\Ariadne\Client;
+use Sigwin\Ariadne\Bridge\Attribute\AsProfile;
 use Sigwin\Ariadne\Model\CurrentUser;
 use Sigwin\Ariadne\Model\ProfileConfig;
 use Sigwin\Ariadne\Model\Repositories;
 use Sigwin\Ariadne\Model\Repository;
+use Sigwin\Ariadne\Profile;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-#[AsClient(name: 'gitlab')]
-final class GitlabClient implements Client
+#[AsProfile(type: 'github')]
+final class GithubProfile implements Profile
 {
-    /** @var array{membership: ?bool, owned: ?bool} */
+    /**
+     * @var array{organizations: ?bool}
+     */
     private readonly array $options;
 
-    private function __construct(private readonly \Gitlab\Client $client, private readonly string $name, private readonly ProfileConfig $config)
+    private function __construct(private readonly Client $client, private readonly string $name, private readonly ProfileConfig $config)
     {
         $this->options = $this->validateOptions($this->config->clientConfig->options);
     }
@@ -42,9 +44,9 @@ final class GitlabClient implements Client
         $resolver = new OptionsResolver();
         $resolver
             ->setDefined('type')
-            ->setDefault('type', 'http_token')
+            ->setDefault('type', 'access_token_header')
             ->setAllowedTypes('type', 'string')
-            ->setAllowedValues('type', ['http_token'])
+            ->setAllowedValues('type', ['access_token_header'])
         ;
         $resolver
             ->setDefined('token')
@@ -53,7 +55,7 @@ final class GitlabClient implements Client
         /** @var array{type: string, token: string} $auth */
         $auth = $resolver->resolve($config->clientConfig->auth);
 
-        $sdk = \Gitlab\Client::createWithHttpClient($client);
+        $sdk = Client::createWithHttpClient($client);
         $sdk->authenticate($auth['token'], $auth['type']);
 
         return new self($sdk, $config->name, $config);
@@ -61,18 +63,15 @@ final class GitlabClient implements Client
 
     public function getApiVersion(): string
     {
-        /** @var array{version: string} $info */
-        $info = $this->client->version()->show();
-
-        return $info['version'];
+        return $this->client->getApiVersion();
     }
 
     public function getCurrentUser(): CurrentUser
     {
-        /** @var array{username: string} $me */
-        $me = $this->client->users()->me();
+        /** @var array{login: string} $me */
+        $me = $this->client->me()->show();
 
-        return new CurrentUser($me['username']);
+        return new CurrentUser($me['login']);
     }
 
     public function getName(): string
@@ -82,13 +81,24 @@ final class GitlabClient implements Client
 
     public function getRepositories(): Repositories
     {
-        $pager = new ResultPager($this->client);
-        /** @var list<array{path_with_namespace: string}> $response */
-        $response = $pager->fetchAllLazy($this->client->projects(), 'all', ['parameters' => $this->options]);
-
         $repositories = [];
-        foreach ($response as $repository) {
-            $repositories[] = new Repository($repository['path_with_namespace']);
+
+        /** @var list<array{full_name: string}> $userRepositories */
+        $userRepositories = $this->client->user()->myRepositories();
+        foreach ($userRepositories as $userRepository) {
+            $repositories[] = new Repository($userRepository['full_name']);
+        }
+
+        if ($this->options['organizations'] ?? false) {
+            /** @var list<array{login: string}> $organizations */
+            $organizations = $this->client->currentUser()->organizations();
+            foreach ($organizations as $organization) {
+                /** @var list<array{full_name: string}> $organizationRepositories */
+                $organizationRepositories = $this->client->organizations()->repositories($organization['login']);
+                foreach ($organizationRepositories as $organizationRepository) {
+                    $repositories[] = new Repository($organizationRepository['full_name']);
+                }
+            }
         }
 
         return new Repositories($repositories);
@@ -97,21 +107,16 @@ final class GitlabClient implements Client
     /**
      * @param array<string, bool|string> $options
      *
-     * @return array{membership: ?bool, owned: ?bool}
+     * @return array{organizations: ?bool}
      */
     private function validateOptions(array $options): array
     {
         $resolver = new OptionsResolver();
         $resolver
-            ->setDefined('membership')
-            ->setAllowedTypes('membership', ['boolean'])
+            ->setDefined('organizations')
+            ->setAllowedTypes('organizations', ['boolean'])
         ;
-        $resolver
-            ->setDefined('owned')
-            ->setAllowedTypes('owned', ['boolean'])
-        ;
-
-        /** @var array{membership: ?bool, owned: ?bool} $options */
+        /** @var array{organizations: ?bool} $options */
         $options = $resolver->resolve($options);
 
         return $options;
