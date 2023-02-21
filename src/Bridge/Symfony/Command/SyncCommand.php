@@ -13,7 +13,8 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne\Bridge\Symfony\Command;
 
-use Sigwin\Ariadne\ClientProvider;
+use Sigwin\Ariadne\ConfigReader;
+use Sigwin\Ariadne\ProfileCollectionFactory;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -23,18 +24,25 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 #[AsCommand(name: 'ariadne:sync', aliases: ['sync'])]
 final class SyncCommand extends Command
 {
-    public function __construct(private readonly ClientProvider $clients)
+    use CommandTrait;
+
+    public function __construct(private readonly ConfigReader $configReader, private readonly ProfileCollectionFactory $clientCollectionFactory)
     {
         parent::__construct();
+    }
+
+    public function configure(): void
+    {
+        $this->createConfiguration();
     }
 
     public function execute(InputInterface $input, OutputInterface $output): int
     {
         $style = new SymfonyStyle($input, $output);
-        $style->title('Sigwin Ariadne');
+        $profiles = $this->getProfileCollection($input, $style);
 
-        foreach ($this->clients as $client) {
-            dump($client->getCurrentUser());
+        foreach ($profiles as $profile) {
+            dump($profile->getCurrentUser());
         }
 
         return 0;

@@ -20,7 +20,7 @@
         </include>
     </coverage>
     <testsuites>
-        <testsuite name="Ariadne">
+        <testsuite name="Sigwin Ariadne">
             <directory>tests</directory>
         </testsuite>
     </testsuites>

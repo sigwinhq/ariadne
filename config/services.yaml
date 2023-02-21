@@ -2,13 +2,11 @@ services:
     _defaults:
         autoconfigure: true
         autowire: true
+        bind:
+            $profilesMap:
+                github: Sigwin\Ariadne\Bridge\Github\GithubProfile
+                gitlab: Sigwin\Ariadne\Bridge\Gitlab\GitlabProfile
 
     Sigwin\Ariadne\:
         resource: ../src
 
-    Sigwin\Ariadne\ClientFactory:
-        arguments:
-            # TODO: auto-configure this from found classes
-            $clientsMap:
-                github: Sigwin\Ariadne\Bridge\Github\GithubClient
-                gitlab: Sigwin\Ariadne\Bridge\Gitlab\GitlabClient

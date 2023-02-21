@@ -4,7 +4,7 @@ Find a common thread in your Glabyrinth.
 
 ## What is it
 
-It's meant to allow common patterns, configuration, metadata across many different GitHub / Gitlab repos.
+It's meant to allow common patterns, configuration, metadata across many GitHub / Gitlab repos.
 
 Currently supported:
 
@@ -17,28 +17,33 @@ Have a file called `ariadne.yaml` similar to this:
 
 ```yaml
 # ./ariadne.yaml
+profiles:
 -
     type: gitlab
     name: My Gitlab
-    auth:
-        type: http_token
-        # create your own: https://gitlab.com/-/profile/personal_access_tokens
-        token: glpat-my-t0k3n
-    parameters:
-        # membership: true
-        owned: true
+    client:
+        auth:
+            # default, can be omitted
+            type: http_token
+            # create your own: https://gitlab.com/-/profile/personal_access_tokens
+            token: glpat-my-t0k3n
+        options:
+            # membership: true
+            owned: true
 -
     type: github
     name: My GitHub
-    auth:
-        type: access_token_header
-        # create your own: https://github.com/settings/tokens
-        token: ghp_my-t0k3n
-    parameters:
-        organizations: true
+    client:
+        auth:
+            # default, can be omitted
+            type: access_token_header
+            # create your own: https://github.com/settings/tokens
+            token: ghp_my-t0k3n
+        options:
+            organizations: true
 ```
 
-When you run `bin/ariadne test` in the same dir as the config file, it will tell you how the target platfom sees you and what repos you have access to:
+When you run `bin/ariadne test` in the same dir as the config file, it will tell you how the target platform sees you and what repos you have access to:
 
 ```
 $ bin/ariadne test

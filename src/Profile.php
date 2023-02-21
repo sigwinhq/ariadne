@@ -15,14 +15,12 @@ namespace Sigwin\Ariadne;
 
 use Psr\Http\Client\ClientInterface;
 use Sigwin\Ariadne\Model\CurrentUser;
+use Sigwin\Ariadne\Model\ProfileConfig;
 use Sigwin\Ariadne\Model\Repositories;
 
-interface Client
+interface Profile
 {
-    /**
-     * @param array{name: string, auth: array{type: string, token: string}, parameters: array} $spec
-     */
-    public static function fromSpec(ClientInterface $client, array $spec): self;
+    public static function fromConfig(ClientInterface $client, ProfileConfig $config): self;
 
     public function getCurrentUser(): CurrentUser;
 

@@ -14,9 +14,9 @@ declare(strict_types=1);
 namespace Sigwin\Ariadne\Bridge\Attribute;
 
 #[\Attribute(\Attribute::TARGET_CLASS)]
-final class AsClient
+final class AsProfile
 {
-    public function __construct(public string $name)
+    public function __construct(public string $type)
     {
     }
 }
