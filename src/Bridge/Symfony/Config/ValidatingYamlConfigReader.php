@@ -56,6 +56,7 @@ final class ValidatingYamlConfigReader implements ConfigReader
                                 ->cannotBeEmpty()
                             ->end()
                             ->arrayNode('client')
+                                ->isRequired()
                                 ->children()
                                     ->arrayNode('auth')
                                         ->isRequired()
@@ -84,6 +85,7 @@ final class ValidatingYamlConfigReader implements ConfigReader
                                             ->cannotBeEmpty()
                                         ->end()
                                         ->arrayNode('filter')
+                                            ->isRequired()
                                             ->children()
                                                 ->enumNode('type')
                                                     ->values(array_map(static fn (RepositoryType $case) => $case->value, RepositoryType::cases()))
@@ -111,7 +113,7 @@ final class ValidatingYamlConfigReader implements ConfigReader
          *          type: string,
          *          name: string,
          *          client: array{auth: array{type: string, token: string}, options: array<string, bool|string>},
-         *          templates: list<array{name: string, filter: array{type: value-of<RepositoryType>, path: ?string, visibility: value-of<RepositoryVisibility>}}>
+         *          templates: list<array{name: string, filter: array{type?: value-of<RepositoryType>, path?: string, visibility?: value-of<RepositoryVisibility>}}>
          *     }>} $config */
         $config = $processor->process($builder->buildTree(), [Yaml::parseFile($url)]);
 
