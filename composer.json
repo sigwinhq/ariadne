@@ -24,6 +24,11 @@
             "Sigwin\\Ariadne\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Sigwin\\Ariadne\\Test\\": "tests/"
+        }
+    },
     "config": {
         "allow-plugins": {
             "symfony/runtime": true,
