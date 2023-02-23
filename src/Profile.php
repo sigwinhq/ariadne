@@ -15,11 +15,12 @@ namespace Sigwin\Ariadne;
 
 use Psr\Http\Client\ClientInterface;
 use Sigwin\Ariadne\Model\ProfileConfig;
-use Sigwin\Ariadne\Model\ProfileSummary;
 use Sigwin\Ariadne\Model\ProfileUser;
+use Sigwin\Ariadne\Model\RepositoryCollection;
+use Sigwin\Ariadne\Model\TemplateCollection;
 
 /**
- * @extends \IteratorAggregate<\Sigwin\Ariadne\Model\Template>
+ * @extends \IteratorAggregate<\Sigwin\Ariadne\Model\Repository>
  */
 interface Profile extends \IteratorAggregate
 {
@@ -31,5 +32,7 @@ interface Profile extends \IteratorAggregate
 
     public function getName(): string;
 
-    public function getSummary(): ProfileSummary;
+    public function getRepositories(): RepositoryCollection;
+
+    public function getTemplates(): TemplateCollection;
 }

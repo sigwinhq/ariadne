@@ -44,12 +44,8 @@ final class SyncCommand extends Command
         foreach ($profiles as $profile) {
             $style->section($profile->getName());
 
-            foreach ($profile as $template) {
-                $style->note($template->name);
-
-                foreach ($template as $repository) {
-                    $style->writeln($repository->path);
-                }
+            foreach ($profile as $repository) {
+                $style->writeln($repository->path);
             }
         }
 

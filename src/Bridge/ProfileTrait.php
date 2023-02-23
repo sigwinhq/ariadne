@@ -13,26 +13,25 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne\Bridge;
 
-use Sigwin\Ariadne\Model\ProfileSummary;
-use Sigwin\Ariadne\Model\Template;
+use Sigwin\Ariadne\Model\Repository;
 use Sigwin\Ariadne\Model\TemplateCollection;
 
 trait ProfileTrait
 {
-    public function getSummary(): ProfileSummary
+    public function getName(): string
     {
-        return new ProfileSummary($this->getRepositories(), $this->getTemplates());
+        return $this->name;
     }
 
     /**
-     * @return \Traversable<Template>
+     * @return \Traversable<Repository>
      */
     public function getIterator(): \Traversable
     {
-        return $this->getTemplates();
+        return $this->getRepositories();
     }
 
-    private function getTemplates(): TemplateCollection
+    public function getTemplates(): TemplateCollection
     {
         $templates = [];
         foreach ($this->config->templates as $config) {

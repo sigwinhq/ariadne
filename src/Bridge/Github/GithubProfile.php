@@ -82,12 +82,7 @@ final class GithubProfile implements Profile
         return new ProfileUser($me['login']);
     }
 
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
-    private function getRepositories(): RepositoryCollection
+    public function getRepositories(): RepositoryCollection
     {
         if (! isset($this->repositories)) {
             $repositories = [];

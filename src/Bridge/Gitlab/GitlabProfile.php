@@ -84,12 +84,7 @@ final class GitlabProfile implements Profile
         return new ProfileUser($me['username']);
     }
 
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
-    private function getRepositories(): RepositoryCollection
+    public function getRepositories(): RepositoryCollection
     {
         if (! isset($this->repositories)) {
             $pager = new ResultPager($this->client);
