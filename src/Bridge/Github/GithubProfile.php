@@ -109,7 +109,7 @@ final class GithubProfile implements Profile
                     }
                 }
             }
-            $this->repositories = new RepositoryCollection($repositories);
+            $this->repositories = RepositoryCollection::fromArray($repositories);
         }
 
         return $this->repositories;

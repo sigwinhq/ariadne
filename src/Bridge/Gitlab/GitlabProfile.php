@@ -100,8 +100,7 @@ final class GitlabProfile implements Profile
             foreach ($response as $repository) {
                 $repositories[] = new Repository(RepositoryType::fromFork(isset($repository['forked_from_project'])), $repository['path_with_namespace'], RepositoryVisibility::from($repository['visibility']));
             }
-
-            $this->repositories = new RepositoryCollection($repositories);
+            $this->repositories = RepositoryCollection::fromArray($repositories);
         }
 
         return $this->repositories;

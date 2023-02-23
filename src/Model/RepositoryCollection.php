@@ -21,8 +21,18 @@ final class RepositoryCollection implements \Countable, \IteratorAggregate, \Str
     /**
      * @param array<Repository> $repositories
      */
-    public function __construct(private readonly array $repositories)
+    private function __construct(private readonly array $repositories)
     {
+    }
+
+    /**
+     * @param array<Repository> $repositories
+     */
+    public static function fromArray(array $repositories): self
+    {
+        usort($repositories, static fn (Repository $first, Repository $second): int => $first->path <=> $second->path);
+
+        return new self($repositories);
     }
 
     public function filter(callable $filter): self
