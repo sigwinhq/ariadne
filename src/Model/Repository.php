@@ -15,11 +15,28 @@ namespace Sigwin\Ariadne\Model;
 
 final class Repository
 {
-    public function __construct(public readonly RepositoryType $type, public readonly string $path, public readonly RepositoryVisibility $visibility)
+    /**
+     * @param array<string, null|array<string, int|string>|bool|string> $response
+     */
+    public function __construct(private readonly array $response, public readonly RepositoryType $type, public readonly string $path, public readonly RepositoryVisibility $visibility)
     {
     }
 
-    public function apply(RepositoryPlan $plan): void
+    public function createChangeFromTemplate(Template $template): RepositoryChange
     {
+        $changes = [];
+        foreach ($template->target->attribute as $name => $expected) {
+            if (! isset($this->response[$name])) {
+                // TODO: fix
+                throw new \InvalidArgumentException('Invalid argument '.$name);
+            }
+            $actual = $this->response[$name];
+
+            if ($actual !== $expected) {
+                $changes[$name] = [$expected, $actual];
+            }
+        }
+
+        return RepositoryChange::fromTemplate($template, $changes);
     }
 }

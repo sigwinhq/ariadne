@@ -33,4 +33,6 @@ interface Profile extends \IteratorAggregate
     public function getName(): string;
 
     public function plan(Repository $repository): RepositoryPlan;
+
+    public function apply(RepositoryPlan $plan): void;
 }

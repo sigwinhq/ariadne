@@ -29,6 +29,9 @@ use Sigwin\Ariadne\Profile;
 use Sigwin\Ariadne\ProfileTemplateFactory;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+/**
+ * @psalm-type TRepository array{path_with_namespace: string, visibility: string, forked_from_project: ?array<string, int|string>}
+ */
 #[AsProfile(type: 'gitlab')]
 final class GitlabProfile implements Profile
 {
@@ -85,30 +88,25 @@ final class GitlabProfile implements Profile
         return new ProfileUser($me['username']);
     }
 
-    public function plan(Repository $repository): RepositoryPlan
-    {
-        foreach ($this->getTemplates() as $template) {
-            dd($template);
-        }
-
-        return new RepositoryPlan($this);
-    }
-
     private function getRepositories(): RepositoryCollection
     {
         if (! isset($this->repositories)) {
             $pager = new ResultPager($this->client);
-            /** @var list<array{path_with_namespace: string, visibility: string, forked_from_project: ?array<string, int|string>}> $response */
+            /** @var list<TRepository> $response */
             $response = $pager->fetchAllLazy($this->client->projects(), 'all', ['parameters' => $this->options]);
 
             $repositories = [];
             foreach ($response as $repository) {
-                $repositories[] = new Repository(RepositoryType::fromFork(isset($repository['forked_from_project'])), $repository['path_with_namespace'], RepositoryVisibility::from($repository['visibility']));
+                $repositories[] = new Repository($repository, RepositoryType::fromFork(isset($repository['forked_from_project'])), $repository['path_with_namespace'], RepositoryVisibility::from($repository['visibility']));
             }
             $this->repositories = RepositoryCollection::fromArray($repositories);
         }
 
         return $this->repositories;
+    }
+
+    public function apply(RepositoryPlan $plan): void
+    {
     }
 
     /**

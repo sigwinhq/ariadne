@@ -47,11 +47,11 @@ final class SyncCommand extends Command
             foreach ($profile as $repository) {
                 $style->writeln($repository->path);
 
-                $repositoryPlan = $profile->plan($repository);
+                $plan = $profile->plan($repository);
 
                 // TODO: show changes to user here for approval in various levels of verbosity, or skip if requested
 
-                $repository->apply($repositoryPlan);
+                $profile->apply($plan);
             }
         }
 

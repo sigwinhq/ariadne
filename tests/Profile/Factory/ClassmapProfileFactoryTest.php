@@ -94,4 +94,9 @@ final class ClassmapProfileFactoryTest extends TestCase implements Profile
     {
         throw new \LogicException('Not implemented');
     }
+
+    public function apply(RepositoryPlan $plan): void
+    {
+        throw new \LogicException('Not implemented');
+    }
 }

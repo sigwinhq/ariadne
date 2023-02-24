@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Sigwin\Ariadne\Bridge;
 
 use Sigwin\Ariadne\Model\Repository;
+use Sigwin\Ariadne\Model\RepositoryPlan;
 use Sigwin\Ariadne\Model\TemplateCollection;
 
 trait ProfileTrait
@@ -29,6 +30,16 @@ trait ProfileTrait
     public function getIterator(): \Traversable
     {
         return $this->getRepositories();
+    }
+
+    public function plan(Repository $repository): RepositoryPlan
+    {
+        $changes = [];
+        foreach ($this->getTemplates() as $template) {
+            $changes[] = $repository->createChangeFromTemplate($template);
+        }
+
+        return new RepositoryPlan($repository, $changes);
     }
 
     private function getTemplates(): TemplateCollection
