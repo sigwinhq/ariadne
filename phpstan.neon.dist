@@ -9,5 +9,6 @@ parameters:
     paths:
         - ./
     excludePaths:
+        - src/Bridge/Symfony/Console/Style/DiffStyle.php
         - var/
         - vendor/

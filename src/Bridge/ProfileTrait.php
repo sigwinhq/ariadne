@@ -13,23 +13,37 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne\Bridge;
 
-use Sigwin\Ariadne\Model\ProfileSummary;
-use Sigwin\Ariadne\Model\Template;
+use Sigwin\Ariadne\Model\Repository;
+use Sigwin\Ariadne\Model\RepositoryPlan;
 use Sigwin\Ariadne\Model\TemplateCollection;
 
 trait ProfileTrait
 {
-    public function getSummary(): ProfileSummary
+    public function getName(): string
     {
-        return new ProfileSummary($this->getRepositories(), $this->getTemplates());
+        return $this->name;
     }
 
     /**
-     * @return \Traversable<Template>
+     * @return \Traversable<Repository>
      */
     public function getIterator(): \Traversable
     {
-        return $this->getTemplates();
+        return $this->getRepositories();
+    }
+
+    public function plan(Repository $repository): RepositoryPlan
+    {
+        $changes = [];
+        foreach ($this->getTemplates() as $template) {
+            if ($template->contains($repository) === false) {
+                continue;
+            }
+
+            $changes[] = $repository->createChangeForTemplate($template);
+        }
+
+        return new RepositoryPlan($repository, $changes);
     }
 
     private function getTemplates(): TemplateCollection

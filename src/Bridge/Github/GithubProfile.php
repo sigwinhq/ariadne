@@ -21,12 +21,16 @@ use Sigwin\Ariadne\Model\ProfileConfig;
 use Sigwin\Ariadne\Model\ProfileUser;
 use Sigwin\Ariadne\Model\Repository;
 use Sigwin\Ariadne\Model\RepositoryCollection;
+use Sigwin\Ariadne\Model\RepositoryPlan;
 use Sigwin\Ariadne\Model\RepositoryType;
 use Sigwin\Ariadne\Model\RepositoryVisibility;
 use Sigwin\Ariadne\Profile;
 use Sigwin\Ariadne\ProfileTemplateFactory;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+/**
+ * @psalm-type TRepository array{fork: bool, full_name: string, private: bool}
+ */
 #[AsProfile(type: 'github')]
 final class GithubProfile implements Profile
 {
@@ -82,9 +86,8 @@ final class GithubProfile implements Profile
         return new ProfileUser($me['login']);
     }
 
-    public function getName(): string
+    public function apply(RepositoryPlan $plan): void
     {
-        return $this->name;
     }
 
     private function getRepositories(): RepositoryCollection
@@ -92,20 +95,20 @@ final class GithubProfile implements Profile
         if (! isset($this->repositories)) {
             $repositories = [];
 
-            /** @var list<array{fork: bool, full_name: string, private: bool}> $userRepositories */
+            /** @var list<TRepository> $userRepositories */
             $userRepositories = $this->client->user()->myRepositories();
             foreach ($userRepositories as $userRepository) {
-                $repositories[] = new Repository(RepositoryType::fromFork($userRepository['fork']), $userRepository['full_name'], RepositoryVisibility::fromPrivate($userRepository['private']));
+                $repositories[] = new Repository($userRepository, RepositoryType::fromFork($userRepository['fork']), $userRepository['full_name'], RepositoryVisibility::fromPrivate($userRepository['private']));
             }
 
             if ($this->options['organizations'] ?? false) {
                 /** @var list<array{login: string}> $organizations */
                 $organizations = $this->client->currentUser()->organizations();
                 foreach ($organizations as $organization) {
-                    /** @var list<array{fork: bool, full_name: string, private: bool}> $organizationRepositories */
+                    /** @var list<TRepository> $organizationRepositories */
                     $organizationRepositories = $this->client->organizations()->repositories($organization['login']);
                     foreach ($organizationRepositories as $organizationRepository) {
-                        $repositories[] = new Repository(RepositoryType::fromFork($organizationRepository['fork']), $organizationRepository['full_name'], RepositoryVisibility::fromPrivate($organizationRepository['private']));
+                        $repositories[] = new Repository($organizationRepository, RepositoryType::fromFork($organizationRepository['fork']), $organizationRepository['full_name'], RepositoryVisibility::fromPrivate($organizationRepository['private']));
                     }
                 }
             }

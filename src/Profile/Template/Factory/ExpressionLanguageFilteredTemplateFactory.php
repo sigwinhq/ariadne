@@ -29,7 +29,7 @@ final class ExpressionLanguageFilteredTemplateFactory implements ProfileTemplate
 
     public function create(ProfileTemplateConfig $config, RepositoryCollection $repositories): Template
     {
-        return new Template($config->name, $repositories->filter(function (Repository $repository) use ($config): bool {
+        return new Template($config->name, $config->target, $repositories->filter(function (Repository $repository) use ($config): bool {
             foreach ($config->filter as $name => $value) {
                 try {
                     $expressionValue = $this->expressionLanguage->evaluate($value, [

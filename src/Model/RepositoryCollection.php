@@ -18,11 +18,15 @@ namespace Sigwin\Ariadne\Model;
  */
 final class RepositoryCollection implements \Countable, \IteratorAggregate, \Stringable
 {
+    /** @var list<string> */
+    private array $paths;
+
     /**
      * @param array<Repository> $repositories
      */
     private function __construct(private readonly array $repositories)
     {
+        $this->paths = array_values(array_map(static fn (Repository $repository): string => $repository->path, $this->repositories));
     }
 
     /**
@@ -51,6 +55,11 @@ final class RepositoryCollection implements \Countable, \IteratorAggregate, \Str
     public function count(): int
     {
         return \count($this->repositories);
+    }
+
+    public function contains(Repository $repository): bool
+    {
+        return \in_array($repository->path, $this->paths, true);
     }
 
     public function __toString(): string
