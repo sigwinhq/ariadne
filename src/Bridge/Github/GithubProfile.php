@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Sigwin\Ariadne\Bridge\Github;
 
 use Github\Client;
+use Github\ResultPager;
 use Psr\Http\Client\ClientInterface;
 use Sigwin\Ariadne\Bridge\Attribute\AsProfile;
 use Sigwin\Ariadne\Bridge\ProfileTrait;
@@ -95,23 +96,14 @@ final class GithubProfile implements Profile
         if (! isset($this->repositories)) {
             $repositories = [];
 
+            $pager = new ResultPager($this->client);
+
             /** @var list<TRepository> $userRepositories */
-            $userRepositories = $this->client->user()->myRepositories();
+            $userRepositories = $pager->fetchAll($this->client->user(), 'myRepositories');
             foreach ($userRepositories as $userRepository) {
                 $repositories[] = new Repository($userRepository, RepositoryType::fromFork($userRepository['fork']), $userRepository['full_name'], RepositoryVisibility::fromPrivate($userRepository['private']));
             }
 
-            if ($this->options['organizations'] ?? false) {
-                /** @var list<array{login: string}> $organizations */
-                $organizations = $this->client->currentUser()->organizations();
-                foreach ($organizations as $organization) {
-                    /** @var list<TRepository> $organizationRepositories */
-                    $organizationRepositories = $this->client->organizations()->repositories($organization['login']);
-                    foreach ($organizationRepositories as $organizationRepository) {
-                        $repositories[] = new Repository($organizationRepository, RepositoryType::fromFork($organizationRepository['fork']), $organizationRepository['full_name'], RepositoryVisibility::fromPrivate($organizationRepository['private']));
-                    }
-                }
-            }
             $this->repositories = RepositoryCollection::fromArray($repositories);
         }
 
