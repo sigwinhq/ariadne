@@ -26,7 +26,7 @@ final class RepositoryCollection implements \Countable, \IteratorAggregate, \Str
      */
     private function __construct(private readonly array $repositories)
     {
-        $this->paths = array_map(static fn (Repository $repository): string => $repository->path, $this->repositories);
+        $this->paths = array_values(array_map(static fn (Repository $repository): string => $repository->path, $this->repositories));
     }
 
     /**

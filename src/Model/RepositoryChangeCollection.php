@@ -40,4 +40,17 @@ final class RepositoryChangeCollection
 
         return true;
     }
+
+    /**
+     * @return array<string, RepositoryChange>
+     */
+    public function generateDiff(): array
+    {
+        $diff = [];
+        foreach ($this->changes as $change) {
+            $diff[$change->name] = $change;
+        }
+
+        return $diff;
+    }
 }

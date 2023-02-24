@@ -26,8 +26,8 @@ final class Repository
     {
         $changes = [];
         foreach ($template->target->attribute as $name => $expected) {
-            if (! isset($this->response[$name])) {
-                // TODO: fix
+            if (\array_key_exists($name, $this->response) === false) {
+                // TODO: fix error message, Did you mean etc
                 throw new \InvalidArgumentException('Invalid argument '.$name);
             }
             $actual = $this->response[$name];

@@ -33,13 +33,16 @@ final class RepositoryPlan
         return true;
     }
 
+    /**
+     * @return list<RepositoryChange>
+     */
     public function generateDiff(): array
     {
-        return [];
-    }
+        $diff = [];
+        foreach ($this->changes as $change) {
+            $diff = array_replace($diff, $change->generateDiff());
+        }
 
-    public function generateVerboseDiff(): array
-    {
-        return [];
+        return array_values($diff);
     }
 }
