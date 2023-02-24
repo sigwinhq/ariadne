@@ -18,7 +18,7 @@ namespace Sigwin\Ariadne\Model;
  */
 final class Template implements \Countable, \IteratorAggregate, \Stringable
 {
-    public function __construct(public readonly string $name, public readonly RepositoryCollection $repositories)
+    public function __construct(public readonly string $name, public readonly RepositoryTarget $target, public readonly RepositoryCollection $repositories)
     {
     }
 

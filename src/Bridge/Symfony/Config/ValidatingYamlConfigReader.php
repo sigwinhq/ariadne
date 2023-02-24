@@ -97,10 +97,12 @@ final class ValidatingYamlConfigReader implements ConfigReader
                                                 ->end()
                                             ->end()
                                         ->end()
-                                        ->arrayNode('apply')
+                                        ->arrayNode('target')
                                             ->isRequired()
                                             ->children()
                                                 ->arrayNode('attribute')
+                                                    ->scalarPrototype()
+                                                    ->end()
                                                 ->end()
                                             ->end()
                                         ->end()
@@ -123,7 +125,7 @@ final class ValidatingYamlConfigReader implements ConfigReader
          *          templates: list<array{
          *              name: string,
          *              filter: array{type?: value-of<RepositoryType>, path?: string, visibility?: value-of<RepositoryVisibility>},
-         *              apply: array{attribute?: list<array{string, bool|string}>}
+         *              target: array{attribute: array<string, bool|string>}
          *          }>
          *     }>} $config
          */

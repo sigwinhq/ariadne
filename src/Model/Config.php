@@ -34,7 +34,7 @@ final class Config implements \IteratorAggregate
      *          templates: list<array{
      *              name: string,
      *              filter: array{type?: value-of<RepositoryType>, path?: string, visibility?: value-of<RepositoryVisibility>},
-     *              apply: array{attribute?: list<array{string, bool|string}>}
+     *              target: array{attribute: array<string, bool|string>}
      *          }>
      *     }>} $config
      */

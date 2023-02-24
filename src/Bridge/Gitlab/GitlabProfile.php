@@ -87,6 +87,10 @@ final class GitlabProfile implements Profile
 
     public function plan(Repository $repository): RepositoryPlan
     {
+        foreach ($this->getTemplates() as $template) {
+            dd($template);
+        }
+
         return new RepositoryPlan($this);
     }
 
