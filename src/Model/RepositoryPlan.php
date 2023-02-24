@@ -13,13 +13,14 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne\Model;
 
-final class Repository
-{
-    public function __construct(public readonly RepositoryType $type, public readonly string $path, public readonly RepositoryVisibility $visibility)
-    {
-    }
+use Sigwin\Ariadne\Profile;
 
-    public function apply(RepositoryPlan $plan): void
+final class RepositoryPlan
+{
+    /**
+     * @param array<RepositoryPlanChange> $changes
+     */
+    public function __construct(public readonly Profile $profile, public readonly array $changes = [])
     {
     }
 }

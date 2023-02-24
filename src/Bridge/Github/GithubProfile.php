@@ -21,6 +21,7 @@ use Sigwin\Ariadne\Model\ProfileConfig;
 use Sigwin\Ariadne\Model\ProfileUser;
 use Sigwin\Ariadne\Model\Repository;
 use Sigwin\Ariadne\Model\RepositoryCollection;
+use Sigwin\Ariadne\Model\RepositoryPlan;
 use Sigwin\Ariadne\Model\RepositoryType;
 use Sigwin\Ariadne\Model\RepositoryVisibility;
 use Sigwin\Ariadne\Profile;
@@ -82,7 +83,12 @@ final class GithubProfile implements Profile
         return new ProfileUser($me['login']);
     }
 
-    public function getRepositories(): RepositoryCollection
+    public function plan(Repository $repository): RepositoryPlan
+    {
+        return new RepositoryPlan($this);
+    }
+
+    private function getRepositories(): RepositoryCollection
     {
         if (! isset($this->repositories)) {
             $repositories = [];

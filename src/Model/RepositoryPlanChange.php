@@ -13,13 +13,6 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne\Model;
 
-final class Repository
+final class RepositoryPlanChange
 {
-    public function __construct(public readonly RepositoryType $type, public readonly string $path, public readonly RepositoryVisibility $visibility)
-    {
-    }
-
-    public function apply(RepositoryPlan $plan): void
-    {
-    }
 }

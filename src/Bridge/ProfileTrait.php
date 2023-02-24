@@ -31,7 +31,7 @@ trait ProfileTrait
         return $this->getRepositories();
     }
 
-    public function getTemplates(): TemplateCollection
+    private function getTemplates(): TemplateCollection
     {
         $templates = [];
         foreach ($this->config->templates as $config) {
