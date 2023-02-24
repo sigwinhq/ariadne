@@ -97,6 +97,13 @@ final class ValidatingYamlConfigReader implements ConfigReader
                                                 ->end()
                                             ->end()
                                         ->end()
+                                        ->arrayNode('apply')
+                                            ->isRequired()
+                                            ->children()
+                                                ->arrayNode('attribute')
+                                                ->end()
+                                            ->end()
+                                        ->end()
                                     ->end()
                                 ->end()
                             ->end()
@@ -113,8 +120,13 @@ final class ValidatingYamlConfigReader implements ConfigReader
          *          type: string,
          *          name: string,
          *          client: array{auth: array{type: string, token: string}, options: array<string, bool|string>},
-         *          templates: list<array{name: string, filter: array{type?: value-of<RepositoryType>, path?: string, visibility?: value-of<RepositoryVisibility>}}>
-         *     }>} $config */
+         *          templates: list<array{
+         *              name: string,
+         *              filter: array{type?: value-of<RepositoryType>, path?: string, visibility?: value-of<RepositoryVisibility>},
+         *              apply: array{attribute?: list<array{string, bool|string}>}
+         *          }>
+         *     }>} $config
+         */
         $config = $processor->process($builder->buildTree(), [Yaml::parseFile($url)]);
 
         return Config::fromArray($url, $config);
