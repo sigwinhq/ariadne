@@ -32,4 +32,14 @@ final class RepositoryPlan
 
         return true;
     }
+
+    public function generateDiff(): array
+    {
+        return [];
+    }
+
+    public function generateVerboseDiff(): array
+    {
+        return [];
+    }
 }

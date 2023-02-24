@@ -60,14 +60,20 @@ final class SyncCommand extends Command
                 continue;
             }
 
-            // TODO: show diff for plans
-            if ($style->confirm('Apply these plans?') === false) {
-                $skipped += \count($plans);
-                $style->warning(sprintf('Skipping applying %1$s plans for %2$s.', \count($plans), $profile->getName()));
+            $count = \count($plans);
+            foreach ($plans as $plan) {
+                $style->writeln($plan->repository->path);
+            }
+
+            // TODO: show exact diff for each repo here
+            if ($style->confirm('Update these repos?') === false) {
+                $skipped += $count;
+                $style->warning(sprintf('Skipping updating %1$s repos', $count));
 
                 continue;
             }
 
+            $style->warning(sprintf('Updating %1$s repos', $count));
             foreach ($plans as $plan) {
                 $profile->apply($plan);
             }

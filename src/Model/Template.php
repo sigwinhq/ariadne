@@ -36,4 +36,9 @@ final class Template implements \Countable, \IteratorAggregate, \Stringable
     {
         return $this->repositories;
     }
+
+    public function contains(Repository $repository): bool
+    {
+        return $this->repositories->contains($repository);
+    }
 }

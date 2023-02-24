@@ -36,6 +36,10 @@ trait ProfileTrait
     {
         $changes = [];
         foreach ($this->getTemplates() as $template) {
+            if ($template->contains($repository) === false) {
+                continue;
+            }
+
             $changes[] = $repository->createChangeForTemplate($template);
         }
 
