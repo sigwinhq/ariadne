@@ -36,7 +36,7 @@ trait ProfileTrait
     {
         $changes = [];
         foreach ($this->getTemplates() as $template) {
-            $changes[] = $repository->createChangeFromTemplate($template);
+            $changes[] = $repository->createChangeForTemplate($template);
         }
 
         return new RepositoryPlan($repository, $changes);

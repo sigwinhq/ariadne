@@ -22,7 +22,7 @@ final class Repository
     {
     }
 
-    public function createChangeFromTemplate(Template $template): RepositoryChange
+    public function createChangeForTemplate(Template $template): RepositoryChangeCollection
     {
         $changes = [];
         foreach ($template->target->attribute as $name => $expected) {
@@ -32,11 +32,9 @@ final class Repository
             }
             $actual = $this->response[$name];
 
-            if ($actual !== $expected) {
-                $changes[$name] = [$expected, $actual];
-            }
+            $changes[] = new RepositoryChange($name, $actual, $expected);
         }
 
-        return RepositoryChange::fromTemplate($template, $changes);
+        return RepositoryChangeCollection::fromTemplate($template, $changes);
     }
 }

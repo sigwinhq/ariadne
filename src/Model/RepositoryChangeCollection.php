@@ -13,13 +13,21 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne\Model;
 
-final class RepositoryPlan
+final class RepositoryChangeCollection
 {
     /**
-     * @param array<RepositoryChangeCollection> $changes
+     * @param array<RepositoryChange> $changes
      */
-    public function __construct(public readonly Repository $repository, private readonly array $changes)
+    private function __construct(public readonly Template $template, public readonly array $changes)
     {
+    }
+
+    /**
+     * @param array<RepositoryChange> $changes
+     */
+    public static function fromTemplate(Template $template, array $changes): self
+    {
+        return new self($template, $changes);
     }
 
     public function isActual(): bool

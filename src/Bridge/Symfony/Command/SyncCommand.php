@@ -41,19 +41,45 @@ final class SyncCommand extends Command
         $style = new SymfonyStyle($input, $output);
         $profiles = $this->getProfileCollection($input, $style);
 
+        $skipped = 0;
         foreach ($profiles as $profile) {
             $style->section($profile->getName());
 
+            $plans = [];
             foreach ($profile as $repository) {
-                $style->writeln($repository->path);
-
                 $plan = $profile->plan($repository);
 
-                // TODO: show changes to user here for approval in various levels of verbosity, or skip if requested
+                if ($plan->isActual() === false) {
+                    $plans[] = $plan;
+                }
+            }
 
+            if ($plans === []) {
+                $style->info('Profile already up to date.');
+
+                continue;
+            }
+
+            // TODO: show diff for plans
+            if ($style->confirm('Apply these plans?') === false) {
+                $skipped += \count($plans);
+                $style->warning(sprintf('Skipping applying %1$s plans for %2$s.', \count($plans), $profile->getName()));
+
+                continue;
+            }
+
+            foreach ($plans as $plan) {
                 $profile->apply($plan);
             }
         }
+
+        if ($skipped > 0) {
+            $style->warning(sprintf('Completed with %1$d plans skipped.', $skipped));
+
+            return 1;
+        }
+
+        $style->success('Completed.');
 
         return 0;
     }

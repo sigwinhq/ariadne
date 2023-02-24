@@ -15,18 +15,12 @@ namespace Sigwin\Ariadne\Model;
 
 final class RepositoryChange
 {
-    /**
-     * @param array<string, array{0: array<string, bool|int|string>|bool|int|string, 1: array<string, bool|int|string>|bool|int|string}> $changes
-     */
-    private function __construct(private readonly Template $template, private readonly array $changes)
+    public function __construct(public readonly string $name, public readonly mixed $actual, public readonly mixed $expected)
     {
     }
 
-    /**
-     * @param array<string, array{0:  array<string, bool|int|string>|bool|int|string, 1: array<string, bool|int|string>|bool|int|string}> $changes
-     */
-    public static function fromTemplate(Template $template, array $changes): self
+    public function isActual(): bool
     {
-        return new self($template, $changes);
+        return $this->actual === $this->expected;
     }
 }
