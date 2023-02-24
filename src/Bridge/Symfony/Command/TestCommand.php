@@ -54,6 +54,10 @@ final class TestCommand extends Command
                     ],
                 ]
             );
+
+            foreach ($profile as $repository) {
+                $style->writeln($repository->path);
+            }
         }
 
         return 0;
