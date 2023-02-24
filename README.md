@@ -121,7 +121,7 @@ If test is working, you should be able to run `bin/ariadne sync` to
 sync the repos against the templates.
 
 ```diff
-$ bin/ariadne test
+$ bin/ariadne sync
 
 Sigwin Ariadne
 ==============
