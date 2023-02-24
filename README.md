@@ -128,7 +128,7 @@ Sigwin Ariadne
 
  ! [NOTE] Using config: ./ariadne.yaml                                            
 
-Sigwin GitHub
+My GitHub
 -------------
 
 sigwinhq/reddit-client
