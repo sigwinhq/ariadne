@@ -13,8 +13,10 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne\Bridge\Symfony\Console\Style;
 
+use Sigwin\Ariadne\Model\Repository;
 use Sigwin\Ariadne\Model\RepositoryChange;
 use Sigwin\Ariadne\Model\RepositoryPlan;
+use Sigwin\Ariadne\Model\Template;
 use Sigwin\Ariadne\Profile;
 use Symfony\Component\Console\Formatter\OutputFormatter;
 use Symfony\Component\Console\Helper\Dumper;
@@ -65,18 +67,7 @@ final class AriadneStyle extends SymfonyStyle
                 $this->writeln(sprintf('<info>%1$s</info>', $template->name));
                 if (\count($template) > 0) {
                     foreach ($template as $repository) {
-                        $matching = $profile->getMatchingTemplates($repository);
-                        if (\count($matching) === 1) {
-                            $this->writeln(sprintf('    %1$s', $repository->path));
-                        } else {
-                            $additional = [];
-                            foreach ($matching as $match) {
-                                if ($match->name !== $template->name) {
-                                    $additional[] = $match->name;
-                                }
-                            }
-                            $this->writeln(sprintf('    %1$s <comment>(also "%2$s")</comment>', $repository->path, implode('", "', $additional)));
-                        }
+                        $this->repository($profile, $repository, $template, '    ');
                     }
                 } else {
                     $this->error('No matching repositories.');
@@ -87,7 +78,7 @@ final class AriadneStyle extends SymfonyStyle
             if ($this->isVeryVerbose()) {
                 $this->section('Repositories');
                 foreach ($profile as $repository) {
-                    $this->writeln($repository->path);
+                    $this->repository($profile, $repository);
                 }
             }
         }
@@ -99,7 +90,7 @@ final class AriadneStyle extends SymfonyStyle
         $summary = $profile->getSummary();
         foreach ($summary->getTemplates() as $template => $count) {
             if ($count === 0) {
-                $this->error(sprintf('Template "%1$s" does not match any repositories.', $template));
+                $this->warning(sprintf('Template "%1$s" does not match any repositories.', $template));
             }
         }
     }
@@ -121,6 +112,26 @@ final class AriadneStyle extends SymfonyStyle
         } else {
             $this->writeln($this->createBlock([sprintf('%1$s = %2$s', $change->name, ($this->dumper)($change->actual))], null, 'fg=red', '-   '));
             $this->writeln($this->createBlock([sprintf('%1$s = %2$s', $change->name, ($this->dumper)($change->expected))], null, 'fg=green', '+   '));
+        }
+    }
+
+    private function repository(Profile $profile, Repository $repository, ?Template $template = null, string $prefix = ''): void
+    {
+        $matching = $profile->getMatchingTemplates($repository);
+
+        $additional = [];
+        foreach ($matching as $match) {
+            if ($template === null || $match->name !== $template->name) {
+                $additional[] = $match->name;
+            }
+        }
+
+        if ($additional !== []) {
+            $this->writeln(sprintf('%1$s%2$s <comment>(in <info>%3$s</info>)</comment>', $prefix, $repository->path, implode('</info>, <info>', $additional)));
+        } elseif ($template === null) {
+            $this->writeln(sprintf('%1$s%2$s <error>(no matching templates)</error>', $prefix, $repository->path));
+        } else {
+            $this->writeln(sprintf('%1$s%2$s', $prefix, $repository->path));
         }
     }
 
