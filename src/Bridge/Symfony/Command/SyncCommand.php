@@ -46,6 +46,9 @@ final class SyncCommand extends Command
             $plans = $this->renderPlans($profile, $style);
 
             $count = \count($plans);
+            if ($count === 0) {
+                continue;
+            }
             if ($style->confirm('Update these repos?') === false) {
                 $skipped += $count;
                 $style->warning(sprintf('Skipping updating %1$s repos', $count));
