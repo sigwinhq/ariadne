@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Sigwin\Ariadne\Bridge\Github;
 
 use Github\Client;
+use Github\HttpClient\Builder;
 use Github\ResultPager;
 use Psr\Http\Client\ClientInterface;
 use Sigwin\Ariadne\Bridge\Attribute\AsProfile;
@@ -39,6 +40,8 @@ final class GithubProfile implements Profile
 
     /**
      * @var array{organizations: bool}
+     *
+     * @phpstan-ignore-next-line
      */
     private readonly array $options;
 
@@ -68,7 +71,8 @@ final class GithubProfile implements Profile
         /** @var array{type: string, token: string} $auth */
         $auth = $resolver->resolve($config->client->auth);
 
-        $sdk = Client::createWithHttpClient($client);
+        $builder = new Builder($client);
+        $sdk = new Client($builder, enterpriseUrl: $config->client->url);
         $sdk->authenticate($auth['token'], $auth['type']);
 
         return new self($sdk, $templateFactory, $config->name, $config);

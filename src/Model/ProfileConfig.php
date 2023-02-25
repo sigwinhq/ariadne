@@ -26,7 +26,7 @@ final class ProfileConfig
      * @param array{
      *     type: string,
      *     name: string,
-     *     client: array{auth: array{type: string, token: string}, options: array<string, bool|string>},
+     *     client: array{auth: array{type: string, token: string}, options: array<string, bool|string>, url?: string},
      *     templates: list<array{
      *          name: string,
      *          filter: array{type?: value-of<RepositoryType>, path?: string, visibility?: value-of<RepositoryVisibility>},

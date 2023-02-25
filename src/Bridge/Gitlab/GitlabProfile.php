@@ -68,6 +68,9 @@ final class GitlabProfile implements Profile
 
         $sdk = Client::createWithHttpClient($client);
         $sdk->authenticate($auth['token'], $auth['type']);
+        if ($config->client->url !== null) {
+            $sdk->setUrl($config->client->url);
+        }
 
         return new self($sdk, $templateFactory, $config->name, $config);
     }
