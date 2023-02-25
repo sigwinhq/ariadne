@@ -16,7 +16,7 @@ namespace Sigwin\Ariadne\Model;
 /**
  * @implements \IteratorAggregate<Template>
  */
-final class TemplateCollection implements \Countable, \IteratorAggregate, \Stringable
+final class TemplateCollection implements \Countable, \IteratorAggregate
 {
     /**
      * @param array<Template> $templates
@@ -25,9 +25,17 @@ final class TemplateCollection implements \Countable, \IteratorAggregate, \Strin
     {
     }
 
-    public function getIterator(): \Traversable
+    public function filter(callable $filter): self
     {
-        return new \ArrayIterator($this->templates);
+        $templates = [];
+
+        foreach ($this->templates as $template) {
+            if ($filter($template)) {
+                $templates[] = $template;
+            }
+        }
+
+        return new self($templates);
     }
 
     public function count(): int
@@ -35,8 +43,8 @@ final class TemplateCollection implements \Countable, \IteratorAggregate, \Strin
         return \count($this->templates);
     }
 
-    public function __toString(): string
+    public function getIterator(): \Traversable
     {
-        return implode(\PHP_EOL, array_map(static fn (Template $template): string => sprintf('%1$s: %2$d', $template->name, \count($template)), $this->templates));
+        return new \ArrayIterator($this->templates);
     }
 }

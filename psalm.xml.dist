@@ -8,7 +8,6 @@
         <directory name="./"/>
         <ignoreFiles allowMissingFiles="true">
             <file name=".php-cs-fixer.dist.php"/>
-            <file name="src/Bridge/Symfony/Console/Style/DiffStyle.php"/>
             <directory name="vendor/"/>
             <directory name="var/"/>
         </ignoreFiles>

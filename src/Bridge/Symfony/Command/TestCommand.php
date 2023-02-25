@@ -13,13 +13,13 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne\Bridge\Symfony\Command;
 
+use Sigwin\Ariadne\Bridge\Symfony\Console\Style\AriadneStyle;
 use Sigwin\Ariadne\ConfigReader;
 use Sigwin\Ariadne\ProfileCollectionFactory;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(name: 'ariadne:test', aliases: ['test'])]
 final class TestCommand extends Command
@@ -38,26 +38,11 @@ final class TestCommand extends Command
 
     public function execute(InputInterface $input, OutputInterface $output): int
     {
-        $style = new SymfonyStyle($input, $output);
+        $style = new AriadneStyle($input, $output);
         $profiles = $this->getProfileCollection($input, $style);
 
         foreach ($profiles as $profile) {
-            $style->section($profile->getName());
-            $style->horizontalTable(
-                ['API Version', 'API User', 'Repositories', 'Templates'],
-                [
-                    [
-                        $profile->getApiVersion(),
-                        $profile->getApiUser(),
-                        '$profile->getRepositories()',
-                        '$profile->getTemplates()',
-                    ],
-                ]
-            );
-
-            foreach ($profile as $repository) {
-                $style->writeln($repository->path);
-            }
+            $style->summary($profile);
         }
 
         return 0;

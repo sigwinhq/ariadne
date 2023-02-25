@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne\Bridge\Symfony\Command;
 
-use Sigwin\Ariadne\Bridge\Symfony\Console\Style\DiffStyle;
+use Sigwin\Ariadne\Bridge\Symfony\Console\Style\AriadneStyle;
 use Sigwin\Ariadne\ConfigReader;
 use Sigwin\Ariadne\ProfileCollectionFactory;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -38,12 +38,12 @@ final class SyncCommand extends Command
 
     public function execute(InputInterface $input, OutputInterface $output): int
     {
-        $style = new DiffStyle($input, $output);
+        $style = new AriadneStyle($input, $output);
         $profiles = $this->getProfileCollection($input, $style);
 
         $skipped = 0;
         foreach ($profiles as $profile) {
-            $style->section($profile->getName());
+            $style->profile($profile);
 
             $plans = [];
             foreach ($profile as $repository) {
@@ -62,12 +62,7 @@ final class SyncCommand extends Command
 
             $count = \count($plans);
             foreach ($plans as $plan) {
-                $style->writeln($plan->repository->path);
-
-                $diff = $plan->generateDiff();
-                foreach ($diff as $change) {
-                    $style->diff($change);
-                }
+                $style->plan($plan);
             }
 
             if ($style->confirm('Update these repos?') === false) {

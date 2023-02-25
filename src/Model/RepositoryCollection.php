@@ -16,7 +16,7 @@ namespace Sigwin\Ariadne\Model;
 /**
  * @implements \IteratorAggregate<Repository>
  */
-final class RepositoryCollection implements \Countable, \IteratorAggregate, \Stringable
+final class RepositoryCollection implements \Countable, \IteratorAggregate
 {
     /** @var list<string> */
     private array $paths;
@@ -60,27 +60,6 @@ final class RepositoryCollection implements \Countable, \IteratorAggregate, \Str
     public function contains(Repository $repository): bool
     {
         return \in_array($repository->path, $this->paths, true);
-    }
-
-    public function __toString(): string
-    {
-        $summary = [];
-        foreach ($this->repositories as $repository) {
-            $offset = mb_strpos($repository->path, '/');
-            if ($offset === false) {
-                throw new \InvalidArgumentException(sprintf('Invalid repo path %1$s', $repository->path));
-            }
-
-            $namespace = mb_substr($repository->path, 0, $offset);
-
-            $summary[$namespace] ??= 0;
-            ++$summary[$namespace];
-        }
-        ksort($summary);
-
-        $summary = array_map(static fn (string $key, int $value): string => sprintf('%1$s: %2$d', $key, $value), array_keys($summary), array_values($summary));
-
-        return implode(\PHP_EOL, $summary);
     }
 
     public function getIterator(): \Traversable

@@ -16,6 +16,7 @@ namespace Sigwin\Ariadne\Test\Profile\Factory;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Client\ClientInterface;
 use Sigwin\Ariadne\Model\ProfileConfig;
+use Sigwin\Ariadne\Model\ProfileSummary;
 use Sigwin\Ariadne\Model\ProfileUser;
 use Sigwin\Ariadne\Model\Repository;
 use Sigwin\Ariadne\Model\RepositoryCollection;
@@ -86,6 +87,16 @@ final class ClassmapProfileFactoryTest extends TestCase implements Profile
     }
 
     public function getTemplates(): TemplateCollection
+    {
+        throw new \LogicException('Not implemented');
+    }
+
+    public function getMatchingTemplates(Repository $repository): TemplateCollection
+    {
+        throw new \LogicException('Not implemented');
+    }
+
+    public function getSummary(): ProfileSummary
     {
         throw new \LogicException('Not implemented');
     }
