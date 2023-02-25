@@ -22,6 +22,8 @@ profiles:
     type: gitlab
     name: My Gitlab
     client:
+        # optional, defaults to gitlab.com
+        url: https://my-gitlab.example.com
         auth:
             # default, can be omitted
             type: http_token
@@ -50,6 +52,8 @@ profiles:
     type: github
     name: My Github
     client:
+        # optional, defaults to github.com
+        url: https://my-gitlab.example.com
         auth:
             # default, can be omitted
             type: access_token_header

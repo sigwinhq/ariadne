@@ -73,6 +73,9 @@ final class ValidatingYamlConfigReader implements ConfigReader
                                         ->scalarPrototype()
                                         ->end()
                                     ->end()
+                                    ->scalarNode('url')
+                                        ->cannotBeEmpty()
+                                    ->end()
                                 ->end()
                             ->end()
                             ->arrayNode('templates')
@@ -121,7 +124,7 @@ final class ValidatingYamlConfigReader implements ConfigReader
          *     profiles: list<array{
          *          type: string,
          *          name: string,
-         *          client: array{auth: array{type: string, token: string}, options: array<string, bool|string>},
+         *          client: array{auth: array{type: string, token: string}, options: array<string, bool|string>, url?: string},
          *          templates: list<array{
          *              name: string,
          *              filter: array{type?: value-of<RepositoryType>, path?: string, visibility?: value-of<RepositoryVisibility>},
