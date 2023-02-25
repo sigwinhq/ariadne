@@ -21,8 +21,8 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-#[AsCommand(name: 'ariadne:sync', aliases: ['sync'])]
-final class SyncCommand extends Command
+#[AsCommand(name: 'ariadne:diff', aliases: ['diff'])]
+final class DiffCommand extends Command
 {
     use CommandTrait;
 
@@ -41,34 +41,9 @@ final class SyncCommand extends Command
         $style = new AriadneStyle($input, $output);
         $profiles = $this->getProfileCollection($input, $style);
 
-        $skipped = 0;
         foreach ($profiles as $profile) {
-            $plans = $this->renderPlans($profile, $style);
-
-            $count = \count($plans);
-            if ($count === 0) {
-                continue;
-            }
-            if ($style->confirm('Update these repos?') === false) {
-                $skipped += $count;
-                $style->warning(sprintf('Skipping updating %1$s repos', $count));
-
-                continue;
-            }
-
-            $style->info(sprintf('Updating %1$s repos', $count));
-            foreach ($plans as $plan) {
-                $profile->apply($plan);
-            }
+            $this->renderPlans($profile, $style);
         }
-
-        if ($skipped > 0) {
-            $style->warning(sprintf('Completed with %1$d plans skipped.', $skipped));
-
-            return 1;
-        }
-
-        $style->success('Completed.');
 
         return 0;
     }
