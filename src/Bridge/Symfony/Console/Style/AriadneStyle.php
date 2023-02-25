@@ -90,7 +90,7 @@ final class AriadneStyle extends SymfonyStyle
         $summary = $profile->getSummary();
         foreach ($summary->getTemplates() as $template => $count) {
             if ($count === 0) {
-                $this->error(sprintf('Template "%1$s" does not match any repositories.', $template));
+                $this->warning(sprintf('Template "%1$s" does not match any repositories.', $template));
             }
         }
     }
