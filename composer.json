@@ -3,7 +3,7 @@
     "description": "Find the common thread on all of your Glabyrinth projects",
     "license": "MIT",
     "require": {
-        "php": "^8.2",
+        "php": "^8.1",
         "knplabs/github-api": "^3.9",
         "m4tthumphrey/php-gitlab-api": "^11.0",
         "nyholm/psr7": "^1.5",
@@ -29,10 +29,26 @@
             "Sigwin\\Ariadne\\Test\\": "tests/"
         }
     },
+    "bin": [
+        "bin/ariadne"
+    ],
     "config": {
         "allow-plugins": {
             "symfony/runtime": true,
             "php-http/discovery": true
         }
+    },
+    "extra": {
+        "runtime": {
+            "autoload_template": "config/autoload_runtime.php.template"
+        }
+    },
+    "scripts": {
+        "post-autoload-dump": [
+            "@auto-scripts"
+        ],
+        "auto-scripts": [
+            "php bin/ariadne cache:clear -e prod --no-debug"
+        ]
     }
 }
