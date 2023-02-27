@@ -1,7 +1,7 @@
 <?php
 
+use Sigwin\Ariadne\Bridge\Symfony\Console\Application;
 use Sigwin\Ariadne\Bridge\Symfony\Kernel;
-use Symfony\Bundle\FrameworkBundle\Console\Application;
 
 if (true === (require_once __DIR__.'/../vendor/autoload.php')) {
     return;

@@ -13,7 +13,9 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne\Bridge\Symfony;
 
+use Sigwin\Ariadne\Bridge\Symfony\DependencyInjection\CompilerPass\RemoveCommandsCompilerPass;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 final class Kernel extends \Symfony\Component\HttpKernel\Kernel
 {
@@ -22,5 +24,10 @@ final class Kernel extends \Symfony\Component\HttpKernel\Kernel
     public function getProjectDir(): string
     {
         return __DIR__.'/../../..';
+    }
+
+    protected function build(ContainerBuilder $container): void
+    {
+        $container->addCompilerPass(new RemoveCommandsCompilerPass());
     }
 }

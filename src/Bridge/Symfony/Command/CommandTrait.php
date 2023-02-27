@@ -19,7 +19,6 @@ use Sigwin\Ariadne\Profile;
 use Sigwin\Ariadne\ProfileCollection;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Style\StyleInterface;
 
 trait CommandTrait
 {
@@ -30,9 +29,9 @@ trait CommandTrait
         ;
     }
 
-    private function getProfileCollection(InputInterface $input, StyleInterface $style): ProfileCollection
+    private function getProfileCollection(InputInterface $input, AriadneStyle $style): ProfileCollection
     {
-        $style->title('Sigwin Ariadne');
+        $style->heading();
 
         /**
          * @var null|string $configFile
