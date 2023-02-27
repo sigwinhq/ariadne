@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne\Bridge\Symfony\Console\Style;
 
+use Sigwin\Ariadne\Bridge\Symfony\Console\Logo;
 use Sigwin\Ariadne\Model\Repository;
 use Sigwin\Ariadne\Model\RepositoryChange;
 use Sigwin\Ariadne\Model\RepositoryPlan;
@@ -41,6 +42,11 @@ final class AriadneStyle extends SymfonyStyle
         $this->lineLength = min($width - (int) (\DIRECTORY_SEPARATOR === '\\'), self::MAX_LINE_LENGTH);
 
         parent::__construct($input, $output);
+    }
+
+    public function heading(): void
+    {
+        $this->writeln(sprintf('<info>%1$s</>', Logo::ASCII));
     }
 
     public function summary(Profile $profile): void
@@ -86,7 +92,7 @@ final class AriadneStyle extends SymfonyStyle
 
     public function profile(Profile $profile): void
     {
-        $this->section($profile->getName());
+        $this->title($profile->getName());
         $summary = $profile->getSummary();
         foreach ($summary->getTemplates() as $template => $count) {
             if ($count === 0) {

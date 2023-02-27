@@ -12,8 +12,8 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
+use Sigwin\Ariadne\Bridge\Symfony\Console\Application;
 use Sigwin\Ariadne\Bridge\Symfony\Kernel;
-use Symfony\Bundle\FrameworkBundle\Console\Application;
 
 require_once __DIR__ .'/../vendor/autoload_runtime.php';
 
