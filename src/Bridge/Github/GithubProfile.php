@@ -38,18 +38,10 @@ final class GithubProfile implements Profile
 {
     use ProfileTrait;
 
-    /**
-     * @var array{organizations: bool}
-     *
-     * @phpstan-ignore-next-line
-     */
-    private readonly array $options;
-
     private RepositoryCollection $repositories;
 
     private function __construct(private readonly Client $client, private readonly ProfileTemplateFactory $templateFactory, private readonly string $name, private readonly ProfileConfig $config)
     {
-        $this->options = $this->validateOptions($this->config->client->options);
     }
 
     /**
@@ -112,24 +104,5 @@ final class GithubProfile implements Profile
         }
 
         return $this->repositories;
-    }
-
-    /**
-     * @param array<string, bool|string> $options
-     *
-     * @return array{organizations: bool}
-     */
-    private function validateOptions(array $options): array
-    {
-        $resolver = new OptionsResolver();
-        $resolver
-            ->setDefined('organizations')
-            ->setDefault('organizations', true)
-            ->setAllowedTypes('organizations', ['boolean'])
-        ;
-        /** @var array{organizations: bool} $options */
-        $options = $resolver->resolve($options);
-
-        return $options;
     }
 }
