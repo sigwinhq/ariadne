@@ -1,0 +1,171 @@
+<?php
+
+declare(strict_types=1);
+
+/*
+ * This file is part of the Sigwin Ariadne project.
+ *
+ * (c) sigwin.hr
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
+namespace Sigwin\Ariadne\Test\Bridge\Gitlab;
+
+use Nyholm\Psr7\Response;
+use PHPUnit\Framework\TestCase;
+use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestInterface;
+use Sigwin\Ariadne\Bridge\Gitlab\GitlabProfile;
+use Sigwin\Ariadne\Model\ProfileConfig;
+use Sigwin\Ariadne\Model\RepositoryCollection;
+use Sigwin\Ariadne\Model\RepositoryTarget;
+use Sigwin\Ariadne\Model\Template;
+use Sigwin\Ariadne\ProfileTemplateFactory;
+
+/**
+ * @internal
+ *
+ * @covers \Sigwin\Ariadne\Bridge\Gitlab\GitlabProfile
+ *
+ * @uses \Sigwin\Ariadne\Model\ProfileClientConfig
+ * @uses \Sigwin\Ariadne\Model\ProfileConfig
+ * @uses \Sigwin\Ariadne\Model\ProfileSummary
+ * @uses \Sigwin\Ariadne\Model\ProfileTemplateConfig
+ * @uses \Sigwin\Ariadne\Model\ProfileUser
+ * @uses \Sigwin\Ariadne\Model\RepositoryCollection
+ * @uses \Sigwin\Ariadne\Model\RepositoryTarget
+ * @uses \Sigwin\Ariadne\Model\Template
+ * @uses \Sigwin\Ariadne\Model\TemplateCollection
+ *
+ * @small
+ */
+final class GitlabProfileTest extends TestCase
+{
+    /**
+     * @dataProvider getUrls
+     */
+    public function testCanFetchApiUser(?string $baseUrl): void
+    {
+        $httpClient = $this->mockHttpClient([
+            $this->generateUrl($baseUrl, '/user') => '{"username": "ariadne"}',
+        ]);
+        $factory = $this->mockTemplateFactory();
+        $config = $this->generateConfig($baseUrl);
+
+        $profile = GitlabProfile::fromConfig($httpClient, $factory, $config);
+        $login = $profile->getApiUser();
+
+        static::assertSame('ariadne', $login->username);
+    }
+
+    /**
+     * @dataProvider getUrls
+     */
+    public function testCanFetchTemplates(?string $baseUrl): void
+    {
+        $httpClient = $this->mockHttpClient([
+            $this->generateUrl($baseUrl, '/projects?membership=false&owned=true&per_page=50') => '[]',
+        ]);
+        $factory = $this->mockTemplateFactory();
+        $config = $this->generateConfig($baseUrl);
+
+        $profile = GitlabProfile::fromConfig($httpClient, $factory, $config);
+
+        static::assertCount(1, $profile->getSummary()->getTemplates());
+    }
+
+    public function testCanRecognizeInvalidMembershipOption(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        $httpClient = $this->mockHttpClient();
+        $factory = $this->mockTemplateFactory();
+        $config = ProfileConfig::fromArray(['type' => 'gitlab', 'name' => 'GL', 'client' => ['auth' => ['token' => 'ABC', 'type' => 'http_token'], 'options' => ['membership' => 'aa']], 'templates' => []]);
+
+        GitlabProfile::fromConfig($httpClient, $factory, $config);
+    }
+
+    public function testCanRecognizeInvalidOwnedOption(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        $httpClient = $this->mockHttpClient();
+        $factory = $this->mockTemplateFactory();
+        $config = ProfileConfig::fromArray(['type' => 'gitlab', 'name' => 'GL', 'client' => ['auth' => ['token' => 'ABC', 'type' => 'http_token'], 'options' => ['owned' => 'aa']], 'templates' => []]);
+
+        GitlabProfile::fromConfig($httpClient, $factory, $config);
+    }
+
+    /**
+     * @return iterable<string, array{0: null|string}>
+     */
+    public function getUrls(): iterable
+    {
+        yield 'default' => [null];
+        yield 'custom' => ['https://example.com'];
+    }
+
+    /**
+     * @param array<string, string> $requests
+     */
+    private function mockHttpClient(array $requests = []): ClientInterface
+    {
+        $httpClient = $this->getMockBuilder(ClientInterface::class)->getMock();
+
+        foreach ($requests as $url => $response) {
+            $httpClient
+                ->expects(static::once())
+                ->method('sendRequest')
+                ->willReturnCallback(static function (RequestInterface $request) use ($url, $response): Response {
+                    self::assertSame('GET', $request->getMethod());
+                    self::assertSame($url, $request->getUri()->__toString());
+                    self::assertSame('ABC', $request->getHeaderLine('PRIVATE-TOKEN'));
+
+                    return new Response(200, ['Content-Type' => 'application/json'], $response);
+                })
+            ;
+        }
+
+        return $httpClient;
+    }
+
+    private function mockTemplateFactory(): ProfileTemplateFactory
+    {
+        $factory = $this->getMockBuilder(ProfileTemplateFactory::class)->getMock();
+
+        $factory
+            ->method('create')
+            ->willReturn(new Template(
+                'foo',
+                RepositoryTarget::fromArray(['attribute' => []]),
+                RepositoryCollection::fromArray([]),
+            ))
+        ;
+
+        return $factory;
+    }
+
+    private function generateConfig(?string $url = null): ProfileConfig
+    {
+        $config = [
+            'type' => 'gitlab',
+            'name' => 'GL',
+            'client' => ['auth' => ['token' => 'ABC', 'type' => 'http_token'], 'options' => []],
+            'templates' => [
+                ['name' => 'foo', 'filter' => [], 'target' => ['attribute' => []]],
+            ],
+        ];
+        if ($url !== null) {
+            $config['client']['url'] = $url;
+        }
+
+        return ProfileConfig::fromArray($config);
+    }
+
+    private function generateUrl(?string $baseUrl, string $path): string
+    {
+        return sprintf('%1$s/api/v4%2$s', $baseUrl ?? 'https://gitlab.com', $path);
+    }
+}
