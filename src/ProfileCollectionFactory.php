@@ -14,8 +14,9 @@ declare(strict_types=1);
 namespace Sigwin\Ariadne;
 
 use Sigwin\Ariadne\Model\Config;
+use Sigwin\Ariadne\Model\ProfileFilter;
 
 interface ProfileCollectionFactory
 {
-    public function create(Config $config): ProfileCollection;
+    public function create(Config $config, ProfileFilter $filter): ProfileCollection;
 }

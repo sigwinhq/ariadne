@@ -14,19 +14,24 @@ declare(strict_types=1);
 namespace Sigwin\Ariadne\Profile\Collection;
 
 use Sigwin\Ariadne\Model\Config;
+use Sigwin\Ariadne\Model\ProfileFilter;
 use Sigwin\Ariadne\ProfileCollection;
 use Sigwin\Ariadne\ProfileFactory;
 
 final class ProfileGeneratorCollection implements ProfileCollection
 {
-    public function __construct(private readonly ProfileFactory $profileFactory, private readonly Config $config)
+    public function __construct(private readonly ProfileFactory $profileFactory, private readonly Config $config, private readonly ProfileFilter $filter)
     {
     }
 
     public function getIterator(): \Traversable
     {
         foreach ($this->config as $profileConfig) {
-            yield $this->profileFactory->create($profileConfig);
+            $profile = $this->profileFactory->create($profileConfig);
+
+            if ($this->filter->match($profile)) {
+                yield $profile;
+            }
         }
     }
 }
