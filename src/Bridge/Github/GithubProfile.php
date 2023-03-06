@@ -115,7 +115,15 @@ final class GithubProfile implements Profile
     {
         return [
             'description' => ['access' => RepositoryAttributeAccess::READ_WRITE],
+            'has_discussions' => ['access' => RepositoryAttributeAccess::READ_WRITE],
+            'has_downloads' => ['access' => RepositoryAttributeAccess::READ_WRITE],
+            'has_issues' => ['access' => RepositoryAttributeAccess::READ_WRITE],
+            'has_pages' => ['access' => RepositoryAttributeAccess::READ_WRITE],
+            'has_projects' => ['access' => RepositoryAttributeAccess::READ_WRITE],
+            'has_wiki' => ['access' => RepositoryAttributeAccess::READ_WRITE],
+            'open_issues_count' => ['access' => RepositoryAttributeAccess::READ_ONLY],
             'stargazers_count' => ['access' => RepositoryAttributeAccess::READ_ONLY],
+            'watchers_count' => ['access' => RepositoryAttributeAccess::READ_ONLY],
         ];
     }
 }

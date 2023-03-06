@@ -27,8 +27,20 @@ final class Repository
         $changes = [];
         foreach ($template->target->attribute as $name => $expected) {
             if (\array_key_exists($name, $this->response) === false) {
-                // TODO: fix error message, Did you mean etc
-                throw new \InvalidArgumentException('Invalid argument '.$name);
+                $message = sprintf('Invalid argument "%1$s"', $name);
+
+                $alternatives = [];
+                foreach (array_keys($this->response) as $key) {
+                    if (levenshtein($name, $key) <= 3) {
+                        $alternatives[] = $key;
+                    }
+                }
+
+                if ($alternatives !== []) {
+                    $message .= sprintf(', did you mean %1$s?', implode(', ', $alternatives));
+                }
+
+                throw new \InvalidArgumentException($message);
             }
             $actual = $this->response[$name];
 
