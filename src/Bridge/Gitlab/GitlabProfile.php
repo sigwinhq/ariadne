@@ -16,7 +16,6 @@ namespace Sigwin\Ariadne\Bridge\Gitlab;
 use Gitlab\Client;
 use Gitlab\ResultPager;
 use Psr\Http\Client\ClientInterface;
-use Sigwin\Ariadne\Bridge\Attribute\AsProfile;
 use Sigwin\Ariadne\Bridge\ProfileTrait;
 use Sigwin\Ariadne\Model\ProfileConfig;
 use Sigwin\Ariadne\Model\ProfileUser;
@@ -33,7 +32,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 /**
  * @psalm-type TRepository array{path_with_namespace: string, visibility: string, forked_from_project: ?array<string, int|string>}
  */
-#[AsProfile(type: 'gitlab')]
 final class GitlabProfile implements Profile
 {
     use ProfileTrait;
@@ -48,6 +46,11 @@ final class GitlabProfile implements Profile
         $this->options = $this->validateOptions($this->config->client->options);
 
         $this->validateAttributes($this->config->templates);
+    }
+
+    public static function getType(): string
+    {
+        return 'gitlab';
     }
 
     /**

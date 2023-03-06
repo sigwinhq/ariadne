@@ -17,7 +17,6 @@ use Github\Client;
 use Github\HttpClient\Builder;
 use Github\ResultPager;
 use Psr\Http\Client\ClientInterface;
-use Sigwin\Ariadne\Bridge\Attribute\AsProfile;
 use Sigwin\Ariadne\Bridge\ProfileTrait;
 use Sigwin\Ariadne\Model\ProfileConfig;
 use Sigwin\Ariadne\Model\ProfileUser;
@@ -34,7 +33,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 /**
  * @psalm-type TRepository array{fork: bool, full_name: string, private: bool}
  */
-#[AsProfile(type: 'github')]
 final class GithubProfile implements Profile
 {
     use ProfileTrait;
@@ -44,6 +42,11 @@ final class GithubProfile implements Profile
     private function __construct(private readonly Client $client, private readonly ProfileTemplateFactory $templateFactory, private readonly string $name, private readonly ProfileConfig $config)
     {
         $this->validateAttributes($this->config->templates);
+    }
+
+    public static function getType(): string
+    {
+        return 'github';
     }
 
     /**

@@ -66,6 +66,11 @@ final class ClassmapProfileFactoryTest extends TestCase implements Profile
         return new self();
     }
 
+    public static function getType(): string
+    {
+        return 'fake';
+    }
+
     public function getIterator(): \Traversable
     {
         throw new \LogicException('Not implemented');

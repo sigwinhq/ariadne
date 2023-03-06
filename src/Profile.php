@@ -26,6 +26,8 @@ use Sigwin\Ariadne\Model\TemplateCollection;
  */
 interface Profile extends \IteratorAggregate
 {
+    public static function getType(): string;
+
     public static function fromConfig(ClientInterface $client, ProfileTemplateFactory $templateFactory, ProfileConfig $config): self;
 
     public function getApiUser(): ProfileUser;
