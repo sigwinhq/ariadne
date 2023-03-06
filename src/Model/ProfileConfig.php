@@ -30,7 +30,7 @@ final class ProfileConfig
      *     templates: list<array{
      *          name: string,
      *          filter: array{type?: value-of<RepositoryType>, path?: string, visibility?: value-of<RepositoryVisibility>},
-     *          target: array{attribute: array<string, bool|string>}
+     *          target: array{attribute: array<string, bool|string|int>}
      *     }>
      * } $config
      */

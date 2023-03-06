@@ -26,7 +26,9 @@ use Sigwin\Ariadne\ProfileTemplateFactory;
  *
  * @uses \Sigwin\Ariadne\Model\ProfileClientConfig
  * @uses \Sigwin\Ariadne\Model\ProfileConfig
+ * @uses \Sigwin\Ariadne\Model\ProfileTemplateConfig
  * @uses \Sigwin\Ariadne\Model\ProfileUser
+ * @uses \Sigwin\Ariadne\Model\RepositoryTarget
  *
  * @internal
  *
@@ -49,6 +51,49 @@ final class GithubProfileTest extends TestCase
         $login = $profile->getApiUser();
 
         static::assertSame('ariadne', $login->username);
+    }
+
+    public function testCanSetReadWriteAttributes(): void
+    {
+        $httpClient = $this->mockHttpClient([]);
+        $factory = $this->mockTemplateFactory();
+        $config = ProfileConfig::fromArray(['type' => 'github', 'name' => 'GH', 'client' => ['auth' => ['token' => 'ABC', 'type' => 'access_token_header'], 'options' => []], 'templates' => [
+            ['name' => 'Desc', 'filter' => [], 'target' => ['attribute' => ['description' => 'desc']]],
+        ]]);
+
+        $profile = GithubProfile::fromConfig($httpClient, $factory, $config);
+
+        static::assertSame('GH', $profile->getName());
+    }
+
+    public function testCannotSetReadOnlyAttributes(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Attribute "stargazers_count" is read-only.');
+
+        $httpClient = $this->mockHttpClient([]);
+        $factory = $this->mockTemplateFactory();
+        $config = ProfileConfig::fromArray(['type' => 'github', 'name' => 'GH', 'client' => ['auth' => ['token' => 'ABC', 'type' => 'access_token_header'], 'options' => []], 'templates' => [
+            ['name' => 'Desc', 'filter' => [], 'target' => ['attribute' => ['stargazers_count' => 1000]]],
+        ]]);
+
+        $profile = GithubProfile::fromConfig($httpClient, $factory, $config);
+
+        static::assertSame('GH', $profile->getName());
+    }
+
+    public function testWillGetDidYouMeanWhenSettingAttributesWithATypo(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Attribute "desciption" does not exist. Did you mean "description"?');
+
+        $httpClient = $this->mockHttpClient([]);
+        $factory = $this->mockTemplateFactory();
+        $config = ProfileConfig::fromArray(['type' => 'github', 'name' => 'GH', 'client' => ['auth' => ['token' => 'ABC', 'type' => 'access_token_header'], 'options' => []], 'templates' => [
+            ['name' => 'Desc', 'filter' => [], 'target' => ['attribute' => ['desciption' => 'desc']]],
+        ]]);
+
+        GithubProfile::fromConfig($httpClient, $factory, $config);
     }
 
     /**

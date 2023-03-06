@@ -21,6 +21,7 @@ use Sigwin\Ariadne\Bridge\ProfileTrait;
 use Sigwin\Ariadne\Model\ProfileConfig;
 use Sigwin\Ariadne\Model\ProfileUser;
 use Sigwin\Ariadne\Model\Repository;
+use Sigwin\Ariadne\Model\RepositoryAttributeAccess;
 use Sigwin\Ariadne\Model\RepositoryCollection;
 use Sigwin\Ariadne\Model\RepositoryPlan;
 use Sigwin\Ariadne\Model\RepositoryType;
@@ -45,6 +46,8 @@ final class GitlabProfile implements Profile
     private function __construct(private readonly Client $client, private readonly ProfileTemplateFactory $templateFactory, private readonly string $name, private readonly ProfileConfig $config)
     {
         $this->options = $this->validateOptions($this->config->client->options);
+
+        $this->validateAttributes($this->config->templates);
     }
 
     /**
@@ -135,5 +138,16 @@ final class GitlabProfile implements Profile
         $options = $resolver->resolve($options);
 
         return $options;
+    }
+
+    /**
+     * @return array<string, array{access: RepositoryAttributeAccess}>
+     */
+    private function getAttributes(): array
+    {
+        return [
+            'description' => ['access' => RepositoryAttributeAccess::READ_WRITE],
+            'star_count' => ['access' => RepositoryAttributeAccess::READ_ONLY],
+        ];
     }
 }
