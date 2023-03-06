@@ -14,7 +14,9 @@ declare(strict_types=1);
 namespace Sigwin\Ariadne\Bridge;
 
 use Sigwin\Ariadne\Model\ProfileSummary;
+use Sigwin\Ariadne\Model\ProfileTemplateConfig;
 use Sigwin\Ariadne\Model\Repository;
+use Sigwin\Ariadne\Model\RepositoryAttributeAccess;
 use Sigwin\Ariadne\Model\RepositoryPlan;
 use Sigwin\Ariadne\Model\Template;
 use Sigwin\Ariadne\Model\TemplateCollection;
@@ -66,5 +68,45 @@ trait ProfileTrait
         }
 
         return new TemplateCollection($templates);
+    }
+
+    /**
+     * @param array<ProfileTemplateConfig> $templates
+     */
+    private function validateAttributes(array $templates): void
+    {
+        $attributes = $this->getAttributes();
+        foreach ($templates as $template) {
+            foreach (array_keys($template->target->attribute) as $attribute) {
+                if (! \array_key_exists($attribute, $attributes)) {
+                    $alternatives = $this->findAlternatives($attribute, array_keys($attributes));
+                    $message = sprintf('Attribute "%1$s" does not exist.', $attribute);
+                    if (\count($alternatives) > 0) {
+                        $message .= sprintf(' Did you mean "%1$s"?', implode('", "', $alternatives));
+                    }
+
+                    throw new \InvalidArgumentException($message);
+                } elseif ($attributes[$attribute]['access'] !== RepositoryAttributeAccess::READ_WRITE) {
+                    throw new \InvalidArgumentException(sprintf('Attribute "%1$s" is read-only.', $attribute));
+                }
+            }
+        }
+    }
+
+    /**
+     * @param array<string> $haystack
+     *
+     * @return array<string>
+     */
+    private function findAlternatives(string $needle, array $haystack): array
+    {
+        $alternatives = [];
+        foreach ($haystack as $alternative) {
+            if (levenshtein($needle, $alternative) <= 3) {
+                $alternatives[] = $alternative;
+            }
+        }
+
+        return $alternatives;
     }
 }

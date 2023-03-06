@@ -16,14 +16,14 @@ namespace Sigwin\Ariadne\Model;
 final class RepositoryTarget
 {
     /**
-     * @param array<string, bool|string> $attribute
+     * @param array<string, bool|int|string> $attribute
      */
     private function __construct(public readonly array $attribute)
     {
     }
 
     /**
-     * @param array{attribute: array<string, bool|string>} $config
+     * @param array{attribute: array<string, bool|int|string>} $config
      */
     public static function fromArray(array $config): self
     {

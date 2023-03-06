@@ -98,6 +98,47 @@ final class GitlabProfileTest extends TestCase
         GitlabProfile::fromConfig($httpClient, $factory, $config);
     }
 
+    public function testCanSetReadWriteAttributes(): void
+    {
+        $httpClient = $this->mockHttpClient([]);
+        $factory = $this->mockTemplateFactory();
+        $config = ProfileConfig::fromArray(['type' => 'gitlab', 'name' => 'GL', 'client' => ['auth' => ['token' => 'ABC', 'type' => 'http_token'], 'options' => []], 'templates' => [
+            ['name' => 'Desc', 'filter' => [], 'target' => ['attribute' => ['description' => 'desc']]],
+        ]]);
+
+        $profile = GitlabProfile::fromConfig($httpClient, $factory, $config);
+
+        static::assertSame('GL', $profile->getName());
+    }
+
+    public function testCannotSetReadOnlyAttributes(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Attribute "star_count" is read-only.');
+
+        $httpClient = $this->mockHttpClient([]);
+        $factory = $this->mockTemplateFactory();
+        $config = ProfileConfig::fromArray(['type' => 'gitlab', 'name' => 'GL', 'client' => ['auth' => ['token' => 'ABC', 'type' => 'http_token'], 'options' => []], 'templates' => [
+            ['name' => 'Desc', 'filter' => [], 'target' => ['attribute' => ['star_count' => 1000]]],
+        ]]);
+
+        GitlabProfile::fromConfig($httpClient, $factory, $config);
+    }
+
+    public function testWillGetDidYouMeanWhenSettingAttributesWithATypo(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Attribute "desciption" does not exist. Did you mean "description"?');
+
+        $httpClient = $this->mockHttpClient([]);
+        $factory = $this->mockTemplateFactory();
+        $config = ProfileConfig::fromArray(['type' => 'gitlab', 'name' => 'GL', 'client' => ['auth' => ['token' => 'ABC', 'type' => 'http_token'], 'options' => []], 'templates' => [
+            ['name' => 'Desc', 'filter' => [], 'target' => ['attribute' => ['desciption' => 'desc']]],
+        ]]);
+
+        GitlabProfile::fromConfig($httpClient, $factory, $config);
+    }
+
     /**
      * @return iterable<string, array{0: null|string}>
      */
