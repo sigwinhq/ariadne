@@ -21,8 +21,8 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-#[AsCommand(name: 'ariadne:sync', aliases: ['sync'])]
-final class SyncCommand extends Command
+#[AsCommand(name: 'ariadne:apply', aliases: ['apply'])]
+final class ApplyCommand extends Command
 {
     use CommandTrait;
 
@@ -59,6 +59,10 @@ final class SyncCommand extends Command
             $style->info(sprintf('Updating %1$s repos', $count));
             foreach ($plans as $plan) {
                 $profile->apply($plan);
+
+                if ($style->isVerbose()) {
+                    $style->writeln(sprintf('Updated %1$s', $plan->repository->path));
+                }
             }
         }
 

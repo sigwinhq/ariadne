@@ -45,4 +45,19 @@ final class RepositoryPlan
 
         return array_values($diff);
     }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function generateAttributeChanges(): array
+    {
+        $changes = [];
+        foreach ($this->generateDiff() as $change) {
+            if ($change->isActual() === false) {
+                $changes[$change->name] = $change->expected;
+            }
+        }
+
+        return $changes;
+    }
 }
