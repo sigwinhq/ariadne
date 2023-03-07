@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Sigwin\Ariadne\Test\Profile\Factory;
 
 use PHPUnit\Framework\TestCase;
+use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Client\ClientInterface;
 use Sigwin\Ariadne\Model\ProfileConfig;
 use Sigwin\Ariadne\Model\ProfileSummary;
@@ -41,8 +42,9 @@ final class ClassmapProfileFactoryTest extends TestCase implements Profile
     {
         $httpClient = $this->getMockBuilder(ClientInterface::class)->getMock();
         $templateFactory = $this->getMockBuilder(ProfileTemplateFactory::class)->getMock();
+        $cachePool = $this->getMockBuilder(CacheItemPoolInterface::class)->getMock();
 
-        $factory = new Profile\Factory\ClassmapProfileFactory(['self' => self::class], $httpClient, $templateFactory);
+        $factory = new Profile\Factory\ClassmapProfileFactory(['self' => self::class], $httpClient, $templateFactory, $cachePool);
         $factory->create(ProfileConfig::fromArray(['type' => 'self', 'name' => 'My Self', 'client' => ['auth' => ['type' => '', 'token' => ''], 'options' => []], 'templates' => []]));
     }
 
@@ -53,12 +55,13 @@ final class ClassmapProfileFactoryTest extends TestCase implements Profile
 
         $httpClient = $this->getMockBuilder(ClientInterface::class)->getMock();
         $templateFactory = $this->getMockBuilder(ProfileTemplateFactory::class)->getMock();
+        $cachePool = $this->getMockBuilder(CacheItemPoolInterface::class)->getMock();
 
-        $factory = new Profile\Factory\ClassmapProfileFactory(['foo' => self::class], $httpClient, $templateFactory);
+        $factory = new Profile\Factory\ClassmapProfileFactory(['foo' => self::class], $httpClient, $templateFactory, $cachePool);
         $factory->create(ProfileConfig::fromArray(['type' => 'no such type', 'name' => 'My Foo', 'client' => ['auth' => ['type' => '', 'token' => ''], 'options' => []], 'templates' => []]));
     }
 
-    public static function fromConfig(ClientInterface $client, ProfileTemplateFactory $templateFactory, ProfileConfig $config): Profile
+    public static function fromConfig(ProfileConfig $config, ClientInterface $client, ProfileTemplateFactory $templateFactory, CacheItemPoolInterface $cachePool): Profile
     {
         static::assertSame('My Self', $config->name);
 

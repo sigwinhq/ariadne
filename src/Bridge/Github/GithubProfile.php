@@ -16,6 +16,7 @@ namespace Sigwin\Ariadne\Bridge\Github;
 use Github\Client;
 use Github\HttpClient\Builder;
 use Github\ResultPager;
+use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Client\ClientInterface;
 use Sigwin\Ariadne\Bridge\ProfileTrait;
 use Sigwin\Ariadne\Model\ProfileConfig;
@@ -52,7 +53,7 @@ final class GithubProfile implements Profile
     /**
      * {@inheritDoc}
      */
-    public static function fromConfig(ClientInterface $client, ProfileTemplateFactory $templateFactory, ProfileConfig $config): self
+    public static function fromConfig(ProfileConfig $config, ClientInterface $client, ProfileTemplateFactory $templateFactory, CacheItemPoolInterface $cachePool): self
     {
         $resolver = new OptionsResolver();
         $resolver
@@ -71,6 +72,7 @@ final class GithubProfile implements Profile
         $builder = new Builder($client);
         $sdk = new Client($builder, enterpriseUrl: $config->client->url);
         $sdk->authenticate($auth['token'], $auth['type']);
+        $sdk->addCache($cachePool);
 
         return new self($sdk, $templateFactory, $config->name, $config);
     }

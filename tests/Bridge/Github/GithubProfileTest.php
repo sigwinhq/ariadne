@@ -15,6 +15,7 @@ namespace Sigwin\Ariadne\Test\Bridge\Github;
 
 use Nyholm\Psr7\Response;
 use PHPUnit\Framework\TestCase;
+use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Sigwin\Ariadne\Bridge\Github\GithubProfile;
@@ -45,9 +46,10 @@ final class GithubProfileTest extends TestCase
             $this->generateUrl($baseUrl, '/user') => '{"login": "ariadne"}',
         ]);
         $factory = $this->mockTemplateFactory();
+        $cachePool = $this->mockCachePool();
         $config = $this->generateConfig($baseUrl);
 
-        $profile = GithubProfile::fromConfig($httpClient, $factory, $config);
+        $profile = GithubProfile::fromConfig($config, $httpClient, $factory, $cachePool);
         $login = $profile->getApiUser();
 
         static::assertSame('ariadne', $login->username);
@@ -57,11 +59,12 @@ final class GithubProfileTest extends TestCase
     {
         $httpClient = $this->mockHttpClient([]);
         $factory = $this->mockTemplateFactory();
+        $cachePool = $this->mockCachePool();
         $config = ProfileConfig::fromArray(['type' => 'github', 'name' => 'GH', 'client' => ['auth' => ['token' => 'ABC', 'type' => 'access_token_header'], 'options' => []], 'templates' => [
             ['name' => 'Desc', 'filter' => [], 'target' => ['attribute' => ['description' => 'desc']]],
         ]]);
 
-        $profile = GithubProfile::fromConfig($httpClient, $factory, $config);
+        $profile = GithubProfile::fromConfig($config, $httpClient, $factory, $cachePool);
 
         static::assertSame('GH', $profile->getName());
     }
@@ -73,11 +76,12 @@ final class GithubProfileTest extends TestCase
 
         $httpClient = $this->mockHttpClient([]);
         $factory = $this->mockTemplateFactory();
+        $cachePool = $this->mockCachePool();
         $config = ProfileConfig::fromArray(['type' => 'github', 'name' => 'GH', 'client' => ['auth' => ['token' => 'ABC', 'type' => 'access_token_header'], 'options' => []], 'templates' => [
             ['name' => 'Desc', 'filter' => [], 'target' => ['attribute' => ['stargazers_count' => 1000]]],
         ]]);
 
-        $profile = GithubProfile::fromConfig($httpClient, $factory, $config);
+        $profile = GithubProfile::fromConfig($config, $httpClient, $factory, $cachePool);
 
         static::assertSame('GH', $profile->getName());
     }
@@ -89,11 +93,12 @@ final class GithubProfileTest extends TestCase
 
         $httpClient = $this->mockHttpClient([]);
         $factory = $this->mockTemplateFactory();
+        $cachePool = $this->mockCachePool();
         $config = ProfileConfig::fromArray(['type' => 'github', 'name' => 'GH', 'client' => ['auth' => ['token' => 'ABC', 'type' => 'access_token_header'], 'options' => []], 'templates' => [
             ['name' => 'Desc', 'filter' => [], 'target' => ['attribute' => ['desciption' => 'desc']]],
         ]]);
 
-        GithubProfile::fromConfig($httpClient, $factory, $config);
+        GithubProfile::fromConfig($config, $httpClient, $factory, $cachePool);
     }
 
     /**
@@ -132,6 +137,11 @@ final class GithubProfileTest extends TestCase
     private function mockTemplateFactory(): ProfileTemplateFactory
     {
         return $this->getMockBuilder(ProfileTemplateFactory::class)->getMock();
+    }
+
+    private function mockCachePool(): CacheItemPoolInterface
+    {
+        return $this->getMockBuilder(CacheItemPoolInterface::class)->getMock();
     }
 
     private function generateConfig(?string $url = null): ProfileConfig

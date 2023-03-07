@@ -15,6 +15,7 @@ namespace Sigwin\Ariadne\Test\Bridge\Gitlab;
 
 use Nyholm\Psr7\Response;
 use PHPUnit\Framework\TestCase;
+use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Sigwin\Ariadne\Bridge\Gitlab\GitlabProfile;
@@ -52,9 +53,10 @@ final class GitlabProfileTest extends TestCase
             $this->generateUrl($baseUrl, '/user') => '{"username": "ariadne"}',
         ]);
         $factory = $this->mockTemplateFactory();
+        $cachePool = $this->mockCachePool();
         $config = $this->generateConfig($baseUrl);
 
-        $profile = GitlabProfile::fromConfig($httpClient, $factory, $config);
+        $profile = GitlabProfile::fromConfig($config, $httpClient, $factory, $cachePool);
         $login = $profile->getApiUser();
 
         static::assertSame('ariadne', $login->username);
@@ -69,9 +71,10 @@ final class GitlabProfileTest extends TestCase
             $this->generateUrl($baseUrl, '/projects?membership=false&owned=true&per_page=50') => '[]',
         ]);
         $factory = $this->mockTemplateFactory();
+        $cachePool = $this->mockCachePool();
         $config = $this->generateConfig($baseUrl);
 
-        $profile = GitlabProfile::fromConfig($httpClient, $factory, $config);
+        $profile = GitlabProfile::fromConfig($config, $httpClient, $factory, $cachePool);
 
         static::assertCount(1, $profile->getSummary()->getTemplates());
     }
@@ -82,9 +85,10 @@ final class GitlabProfileTest extends TestCase
 
         $httpClient = $this->mockHttpClient();
         $factory = $this->mockTemplateFactory();
+        $cachePool = $this->mockCachePool();
         $config = ProfileConfig::fromArray(['type' => 'gitlab', 'name' => 'GL', 'client' => ['auth' => ['token' => 'ABC', 'type' => 'http_token'], 'options' => ['membership' => 'aa']], 'templates' => []]);
 
-        GitlabProfile::fromConfig($httpClient, $factory, $config);
+        GitlabProfile::fromConfig($config, $httpClient, $factory, $cachePool);
     }
 
     public function testCanRecognizeInvalidOwnedOption(): void
@@ -93,20 +97,22 @@ final class GitlabProfileTest extends TestCase
 
         $httpClient = $this->mockHttpClient();
         $factory = $this->mockTemplateFactory();
+        $cachePool = $this->mockCachePool();
         $config = ProfileConfig::fromArray(['type' => 'gitlab', 'name' => 'GL', 'client' => ['auth' => ['token' => 'ABC', 'type' => 'http_token'], 'options' => ['owned' => 'aa']], 'templates' => []]);
 
-        GitlabProfile::fromConfig($httpClient, $factory, $config);
+        GitlabProfile::fromConfig($config, $httpClient, $factory, $cachePool);
     }
 
     public function testCanSetReadWriteAttributes(): void
     {
         $httpClient = $this->mockHttpClient([]);
         $factory = $this->mockTemplateFactory();
+        $cachePool = $this->mockCachePool();
         $config = ProfileConfig::fromArray(['type' => 'gitlab', 'name' => 'GL', 'client' => ['auth' => ['token' => 'ABC', 'type' => 'http_token'], 'options' => []], 'templates' => [
             ['name' => 'Desc', 'filter' => [], 'target' => ['attribute' => ['description' => 'desc']]],
         ]]);
 
-        $profile = GitlabProfile::fromConfig($httpClient, $factory, $config);
+        $profile = GitlabProfile::fromConfig($config, $httpClient, $factory, $cachePool);
 
         static::assertSame('GL', $profile->getName());
     }
@@ -118,11 +124,12 @@ final class GitlabProfileTest extends TestCase
 
         $httpClient = $this->mockHttpClient([]);
         $factory = $this->mockTemplateFactory();
+        $cachePool = $this->mockCachePool();
         $config = ProfileConfig::fromArray(['type' => 'gitlab', 'name' => 'GL', 'client' => ['auth' => ['token' => 'ABC', 'type' => 'http_token'], 'options' => []], 'templates' => [
             ['name' => 'Desc', 'filter' => [], 'target' => ['attribute' => ['star_count' => 1000]]],
         ]]);
 
-        GitlabProfile::fromConfig($httpClient, $factory, $config);
+        GitlabProfile::fromConfig($config, $httpClient, $factory, $cachePool);
     }
 
     public function testWillGetDidYouMeanWhenSettingAttributesWithATypo(): void
@@ -132,11 +139,12 @@ final class GitlabProfileTest extends TestCase
 
         $httpClient = $this->mockHttpClient([]);
         $factory = $this->mockTemplateFactory();
+        $cachePool = $this->mockCachePool();
         $config = ProfileConfig::fromArray(['type' => 'gitlab', 'name' => 'GL', 'client' => ['auth' => ['token' => 'ABC', 'type' => 'http_token'], 'options' => []], 'templates' => [
             ['name' => 'Desc', 'filter' => [], 'target' => ['attribute' => ['desciption' => 'desc']]],
         ]]);
 
-        GitlabProfile::fromConfig($httpClient, $factory, $config);
+        GitlabProfile::fromConfig($config, $httpClient, $factory, $cachePool);
     }
 
     /**
@@ -186,6 +194,11 @@ final class GitlabProfileTest extends TestCase
         ;
 
         return $factory;
+    }
+
+    private function mockCachePool(): CacheItemPoolInterface
+    {
+        return $this->getMockBuilder(CacheItemPoolInterface::class)->getMock();
     }
 
     private function generateConfig(?string $url = null): ProfileConfig
