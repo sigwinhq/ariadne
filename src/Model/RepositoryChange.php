@@ -15,7 +15,7 @@ namespace Sigwin\Ariadne\Model;
 
 final class RepositoryChange
 {
-    public function __construct(public readonly string $name, public readonly mixed $actual, public readonly mixed $expected)
+    public function __construct(public readonly string $name, public readonly null|int|string|bool $actual, public readonly null|int|string|bool $expected)
     {
     }
 

@@ -16,9 +16,9 @@ namespace Sigwin\Ariadne\Model;
 final class Repository
 {
     /**
-     * @param array<string, null|array<string, int|string>|bool|string> $response
+     * @param array<string, null|array<string, int|string>|bool|int|string> $response
      */
-    public function __construct(private readonly array $response, public readonly RepositoryType $type, public readonly string $path, public readonly RepositoryVisibility $visibility)
+    public function __construct(private readonly array $response, public readonly RepositoryType $type, public readonly int $id, public readonly string $path, public readonly RepositoryVisibility $visibility)
     {
     }
 
@@ -43,6 +43,10 @@ final class Repository
                 throw new \InvalidArgumentException($message);
             }
             $actual = $this->response[$name];
+
+            if (\is_array($actual)) {
+                throw new \InvalidArgumentException('Unexpected change type found');
+            }
 
             $changes[] = new RepositoryChange($name, $actual, $expected);
         }

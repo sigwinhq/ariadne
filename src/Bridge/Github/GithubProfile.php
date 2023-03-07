@@ -31,7 +31,7 @@ use Sigwin\Ariadne\ProfileTemplateFactory;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * @psalm-type TRepository array{fork: bool, full_name: string, private: bool}
+ * @psalm-type TRepository array{id: int, fork: bool, full_name: string, private: bool}
  */
 final class GithubProfile implements Profile
 {
@@ -90,6 +90,9 @@ final class GithubProfile implements Profile
 
     public function apply(RepositoryPlan $plan): void
     {
+        [$username, $repository] = explode('/', $plan->repository->path, 2);
+
+        $this->client->repositories()->update($username, $repository, $plan->generateAttributeChanges());
     }
 
     private function getRepositories(): RepositoryCollection
@@ -99,10 +102,10 @@ final class GithubProfile implements Profile
 
             $pager = new ResultPager($this->client);
 
-            /** @var list<TRepository> $userRepositories */
-            $userRepositories = $pager->fetchAll($this->client->user(), 'myRepositories');
-            foreach ($userRepositories as $userRepository) {
-                $repositories[] = new Repository($userRepository, RepositoryType::fromFork($userRepository['fork']), $userRepository['full_name'], RepositoryVisibility::fromPrivate($userRepository['private']));
+            /** @var list<TRepository> $response */
+            $response = $pager->fetchAll($this->client->user(), 'myRepositories');
+            foreach ($response as $repository) {
+                $repositories[] = new Repository($repository, RepositoryType::fromFork($repository['fork']), $repository['id'], $repository['full_name'], RepositoryVisibility::fromPrivate($repository['private']));
             }
 
             $this->repositories = RepositoryCollection::fromArray($repositories);
