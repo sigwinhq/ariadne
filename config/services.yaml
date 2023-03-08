@@ -10,3 +10,7 @@ services:
     Sigwin\Ariadne\:
         resource: ../src
 
+    Sigwin\Ariadne\EnvironmentResolver:
+        $cache: "%env(default::XDG_CACHE_HOME)%"
+        $config: "%env(default::XDG_CONFIG_HOME)%"
+        $home: "%env(default::HOME)%"
