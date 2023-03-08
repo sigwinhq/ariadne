@@ -30,7 +30,7 @@ final class RuntimeEnvProcessor implements EnvVarProcessorInterface
     public static function getProvidedTypes(): array
     {
         return [
-            'xdg_cache_dir' => 'string',
+            'ariadne_cache_dir' => 'string',
         ];
     }
 }

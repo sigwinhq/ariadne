@@ -1,6 +1,6 @@
 framework:
     cache:
-        directory: "%env(xdg_cache_dir:ARIADNE_CACHE_HOME)%"
+        directory: "%env(ariadne_cache_dir:ARIADNE_CACHE_DIR)%"
 
 services:
     _defaults:
