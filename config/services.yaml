@@ -1,3 +1,7 @@
+framework:
+    cache:
+        directory: "%env(ariadne_cache_dir:ARIADNE_CACHE_DIR)%"
+
 services:
     _defaults:
         autoconfigure: true
@@ -9,4 +13,9 @@ services:
 
     Sigwin\Ariadne\:
         resource: ../src
+
+    Sigwin\Ariadne\EnvironmentResolver:
+        $cache: "%env(default::XDG_CACHE_HOME)%"
+        $config: "%env(default::XDG_CONFIG_HOME)%"
+        $home: "%env(default::HOME)%"
 

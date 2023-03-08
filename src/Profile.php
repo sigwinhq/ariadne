@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne;
 
+use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Client\ClientInterface;
 use Sigwin\Ariadne\Model\ProfileConfig;
 use Sigwin\Ariadne\Model\ProfileSummary;
@@ -28,7 +29,7 @@ interface Profile extends \IteratorAggregate
 {
     public static function getType(): string;
 
-    public static function fromConfig(ClientInterface $client, ProfileTemplateFactory $templateFactory, ProfileConfig $config): self;
+    public static function fromConfig(ProfileConfig $config, ClientInterface $client, ProfileTemplateFactory $templateFactory, CacheItemPoolInterface $cachePool): self;
 
     public function getApiUser(): ProfileUser;
 

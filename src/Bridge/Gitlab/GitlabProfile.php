@@ -15,6 +15,7 @@ namespace Sigwin\Ariadne\Bridge\Gitlab;
 
 use Gitlab\Client;
 use Gitlab\ResultPager;
+use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Client\ClientInterface;
 use Sigwin\Ariadne\Bridge\ProfileTrait;
 use Sigwin\Ariadne\Model\ProfileConfig;
@@ -56,7 +57,7 @@ final class GitlabProfile implements Profile
     /**
      * {@inheritDoc}
      */
-    public static function fromConfig(ClientInterface $client, ProfileTemplateFactory $templateFactory, ProfileConfig $config): self
+    public static function fromConfig(ProfileConfig $config, ClientInterface $client, ProfileTemplateFactory $templateFactory, CacheItemPoolInterface $cachePool): self
     {
         $resolver = new OptionsResolver();
         $resolver

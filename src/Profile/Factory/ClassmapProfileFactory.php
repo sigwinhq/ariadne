@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne\Profile\Factory;
 
+use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Client\ClientInterface;
 use Sigwin\Ariadne\Model\ProfileConfig;
 use Sigwin\Ariadne\Profile;
@@ -24,7 +25,7 @@ final class ClassmapProfileFactory implements ProfileFactory
     /**
      * @param array<string, class-string<Profile>> $profilesMap
      */
-    public function __construct(private readonly array $profilesMap, private readonly ClientInterface $httpClient, private readonly ProfileTemplateFactory $templateFactory)
+    public function __construct(private readonly array $profilesMap, private readonly ClientInterface $httpClient, private readonly ProfileTemplateFactory $templateFactory, private readonly CacheItemPoolInterface $cachePool)
     {
     }
 
@@ -38,6 +39,6 @@ final class ClassmapProfileFactory implements ProfileFactory
         }
         $className = $this->profilesMap[$config->type];
 
-        return $className::fromConfig($this->httpClient, $this->templateFactory, $config);
+        return $className::fromConfig($config, $this->httpClient, $this->templateFactory, $this->cachePool);
     }
 }
