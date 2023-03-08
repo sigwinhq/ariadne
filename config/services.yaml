@@ -1,3 +1,7 @@
+framework:
+    cache:
+        directory: "%env(xdg_cache_dir:ARIADNE_CACHE_HOME)%"
+
 services:
     _defaults:
         autoconfigure: true
@@ -14,3 +18,4 @@ services:
         $cache: "%env(default::XDG_CACHE_HOME)%"
         $config: "%env(default::XDG_CONFIG_HOME)%"
         $home: "%env(default::HOME)%"
+
