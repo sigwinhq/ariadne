@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Sigwin\Ariadne\Bridge\Gitlab;
 
 use Gitlab\Client;
+use Gitlab\HttpClient\Builder;
 use Gitlab\ResultPager;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Client\ClientInterface;
@@ -73,7 +74,9 @@ final class GitlabProfile implements Profile
         /** @var array{type: string, token: string} $auth */
         $auth = $resolver->resolve($config->client->auth);
 
-        $sdk = Client::createWithHttpClient($client);
+        $builder = new Builder($client);
+        $builder->addCache($cachePool);
+        $sdk = new Client($builder);
         $sdk->authenticate($auth['token'], $auth['type']);
         if ($config->client->url !== null) {
             $sdk->setUrl($config->client->url);
