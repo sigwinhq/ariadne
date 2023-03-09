@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Sigwin\Ariadne\Bridge\Symfony\Command;
 
 use Sigwin\Ariadne\Bridge\Symfony\Console\Style\AriadneStyle;
+use Sigwin\Ariadne\Model\Config;
 use Sigwin\Ariadne\Model\ProfileFilter;
 use Sigwin\Ariadne\Model\RepositoryPlan;
 use Sigwin\Ariadne\Profile;
@@ -29,25 +30,11 @@ trait CommandTrait
     {
         $this
             ->addArgument('profile-name', InputArgument::OPTIONAL, 'Profile to use', null, function (CompletionInput $input): array {
-                $config = $this->configReader->read($this->getConfigUrl($input));
-
-                $names = [];
-                foreach ($config as $profile) {
-                    $names[] = $profile->name;
-                }
-
-                return $names;
+                return $this->getConfigProfileAttributes($this->configReader->read($this->getConfigUrl($input)), 'name');
             })
             ->addOption('config-file', 'C', InputOption::VALUE_OPTIONAL, 'Configuration file to use (YAML)')
             ->addOption('profile-type', 'T', InputOption::VALUE_OPTIONAL, 'Profile type to use', null, function (CompletionInput $input): array {
-                $config = $this->configReader->read($this->getConfigUrl($input));
-
-                $types = [];
-                foreach ($config as $profile) {
-                    $types[] = $profile->type;
-                }
-
-                return $types;
+                return $this->getConfigProfileAttributes($this->configReader->read($this->getConfigUrl($input)), 'type');
             })
         ;
     }
@@ -59,7 +46,10 @@ trait CommandTrait
         $config = $this->configReader->read($this->getConfigUrl($input));
         $style->note(sprintf('Using config: %1$s', $config->url));
 
-        return $this->clientCollectionFactory->create($config, ProfileFilter::create($this->getProfileName($input), $this->getProfileType($input)));
+        $names = $this->getConfigProfileAttributes($config, 'name');
+        $types = $this->getConfigProfileAttributes($config, 'type');
+
+        return $this->clientCollectionFactory->create($config, ProfileFilter::create($this->getInputVariable($input->getArgument('profile-name'), 'name', $names), $this->getInputVariable($input->getOption('profile-type'), 'type', $types)));
     }
 
     /**
@@ -101,27 +91,45 @@ trait CommandTrait
         return $configFile;
     }
 
-    private function getProfileName(InputInterface $input): ?string
+    /**
+     * @param array<string> $allowed
+     */
+    private function getInputVariable(mixed $value, string $name, array $allowed): ?string
     {
-        /**
-         * @var null|string $profileName
-         *
-         * @psalm-suppress UnnecessaryVarAnnotation
-         */
-        $profileName = $input->getArgument('profile-name');
+        if ($value === null) {
+            return null;
+        }
 
-        return $profileName;
+        if (! \is_string($value)) {
+            throw new \InvalidArgumentException('Invalid value');
+        }
+
+        if (! \in_array($value, $allowed, true)) {
+            throw new \InvalidArgumentException(sprintf('Invalid profile %1$s "%2$s". Allowed values: "%3$s"', $name, $value, implode('", "', $allowed)));
+        }
+
+        return $value;
     }
 
-    private function getProfileType(InputInterface $input): ?string
+    /**
+     * @param "name"|"type" $name
+     *
+     * @return array<string>
+     */
+    private function getConfigProfileAttributes(Config $config, string $name): array
     {
-        /**
-         * @var null|string $profileType
-         *
-         * @psalm-suppress UnnecessaryVarAnnotation
-         */
-        $profileType = $input->getOption('profile-type');
+        $attributes = [];
+        foreach ($config as $profile) {
+            /**
+             * @phpstan-ignore-next-line
+             *
+             * @var string $attribute
+             */
+            $attribute = $profile->{$name};
 
-        return $profileType;
+            $attributes[] = $attribute;
+        }
+
+        return $attributes;
     }
 }

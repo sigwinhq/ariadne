@@ -40,6 +40,11 @@ final class ApplyCommand extends Command
     {
         $style = new AriadneStyle($input, $output);
         $profiles = $this->getProfileCollection($input, $style);
+        if (\count($profiles) === 0) {
+            $style->warning('No profiles found.');
+
+            return self::FAILURE;
+        }
 
         $skipped = 0;
         foreach ($profiles as $profile) {
@@ -69,11 +74,11 @@ final class ApplyCommand extends Command
         if ($skipped > 0) {
             $style->warning(sprintf('Completed with %1$d plans skipped.', $skipped));
 
-            return 1;
+            return self::INVALID;
         }
 
         $style->success('Completed.');
 
-        return 0;
+        return self::SUCCESS;
     }
 }
