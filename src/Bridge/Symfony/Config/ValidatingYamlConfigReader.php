@@ -14,11 +14,13 @@ declare(strict_types=1);
 namespace Sigwin\Ariadne\Bridge\Symfony\Config;
 
 use Sigwin\Ariadne\ConfigReader;
+use Sigwin\Ariadne\EnvironmentResolver;
 use Sigwin\Ariadne\Model\Config;
 use Sigwin\Ariadne\Model\RepositoryType;
 use Sigwin\Ariadne\Model\RepositoryVisibility;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\Processor;
+use Symfony\Component\Finder\Finder;
 use Symfony\Component\Yaml\Yaml;
 
 final class ValidatingYamlConfigReader implements ConfigReader
@@ -26,18 +28,52 @@ final class ValidatingYamlConfigReader implements ConfigReader
     /**
      * @param array<string, class-string<\Sigwin\Ariadne\Profile>> $profilesMap
      */
-    public function __construct(private readonly array $profilesMap)
+    public function __construct(private readonly array $profilesMap, private readonly EnvironmentResolver $environmentResolver)
     {
     }
 
     public function read(?string $url = null): Config
     {
-        // TODO: support .yml, .yaml.dist, .yml.dist
-        $url ??= 'ariadne.yaml';
-        $url = realpath($url);
-        if ($url === false) {
-            throw new \InvalidArgumentException('File not found');
+        if ($url === null) {
+            $in = [
+                (string) getcwd(),
+            ];
+            $configDir = $this->environmentResolver->getConfigDir();
+            if (is_dir($configDir)) {
+                $in[] = $configDir;
+            }
+
+            $finder = new Finder();
+            $finder
+                ->in($in)
+                ->files()
+                ->depth(0)
+                ->name(['/ariadne\.ya?ml(\.dist)?$/'])
+                ->sortByName(true)
+            ;
+            $found = false;
+            foreach ($finder as $item) {
+                $url = $item->getRealPath();
+                $found = true;
+                break;
+            }
+            if (! $found) {
+                throw new \InvalidArgumentException('Configuration file ariadne.yaml(.dist) not found in '.implode(', ', $in));
+            }
+        } else {
+            $url = realpath($url);
         }
+
+        if ($url === false) {
+            throw new \InvalidArgumentException('Configuration file not found');
+        }
+
+        /**
+         * @var array<array-key, mixed> $payload
+         *
+         * @psalm-suppress PossiblyNullArgument
+         */
+        $payload = Yaml::parseFile($url);
 
         $builder = new TreeBuilder('ariadne');
         $builder
@@ -132,7 +168,7 @@ final class ValidatingYamlConfigReader implements ConfigReader
          *          }>
          *     }>} $config
          */
-        $config = $processor->process($builder->buildTree(), [Yaml::parseFile($url)]);
+        $config = $processor->process($builder->buildTree(), [$payload]);
 
         return Config::fromArray($url, $config);
     }
