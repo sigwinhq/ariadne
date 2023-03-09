@@ -34,4 +34,9 @@ final class ProfileGeneratorCollection implements ProfileCollection
             }
         }
     }
+
+    public function count(): int
+    {
+        return iterator_count($this->getIterator());
+    }
 }

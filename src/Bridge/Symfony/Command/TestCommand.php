@@ -40,11 +40,16 @@ final class TestCommand extends Command
     {
         $style = new AriadneStyle($input, $output);
         $profiles = $this->getProfileCollection($input, $style);
+        if (\count($profiles) === 0) {
+            $style->warning('No profiles found.');
+
+            return self::INVALID;
+        }
 
         foreach ($profiles as $profile) {
             $style->summary($profile);
         }
 
-        return 0;
+        return self::SUCCESS;
     }
 }
