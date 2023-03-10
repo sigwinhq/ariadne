@@ -185,7 +185,7 @@ final class GitlabProfileTest extends TestCase
         $factory = $this->getMockBuilder(ProfileTemplateFactory::class)->getMock();
 
         $factory
-            ->method('createTemplate')
+            ->method('create')
             ->willReturn(new ProfileTemplate(
                 'foo',
                 ProfileTemplateTargetConfig::fromArray(['attribute' => []]),

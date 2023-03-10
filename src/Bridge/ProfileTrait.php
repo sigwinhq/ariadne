@@ -64,7 +64,7 @@ trait ProfileTrait
     {
         $templates = [];
         foreach ($this->config->templates as $config) {
-            $templates[] = $this->templateFactory->createTemplate($config, $this->getRepositories());
+            $templates[] = $this->templateFactory->create($config, $this->getRepositories());
         }
 
         return new ProfileTemplateCollection($templates);

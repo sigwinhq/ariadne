@@ -16,7 +16,9 @@ namespace Sigwin\Ariadne\Profile\Template\Factory;
 use Sigwin\Ariadne\Bridge\Symfony\ExpressionLanguage\ExpressionLanguage;
 use Sigwin\Ariadne\Model\Collection\RepositoryCollection;
 use Sigwin\Ariadne\Model\Config\ProfileTemplateConfig;
+use Sigwin\Ariadne\Model\Config\ProfileTemplateTargetConfig;
 use Sigwin\Ariadne\Model\ProfileTemplate;
+use Sigwin\Ariadne\Model\ProfileTemplateTarget;
 use Sigwin\Ariadne\Model\Repository;
 use Sigwin\Ariadne\ProfileTemplateFactory;
 use Symfony\Component\ExpressionLanguage\SyntaxError;
@@ -27,9 +29,9 @@ final class FilteredProfileTemplateFactory implements ProfileTemplateFactory
     {
     }
 
-    public function createTemplate(ProfileTemplateConfig $config, RepositoryCollection $repositories): ProfileTemplate
+    public function create(ProfileTemplateConfig $config, RepositoryCollection $repositories): ProfileTemplate
     {
-        return new ProfileTemplate($config->name, $config->target, $repositories->filter(function (Repository $repository) use ($config): bool {
+        return new ProfileTemplate($config->name, $this->createTemplateTarget($config->target), $repositories->filter(function (Repository $repository) use ($config): bool {
             foreach ($config->filter as $name => $value) {
                 /**
                  * @var null|array<string>|string|\UnitEnum $repositoryValue
@@ -95,5 +97,10 @@ final class FilteredProfileTemplateFactory implements ProfileTemplateFactory
 
             return true;
         }));
+    }
+
+    public function createTemplateTarget(ProfileTemplateTargetConfig $config): ProfileTemplateTarget
+    {
+        return ProfileTemplateTarget::fromConfig($config);
     }
 }

@@ -13,6 +13,16 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne\Model;
 
+use Sigwin\Ariadne\Model\Config\ProfileTemplateTargetConfig;
+
 final class ProfileTemplateTarget
 {
+    private function __construct(public readonly ProfileTemplateTargetConfig $config)
+    {
+    }
+
+    public static function fromConfig(ProfileTemplateTargetConfig $config): self
+    {
+        return new self($config);
+    }
 }
