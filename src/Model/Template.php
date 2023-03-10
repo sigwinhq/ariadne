@@ -14,14 +14,14 @@ declare(strict_types=1);
 namespace Sigwin\Ariadne\Model;
 
 use Sigwin\Ariadne\Model\Collection\RepositoryCollection;
-use Sigwin\Ariadne\Model\Config\RepositoryTargetConfig;
+use Sigwin\Ariadne\Model\Config\ProfileTemplateTargetConfig;
 
 /**
  * @implements \IteratorAggregate<Repository>
  */
 final class Template implements \Countable, \IteratorAggregate, \Stringable
 {
-    public function __construct(public readonly string $name, public readonly RepositoryTargetConfig $target, public readonly RepositoryCollection $repositories)
+    public function __construct(public readonly string $name, public readonly ProfileTemplateTargetConfig $target, public readonly RepositoryCollection $repositories)
     {
     }
 

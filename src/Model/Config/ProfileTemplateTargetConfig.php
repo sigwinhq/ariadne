@@ -13,24 +13,21 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne\Model\Config;
 
-use Sigwin\Ariadne\Model\TRepositoryTarget;
-use Sigwin\Ariadne\Model\TRepositoryTargetAttribute;
-
 /**
- * @psalm-type TRepositoryTargetAttribute = array<string, bool|string|int>
- * @psalm-type TRepositoryTarget = array{attribute: TRepositoryTargetAttribute}
+ * @psalm-type TProfileTemplateTargetAttribute = array<string, bool|string|int>
+ * @psalm-type TProfileTemplateTarget = array{attribute: TProfileTemplateTargetAttribute}
  */
-final class RepositoryTargetConfig
+final class ProfileTemplateTargetConfig
 {
     /**
-     * @param TRepositoryTargetAttribute $attribute
+     * @param TProfileTemplateTargetAttribute $attribute
      */
     private function __construct(public readonly array $attribute)
     {
     }
 
     /**
-     * @param TRepositoryTarget $config
+     * @param TProfileTemplateTarget $config
      */
     public static function fromArray(array $config): self
     {

@@ -28,7 +28,7 @@ use Sigwin\Ariadne\ProfileTemplateFactory;
  * @uses \Sigwin\Ariadne\Model\Config\ProfileClientConfig
  * @uses \Sigwin\Ariadne\Model\Config\ProfileConfig
  * @uses \Sigwin\Ariadne\Model\Config\ProfileTemplateConfig
- * @uses \Sigwin\Ariadne\Model\Config\RepositoryTargetConfig
+ * @uses \Sigwin\Ariadne\Model\Config\ProfileTemplateTargetConfig
  * @uses \Sigwin\Ariadne\Model\ProfileUser
  *
  * @internal
