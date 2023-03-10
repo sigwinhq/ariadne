@@ -29,7 +29,7 @@ final class Repository
     public function createChangeForTemplate(ProfileTemplate $template): RepositoryChangeCollection
     {
         $changes = [];
-        foreach ($template->target->config->attribute as $name => $expected) {
+        foreach ($template->getTargetAttributes($this) as $name => $expected) {
             if (\array_key_exists($name, $this->response) === false) {
                 $message = sprintf('Invalid argument "%1$s"', $name);
 

@@ -23,6 +23,7 @@ use Sigwin\Ariadne\Model\Collection\RepositoryCollection;
 use Sigwin\Ariadne\Model\Config\ProfileConfig;
 use Sigwin\Ariadne\Model\Config\ProfileTemplateTargetConfig;
 use Sigwin\Ariadne\Model\ProfileTemplate;
+use Sigwin\Ariadne\Model\ProfileTemplateTarget;
 use Sigwin\Ariadne\ProfileTemplateFactory;
 
 /**
@@ -38,6 +39,7 @@ use Sigwin\Ariadne\ProfileTemplateFactory;
  * @uses \Sigwin\Ariadne\Model\Config\ProfileTemplateTargetConfig
  * @uses \Sigwin\Ariadne\Model\ProfileSummary
  * @uses \Sigwin\Ariadne\Model\ProfileTemplate
+ * @uses \Sigwin\Ariadne\Model\ProfileTemplateTarget
  * @uses \Sigwin\Ariadne\Model\ProfileUser
  *
  * @small
@@ -188,7 +190,7 @@ final class GitlabProfileTest extends TestCase
             ->method('create')
             ->willReturn(new ProfileTemplate(
                 'foo',
-                ProfileTemplateTargetConfig::fromArray(['attribute' => []]),
+                ProfileTemplateTarget::fromConfig(ProfileTemplateTargetConfig::fromArray(['attribute' => []])),
                 RepositoryCollection::fromArray([]),
             ))
         ;

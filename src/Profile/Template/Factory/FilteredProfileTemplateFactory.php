@@ -99,7 +99,7 @@ final class FilteredProfileTemplateFactory implements ProfileTemplateFactory
         }));
     }
 
-    public function createTemplateTarget(ProfileTemplateTargetConfig $config): ProfileTemplateTarget
+    private function createTemplateTarget(ProfileTemplateTargetConfig $config): ProfileTemplateTarget
     {
         return ProfileTemplateTarget::fromConfig($config);
     }

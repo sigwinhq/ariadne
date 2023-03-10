@@ -15,10 +15,21 @@ namespace Sigwin\Ariadne\Model;
 
 use Sigwin\Ariadne\Model\Config\ProfileTemplateTargetConfig;
 
+/**
+ * @psalm-import-type TProfileTemplateTargetAttribute from ProfileTemplateTargetConfig
+ */
 final class ProfileTemplateTarget
 {
-    private function __construct(public readonly ProfileTemplateTargetConfig $config)
+    private function __construct(private readonly ProfileTemplateTargetConfig $config)
     {
+    }
+
+    /**
+     * @return TProfileTemplateTargetAttribute
+     */
+    public function getAttributes(ProfileTemplate $template, Repository $repository): array
+    {
+        return $this->config->attribute;
     }
 
     public static function fromConfig(ProfileTemplateTargetConfig $config): self
