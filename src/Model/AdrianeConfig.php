@@ -20,7 +20,7 @@ namespace Sigwin\Ariadne\Model;
  *
  * @psalm-type TConfig = array{profiles: list<TProfile>}
  */
-final class Config implements \IteratorAggregate
+final class AdrianeConfig implements \IteratorAggregate
 {
     /**
      * @param array<ProfileConfig> $clientConfig

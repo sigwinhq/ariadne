@@ -13,9 +13,9 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne;
 
-use Sigwin\Ariadne\Model\Config;
+use Sigwin\Ariadne\Model\AdrianeConfig;
 
 interface ConfigReader
 {
-    public function read(?string $url = null): Config;
+    public function read(?string $url = null): AdrianeConfig;
 }
