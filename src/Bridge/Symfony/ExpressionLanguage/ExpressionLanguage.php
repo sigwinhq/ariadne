@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Sigwin\Ariadne\Bridge\Symfony\ExpressionLanguage;
 
 use Psr\Cache\CacheItemPoolInterface;
-use Sigwin\Ariadne\Bridge\Symfony\ExpressionLanguage\LanguageProvider\MatcherExpressionLanguageProvider;
+use Sigwin\Ariadne\Bridge\Symfony\ExpressionLanguage\LanguageProvider\FilterExpressionLanguageProvider;
 use Symfony\Component\ExpressionLanguage\ExpressionFunctionProviderInterface;
 
 final class ExpressionLanguage extends \Symfony\Component\ExpressionLanguage\ExpressionLanguage
@@ -24,7 +24,7 @@ final class ExpressionLanguage extends \Symfony\Component\ExpressionLanguage\Exp
      */
     public function __construct(CacheItemPoolInterface $cache = null, array $providers = [])
     {
-        array_unshift($providers, new MatcherExpressionLanguageProvider());
+        array_unshift($providers, new FilterExpressionLanguageProvider());
 
         parent::__construct($cache, $providers);
     }

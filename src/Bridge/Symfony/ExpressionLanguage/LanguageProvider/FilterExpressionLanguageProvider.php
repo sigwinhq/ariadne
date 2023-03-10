@@ -17,7 +17,7 @@ use Sigwin\Ariadne\Model\Repository;
 use Symfony\Component\ExpressionLanguage\ExpressionFunction;
 use Symfony\Component\ExpressionLanguage\ExpressionFunctionProviderInterface;
 
-final class MatcherExpressionLanguageProvider implements ExpressionFunctionProviderInterface
+final class FilterExpressionLanguageProvider implements ExpressionFunctionProviderInterface
 {
     public function getFunctions(): array
     {
