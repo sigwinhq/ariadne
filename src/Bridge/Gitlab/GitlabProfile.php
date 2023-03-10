@@ -32,7 +32,7 @@ use Sigwin\Ariadne\ProfileTemplateFactory;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * @psalm-type TRepository array{id: int, path_with_namespace: string, visibility: string, forked_from_project: ?array<string, int|string>}
+ * @psalm-type TRepository array{id: int, path_with_namespace: string, visibility: string, forked_from_project: ?array<string, int|string>, topics: array<string>, language?: string}
  */
 final class GitlabProfile implements Profile
 {
@@ -110,7 +110,15 @@ final class GitlabProfile implements Profile
 
             $repositories = [];
             foreach ($response as $repository) {
-                $repositories[] = new Repository($repository, RepositoryType::fromFork(isset($repository['forked_from_project'])), $repository['id'], $repository['path_with_namespace'], RepositoryVisibility::from($repository['visibility']));
+                $repositories[] = new Repository(
+                    $repository,
+                    RepositoryType::fromFork(isset($repository['forked_from_project'])),
+                    $repository['id'],
+                    $repository['path_with_namespace'],
+                    RepositoryVisibility::from($repository['visibility']),
+                    $repository['topics'],
+                    isset($repository['language']) && $repository['language'] !== '' ? (array) $repository['language'] : [],
+                );
             }
             $this->repositories = RepositoryCollection::fromArray($repositories);
         }
