@@ -22,7 +22,6 @@ use Sigwin\Ariadne\Model\ProfileTemplate;
 use Sigwin\Ariadne\Model\ProfileTemplateTarget;
 use Sigwin\Ariadne\Model\Repository;
 use Sigwin\Ariadne\ProfileTemplateFactory;
-use Symfony\Component\ExpressionLanguage\SyntaxError;
 
 final class FilteredProfileTemplateFactory implements Evaluator, ProfileTemplateFactory
 {
@@ -66,17 +65,16 @@ final class FilteredProfileTemplateFactory implements Evaluator, ProfileTemplate
                     continue;
                 }
 
-                try {
-                    $expressionValue = $this->expressionLanguage->evaluate($value, [
+                if (str_starts_with($value, self::PREFIX)) {
+                    $expressionValue = $this->expressionLanguage->evaluate(mb_substr($value, \mb_strlen(self::PREFIX)), [
                         'property' => $name,
                         'repository' => $repository,
                     ]);
+
                     if ($expressionValue !== true) {
                         return false;
                     }
                     continue;
-                } catch (SyntaxError $e) {
-                    // not a valid expression, compare as a literal
                 }
 
                 if ($repositoryValue instanceof \BackedEnum) {
