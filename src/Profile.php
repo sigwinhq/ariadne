@@ -15,12 +15,12 @@ namespace Sigwin\Ariadne;
 
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Client\ClientInterface;
-use Sigwin\Ariadne\Model\ProfileConfig;
+use Sigwin\Ariadne\Model\Collection\TemplateCollection;
+use Sigwin\Ariadne\Model\Config\ProfileConfig;
 use Sigwin\Ariadne\Model\ProfileSummary;
 use Sigwin\Ariadne\Model\ProfileUser;
 use Sigwin\Ariadne\Model\Repository;
 use Sigwin\Ariadne\Model\RepositoryPlan;
-use Sigwin\Ariadne\Model\TemplateCollection;
 
 /**
  * @extends \IteratorAggregate<\Sigwin\Ariadne\Model\Repository>

@@ -14,9 +14,9 @@ declare(strict_types=1);
 namespace Sigwin\Ariadne\Profile\Template\Factory;
 
 use Sigwin\Ariadne\Bridge\Symfony\ExpressionLanguage\ExpressionLanguage;
-use Sigwin\Ariadne\Model\ProfileTemplateConfig;
+use Sigwin\Ariadne\Model\Collection\RepositoryCollection;
+use Sigwin\Ariadne\Model\Config\ProfileTemplateConfig;
 use Sigwin\Ariadne\Model\Repository;
-use Sigwin\Ariadne\Model\RepositoryCollection;
 use Sigwin\Ariadne\Model\Template;
 use Sigwin\Ariadne\ProfileTemplateFactory;
 use Symfony\Component\ExpressionLanguage\SyntaxError;

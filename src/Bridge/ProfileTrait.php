@@ -13,13 +13,13 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne\Bridge;
 
+use Sigwin\Ariadne\Model\Collection\TemplateCollection;
+use Sigwin\Ariadne\Model\Config\ProfileTemplateConfig;
 use Sigwin\Ariadne\Model\ProfileSummary;
-use Sigwin\Ariadne\Model\ProfileTemplateConfig;
 use Sigwin\Ariadne\Model\Repository;
 use Sigwin\Ariadne\Model\RepositoryAttributeAccess;
 use Sigwin\Ariadne\Model\RepositoryPlan;
 use Sigwin\Ariadne\Model\Template;
-use Sigwin\Ariadne\Model\TemplateCollection;
 
 trait ProfileTrait
 {

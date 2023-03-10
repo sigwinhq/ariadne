@@ -11,12 +11,12 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sigwin\Ariadne\Model;
+namespace Sigwin\Ariadne\Model\Config;
 
 /**
- * @implements \IteratorAggregate<\Sigwin\Ariadne\Model\ProfileConfig>
+ * @implements \IteratorAggregate<\Sigwin\Ariadne\Model\Config\ProfileConfig>
  *
- * @psalm-import-type TProfile from ProfileConfig
+ * @psalm-import-type TProfile from \Sigwin\Ariadne\Model\Config\ProfileConfig
  *
  * @psalm-type TConfig = array{profiles: list<TProfile>}
  */

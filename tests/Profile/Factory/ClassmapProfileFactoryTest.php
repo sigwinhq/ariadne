@@ -16,13 +16,13 @@ namespace Sigwin\Ariadne\Test\Profile\Factory;
 use PHPUnit\Framework\TestCase;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Client\ClientInterface;
-use Sigwin\Ariadne\Model\ProfileConfig;
+use Sigwin\Ariadne\Model\Collection\RepositoryCollection;
+use Sigwin\Ariadne\Model\Collection\TemplateCollection;
+use Sigwin\Ariadne\Model\Config\ProfileConfig;
 use Sigwin\Ariadne\Model\ProfileSummary;
 use Sigwin\Ariadne\Model\ProfileUser;
 use Sigwin\Ariadne\Model\Repository;
-use Sigwin\Ariadne\Model\RepositoryCollection;
 use Sigwin\Ariadne\Model\RepositoryPlan;
-use Sigwin\Ariadne\Model\TemplateCollection;
 use Sigwin\Ariadne\Profile;
 use Sigwin\Ariadne\ProfileTemplateFactory;
 
@@ -31,8 +31,8 @@ use Sigwin\Ariadne\ProfileTemplateFactory;
  *
  * @covers \Sigwin\Ariadne\Profile\Factory\ClassmapProfileFactory
  *
- * @uses \Sigwin\Ariadne\Model\ProfileClientConfig
- * @uses \Sigwin\Ariadne\Model\ProfileConfig
+ * @uses \Sigwin\Ariadne\Model\Config\ProfileClientConfig
+ * @uses \Sigwin\Ariadne\Model\Config\ProfileConfig
  *
  * @small
  */

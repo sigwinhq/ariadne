@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne;
 
-use Sigwin\Ariadne\Model\ProfileTemplateConfig;
-use Sigwin\Ariadne\Model\RepositoryCollection;
+use Sigwin\Ariadne\Model\Collection\RepositoryCollection;
+use Sigwin\Ariadne\Model\Config\ProfileTemplateConfig;
 use Sigwin\Ariadne\Model\Template;
 
 interface ProfileTemplateFactory

@@ -11,7 +11,10 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sigwin\Ariadne\Model;
+namespace Sigwin\Ariadne\Model\Collection;
+
+use Sigwin\Ariadne\Model\RepositoryChange;
+use Sigwin\Ariadne\Model\Template;
 
 final class RepositoryChangeCollection
 {

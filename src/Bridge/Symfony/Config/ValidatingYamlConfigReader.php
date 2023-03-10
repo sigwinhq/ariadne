@@ -15,7 +15,7 @@ namespace Sigwin\Ariadne\Bridge\Symfony\Config;
 
 use Sigwin\Ariadne\ConfigReader;
 use Sigwin\Ariadne\EnvironmentResolver;
-use Sigwin\Ariadne\Model\AdrianeConfig;
+use Sigwin\Ariadne\Model\Config\AdrianeConfig;
 use Sigwin\Ariadne\Model\RepositoryType;
 use Sigwin\Ariadne\Model\RepositoryVisibility;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;

@@ -11,12 +11,12 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sigwin\Ariadne\Model;
+namespace Sigwin\Ariadne\Model\Config;
 
 /**
  * @psalm-import-type TRepositoryTarget from RepositoryTargetConfig
  *
- * @psalm-type TProfileTemplateFilter = array{type?: value-of<RepositoryType>, path?: string, visibility?: value-of<RepositoryVisibility>, topics?: array<string>, languages?: array<string>}
+ * @psalm-type TProfileTemplateFilter = array{type?: value-of<\Sigwin\Ariadne\Model\RepositoryType>, path?: string, visibility?: value-of<\Sigwin\Ariadne\Model\RepositoryVisibility>, topics?: array<string>, languages?: array<string>}
  * @psalm-type TProfileTemplate = array{name: string, filter: TProfileTemplateFilter, target: TRepositoryTarget}
  */
 final class ProfileTemplateConfig

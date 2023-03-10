@@ -13,6 +13,9 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne\Model;
 
+use Sigwin\Ariadne\Model\Collection\RepositoryCollection;
+use Sigwin\Ariadne\Model\Config\RepositoryTargetConfig;
+
 /**
  * @implements \IteratorAggregate<Repository>
  */

@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne\Profile\Collection;
 
-use Sigwin\Ariadne\Model\AdrianeConfig;
+use Sigwin\Ariadne\Model\Config\AdrianeConfig;
 use Sigwin\Ariadne\Model\ProfileFilter;
 use Sigwin\Ariadne\ProfileCollection;
 use Sigwin\Ariadne\ProfileFactory;

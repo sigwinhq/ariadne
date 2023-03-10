@@ -11,7 +11,10 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sigwin\Ariadne\Model;
+namespace Sigwin\Ariadne\Model\Config;
+
+use Sigwin\Ariadne\Model\TRepositoryTarget;
+use Sigwin\Ariadne\Model\TRepositoryTargetAttribute;
 
 /**
  * @psalm-type TRepositoryTargetAttribute = array<string, bool|string|int>
