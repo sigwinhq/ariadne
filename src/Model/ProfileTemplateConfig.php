@@ -16,7 +16,7 @@ namespace Sigwin\Ariadne\Model;
 /**
  * @psalm-import-type TRepositoryTarget from RepositoryTarget
  *
- * @psalm-type TProfileTemplateFilter = array{type?: value-of<RepositoryType>, path?: string, visibility?: value-of<RepositoryVisibility>}
+ * @psalm-type TProfileTemplateFilter = array{type?: value-of<RepositoryType>, path?: string, visibility?: value-of<RepositoryVisibility>, topic?: string, language?: string}
  * @psalm-type TProfileTemplate = array{name: string, filter: TProfileTemplateFilter, target: TRepositoryTarget}
  */
 final class ProfileTemplateConfig
