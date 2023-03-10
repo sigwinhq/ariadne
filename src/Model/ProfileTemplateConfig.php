@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Sigwin\Ariadne\Model;
 
 /**
- * @psalm-import-type TRepositoryTarget from RepositoryTarget
+ * @psalm-import-type TRepositoryTarget from RepositoryTargetConfig
  *
  * @psalm-type TProfileTemplateFilter = array{type?: value-of<RepositoryType>, path?: string, visibility?: value-of<RepositoryVisibility>, topics?: array<string>, languages?: array<string>}
  * @psalm-type TProfileTemplate = array{name: string, filter: TProfileTemplateFilter, target: TRepositoryTarget}
@@ -24,7 +24,7 @@ final class ProfileTemplateConfig
     /**
      * @param TProfileTemplateFilter $filter
      */
-    public function __construct(public readonly string $name, public readonly array $filter, public readonly RepositoryTarget $target)
+    public function __construct(public readonly string $name, public readonly array $filter, public readonly RepositoryTargetConfig $target)
     {
     }
 
@@ -33,6 +33,6 @@ final class ProfileTemplateConfig
      */
     public static function fromArray(array $config): self
     {
-        return new self($config['name'], $config['filter'], RepositoryTarget::fromArray($config['target']));
+        return new self($config['name'], $config['filter'], RepositoryTargetConfig::fromArray($config['target']));
     }
 }

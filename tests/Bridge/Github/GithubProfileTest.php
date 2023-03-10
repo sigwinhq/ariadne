@@ -29,7 +29,7 @@ use Sigwin\Ariadne\ProfileTemplateFactory;
  * @uses \Sigwin\Ariadne\Model\ProfileConfig
  * @uses \Sigwin\Ariadne\Model\ProfileTemplateConfig
  * @uses \Sigwin\Ariadne\Model\ProfileUser
- * @uses \Sigwin\Ariadne\Model\RepositoryTarget
+ * @uses \Sigwin\Ariadne\Model\RepositoryTargetConfig
  *
  * @internal
  *

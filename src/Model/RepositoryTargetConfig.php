@@ -17,7 +17,7 @@ namespace Sigwin\Ariadne\Model;
  * @psalm-type TRepositoryTargetAttribute = array<string, bool|string|int>
  * @psalm-type TRepositoryTarget = array{attribute: TRepositoryTargetAttribute}
  */
-final class RepositoryTarget
+final class RepositoryTargetConfig
 {
     /**
      * @param TRepositoryTargetAttribute $attribute

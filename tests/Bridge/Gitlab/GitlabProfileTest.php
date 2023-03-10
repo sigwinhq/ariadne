@@ -21,7 +21,7 @@ use Psr\Http\Message\RequestInterface;
 use Sigwin\Ariadne\Bridge\Gitlab\GitlabProfile;
 use Sigwin\Ariadne\Model\ProfileConfig;
 use Sigwin\Ariadne\Model\RepositoryCollection;
-use Sigwin\Ariadne\Model\RepositoryTarget;
+use Sigwin\Ariadne\Model\RepositoryTargetConfig;
 use Sigwin\Ariadne\Model\Template;
 use Sigwin\Ariadne\ProfileTemplateFactory;
 
@@ -36,7 +36,7 @@ use Sigwin\Ariadne\ProfileTemplateFactory;
  * @uses \Sigwin\Ariadne\Model\ProfileTemplateConfig
  * @uses \Sigwin\Ariadne\Model\ProfileUser
  * @uses \Sigwin\Ariadne\Model\RepositoryCollection
- * @uses \Sigwin\Ariadne\Model\RepositoryTarget
+ * @uses \Sigwin\Ariadne\Model\RepositoryTargetConfig
  * @uses \Sigwin\Ariadne\Model\Template
  * @uses \Sigwin\Ariadne\Model\TemplateCollection
  *
@@ -188,7 +188,7 @@ final class GitlabProfileTest extends TestCase
             ->method('create')
             ->willReturn(new Template(
                 'foo',
-                RepositoryTarget::fromArray(['attribute' => []]),
+                RepositoryTargetConfig::fromArray(['attribute' => []]),
                 RepositoryCollection::fromArray([]),
             ))
         ;
