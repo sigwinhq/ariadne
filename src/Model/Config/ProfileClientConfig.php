@@ -13,10 +13,6 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne\Model\Config;
 
-use Sigwin\Ariadne\Model\TProfileClient;
-use Sigwin\Ariadne\Model\TProfileClientAuth;
-use Sigwin\Ariadne\Model\TProfileClientOptions;
-
 /**
  * @psalm-type TProfileClientAuth = array{type: string, token: string}
  * @psalm-type TProfileClientOptions = array<string, bool|string>
