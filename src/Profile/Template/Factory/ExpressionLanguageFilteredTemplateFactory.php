@@ -57,6 +57,13 @@ final class ExpressionLanguageFilteredTemplateFactory implements ProfileTemplate
                     continue;
                 }
 
+                if (is_array($repositoryValue)) {
+                    if (!in_array($value, $repositoryValue, true)) {
+                        return false;
+                    }
+                    continue;
+                }
+
                 if ($repositoryValue !== $value) {
                     return false;
                 }
