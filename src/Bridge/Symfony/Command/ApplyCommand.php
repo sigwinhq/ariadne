@@ -54,7 +54,7 @@ final class ApplyCommand extends Command
             if ($count === 0) {
                 continue;
             }
-            if ($style->confirm('Update these repos?') === false) {
+            if ($style->confirm(sprintf('Update these %1$s repos?', $count)) === false) {
                 $skipped += $count;
                 $style->warning(sprintf('Skipping updating %1$s repos', $count));
 
@@ -72,7 +72,7 @@ final class ApplyCommand extends Command
         }
 
         if ($skipped > 0) {
-            $style->warning(sprintf('Completed with %1$d plans skipped.', $skipped));
+            $style->warning(sprintf('Completed, but %1$d repos skipped.', $skipped));
 
             return self::INVALID;
         }

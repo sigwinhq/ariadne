@@ -155,6 +155,33 @@ final class GitlabProfile implements Profile
     {
         return [
             'description' => ['access' => RepositoryAttributeAccess::READ_WRITE],
+            'issues_enabled' => ['access' => RepositoryAttributeAccess::READ_WRITE],
+            'lfs_enabled' => ['access' => RepositoryAttributeAccess::READ_WRITE],
+            'merge_requests_enabled' => ['access' => RepositoryAttributeAccess::READ_WRITE],
+            'container_registry_enabled' => ['access' => RepositoryAttributeAccess::READ_WRITE],
+            'wiki_enabled' => ['access' => RepositoryAttributeAccess::READ_WRITE],
+            'service_desk_enabled' => ['access' => RepositoryAttributeAccess::READ_WRITE],
+            'snippets_enabled' => ['access' => RepositoryAttributeAccess::READ_WRITE],
+            'packages_enabled' => ['access' => RepositoryAttributeAccess::READ_WRITE],
+            'remove_source_branch_after_merge' => ['access' => RepositoryAttributeAccess::READ_WRITE],
+            'only_allow_merge_if_pipeline_succeeds' => ['access' => RepositoryAttributeAccess::READ_WRITE],
+            'only_allow_merge_if_all_discussions_are_resolved' => ['access' => RepositoryAttributeAccess::READ_WRITE],
+            'allow_merge_on_skipped_pipeline' => ['access' => RepositoryAttributeAccess::READ_WRITE],
+
+            'monitor_access_level' => ['access' => RepositoryAttributeAccess::READ_WRITE],
+            'pages_access_level' => ['access' => RepositoryAttributeAccess::READ_WRITE],
+            'forking_access_level' => ['access' => RepositoryAttributeAccess::READ_WRITE],
+            'analytics_access_level' => ['access' => RepositoryAttributeAccess::READ_WRITE],
+            'security_and_compliance_access_level' => ['access' => RepositoryAttributeAccess::READ_WRITE],
+            'environments_access_level' => ['access' => RepositoryAttributeAccess::READ_WRITE],
+            'feature_flags_access_level' => ['access' => RepositoryAttributeAccess::READ_WRITE],
+            'infrastructure_access_level' => ['access' => RepositoryAttributeAccess::READ_WRITE],
+            'releases_access_level' => ['access' => RepositoryAttributeAccess::READ_WRITE],
+
+            'merge_method' => ['access' => RepositoryAttributeAccess::READ_WRITE],
+            'squash_option' => ['access' => RepositoryAttributeAccess::READ_WRITE],
+            'squash_commit_template' => ['access' => RepositoryAttributeAccess::READ_WRITE],
+
             'star_count' => ['access' => RepositoryAttributeAccess::READ_ONLY],
         ];
     }

@@ -103,12 +103,13 @@ final class AriadneStyle extends SymfonyStyle
 
     public function plan(RepositoryPlan $plan): void
     {
-        $this->writeln($plan->repository->path);
+        $this->writeln(sprintf('<info>%1$s</info>', $plan->repository->path));
 
         $diff = $plan->generateDiff();
         foreach ($diff as $change) {
             $this->diff($change);
         }
+        $this->newLine();
     }
 
     public function diff(RepositoryChange $change): void
