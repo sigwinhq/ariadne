@@ -26,7 +26,7 @@ final class Repository
     {
     }
 
-    public function createChangeForTemplate(Template $template): RepositoryChangeCollection
+    public function createChangeForTemplate(ProfileTemplate $template): RepositoryChangeCollection
     {
         $changes = [];
         foreach ($template->target->attribute as $name => $expected) {

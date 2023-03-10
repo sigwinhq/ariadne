@@ -17,9 +17,10 @@ use Sigwin\Ariadne\Model\Config\AdrianeConfig;
 use Sigwin\Ariadne\Model\ProfileFilter;
 use Sigwin\Ariadne\Profile\Collection\ProfileGeneratorCollection;
 use Sigwin\Ariadne\ProfileCollection;
+use Sigwin\Ariadne\ProfileCollectionFactory;
 use Sigwin\Ariadne\ProfileFactory;
 
-final class ProfileGeneratorCollectionFactory implements \Sigwin\Ariadne\ProfileCollectionFactory
+final class ProfileGeneratorCollectionFactory implements ProfileCollectionFactory
 {
     public function __construct(private readonly ProfileFactory $clientFactory)
     {

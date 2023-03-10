@@ -13,15 +13,15 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne\Model\Collection;
 
-use Sigwin\Ariadne\Model\Template;
+use Sigwin\Ariadne\Model\ProfileTemplate;
 
 /**
- * @implements \IteratorAggregate<Template>
+ * @implements \IteratorAggregate<ProfileTemplate>
  */
-final class TemplateCollection implements \Countable, \IteratorAggregate
+final class ProfileTemplateCollection implements \Countable, \IteratorAggregate
 {
     /**
-     * @param array<Template> $templates
+     * @param array<ProfileTemplate> $templates
      */
     public function __construct(private readonly array $templates)
     {

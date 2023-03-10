@@ -15,9 +15,9 @@ namespace Sigwin\Ariadne;
 
 use Sigwin\Ariadne\Model\Collection\RepositoryCollection;
 use Sigwin\Ariadne\Model\Config\ProfileTemplateConfig;
-use Sigwin\Ariadne\Model\Template;
+use Sigwin\Ariadne\Model\ProfileTemplate;
 
 interface ProfileTemplateFactory
 {
-    public function create(ProfileTemplateConfig $config, RepositoryCollection $repositories): Template;
+    public function createTemplate(ProfileTemplateConfig $config, RepositoryCollection $repositories): ProfileTemplate;
 }

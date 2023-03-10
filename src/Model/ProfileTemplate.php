@@ -19,15 +19,10 @@ use Sigwin\Ariadne\Model\Config\ProfileTemplateTargetConfig;
 /**
  * @implements \IteratorAggregate<Repository>
  */
-final class Template implements \Countable, \IteratorAggregate, \Stringable
+final class ProfileTemplate implements \Countable, \IteratorAggregate
 {
     public function __construct(public readonly string $name, public readonly ProfileTemplateTargetConfig $target, public readonly RepositoryCollection $repositories)
     {
-    }
-
-    public function __toString(): string
-    {
-        return $this->name;
     }
 
     public function count(): int

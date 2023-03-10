@@ -22,7 +22,7 @@ use Sigwin\Ariadne\Bridge\Gitlab\GitlabProfile;
 use Sigwin\Ariadne\Model\Collection\RepositoryCollection;
 use Sigwin\Ariadne\Model\Config\ProfileConfig;
 use Sigwin\Ariadne\Model\Config\ProfileTemplateTargetConfig;
-use Sigwin\Ariadne\Model\Template;
+use Sigwin\Ariadne\Model\ProfileTemplate;
 use Sigwin\Ariadne\ProfileTemplateFactory;
 
 /**
@@ -30,15 +30,15 @@ use Sigwin\Ariadne\ProfileTemplateFactory;
  *
  * @covers \Sigwin\Ariadne\Bridge\Gitlab\GitlabProfile
  *
+ * @uses \Sigwin\Ariadne\Model\Collection\ProfileTemplateCollection
  * @uses \Sigwin\Ariadne\Model\Collection\RepositoryCollection
- * @uses \Sigwin\Ariadne\Model\Collection\TemplateCollection
  * @uses \Sigwin\Ariadne\Model\Config\ProfileClientConfig
  * @uses \Sigwin\Ariadne\Model\Config\ProfileConfig
  * @uses \Sigwin\Ariadne\Model\Config\ProfileTemplateConfig
  * @uses \Sigwin\Ariadne\Model\Config\ProfileTemplateTargetConfig
  * @uses \Sigwin\Ariadne\Model\ProfileSummary
+ * @uses \Sigwin\Ariadne\Model\ProfileTemplate
  * @uses \Sigwin\Ariadne\Model\ProfileUser
- * @uses \Sigwin\Ariadne\Model\Template
  *
  * @small
  */
@@ -185,8 +185,8 @@ final class GitlabProfileTest extends TestCase
         $factory = $this->getMockBuilder(ProfileTemplateFactory::class)->getMock();
 
         $factory
-            ->method('create')
-            ->willReturn(new Template(
+            ->method('createTemplate')
+            ->willReturn(new ProfileTemplate(
                 'foo',
                 ProfileTemplateTargetConfig::fromArray(['attribute' => []]),
                 RepositoryCollection::fromArray([]),
