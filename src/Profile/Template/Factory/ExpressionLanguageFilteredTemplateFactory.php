@@ -31,6 +31,36 @@ final class ExpressionLanguageFilteredTemplateFactory implements ProfileTemplate
     {
         return new Template($config->name, $config->target, $repositories->filter(function (Repository $repository) use ($config): bool {
             foreach ($config->filter as $name => $value) {
+                /**
+                 * @var null|array<string>|string|\UnitEnum $repositoryValue
+                 *
+                 * @phpstan-ignore-next-line
+                 */
+                $repositoryValue = $repository->{$name};
+
+                if (\is_array($value)) {
+                    if ($value === []) {
+                        // no values to match against, skip
+                        continue;
+                    }
+
+                    if (\is_array($repositoryValue)) {
+                        // both are arrays, must have at least one common value
+                        if (array_intersect($value, $repositoryValue) === []) {
+                            return false;
+                        }
+
+                        continue;
+                    }
+
+                    // repository value is not an array, so compare it to each value in the filter array
+                    if (! \in_array($repositoryValue, $value, true)) {
+                        return false;
+                    }
+
+                    continue;
+                }
+
                 try {
                     $expressionValue = $this->expressionLanguage->evaluate($value, [
                         'property' => $name,
@@ -44,14 +74,15 @@ final class ExpressionLanguageFilteredTemplateFactory implements ProfileTemplate
                     // not a valid expression, compare as a literal
                 }
 
-                /**
-                 * @var null|string|\UnitEnum $repositoryValue
-                 *
-                 * @phpstan-ignore-next-line
-                 */
-                $repositoryValue = $repository->{$name};
                 if ($repositoryValue instanceof \BackedEnum) {
                     if ($repositoryValue->value !== $value) {
+                        return false;
+                    }
+                    continue;
+                }
+
+                if (\is_array($repositoryValue)) {
+                    if (! \in_array($value, $repositoryValue, true)) {
                         return false;
                     }
                     continue;

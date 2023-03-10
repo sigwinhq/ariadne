@@ -13,18 +13,23 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne\Model;
 
+/**
+ * @psalm-type TProfileClientAuth = array{type: string, token: string}
+ * @psalm-type TProfileClientOptions = array<string, bool|string>
+ * @psalm-type TProfileClient = array{auth: TProfileClientAuth, options: TProfileClientOptions, url?: string}
+ */
 final class ProfileClientConfig
 {
     /**
-     * @param array{type: string, token: string} $auth
-     * @param array<string, bool|string>         $options
+     * @param TProfileClientAuth    $auth
+     * @param TProfileClientOptions $options
      */
     private function __construct(public readonly array $auth, public readonly array $options, public readonly ?string $url = null)
     {
     }
 
     /**
-     * @param array{auth: array{type: string, token: string}, options: array<string, bool|string>, url?: string} $config
+     * @param TProfileClient $config
      */
     public static function fromArray(array $config): self
     {

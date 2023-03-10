@@ -32,7 +32,7 @@ use Sigwin\Ariadne\ProfileTemplateFactory;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * @psalm-type TRepository array{id: int, fork: bool, full_name: string, private: bool}
+ * @psalm-type TRepository array{id: int, fork: bool, full_name: string, private: bool, topics: array<string>, language?: string}
  */
 final class GithubProfile implements Profile
 {
@@ -107,7 +107,15 @@ final class GithubProfile implements Profile
             /** @var list<TRepository> $response */
             $response = $pager->fetchAll($this->client->user(), 'myRepositories');
             foreach ($response as $repository) {
-                $repositories[] = new Repository($repository, RepositoryType::fromFork($repository['fork']), $repository['id'], $repository['full_name'], RepositoryVisibility::fromPrivate($repository['private']));
+                $repositories[] = new Repository(
+                    $repository,
+                    RepositoryType::fromFork($repository['fork']),
+                    $repository['id'],
+                    $repository['full_name'],
+                    RepositoryVisibility::fromPrivate($repository['private']),
+                    $repository['topics'],
+                    isset($repository['language']) && $repository['language'] !== '' ? (array) $repository['language'] : [],
+                );
             }
 
             $this->repositories = RepositoryCollection::fromArray($repositories);

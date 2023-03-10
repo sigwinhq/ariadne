@@ -15,6 +15,10 @@ namespace Sigwin\Ariadne\Model;
 
 /**
  * @implements \IteratorAggregate<\Sigwin\Ariadne\Model\ProfileConfig>
+ *
+ * @psalm-import-type TProfile from ProfileConfig
+ *
+ * @psalm-type TConfig = array{profiles: list<TProfile>}
  */
 final class Config implements \IteratorAggregate
 {
@@ -26,17 +30,7 @@ final class Config implements \IteratorAggregate
     }
 
     /**
-     * @param array{
-     *     profiles: list<array{
-     *          type: string,
-     *          name: string,
-     *          client: array{auth: array{type: string, token: string}, options: array<string, bool|string>, url?: string},
-     *          templates: list<array{
-     *              name: string,
-     *              filter: array{type?: value-of<RepositoryType>, path?: string, visibility?: value-of<RepositoryVisibility>},
-     *              target: array{attribute: array<string, bool|string>}
-     *          }>
-     *     }>} $config
+     * @param TConfig $config
      */
     public static function fromArray(string $url, array $config): self
     {

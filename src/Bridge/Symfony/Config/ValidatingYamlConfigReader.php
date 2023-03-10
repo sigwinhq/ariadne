@@ -23,6 +23,9 @@ use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Yaml\Yaml;
 
+/**
+ * @psalm-import-type TConfig from Config
+ */
 final class ValidatingYamlConfigReader implements ConfigReader
 {
     /**
@@ -129,10 +132,20 @@ final class ValidatingYamlConfigReader implements ConfigReader
                                                 ->enumNode('type')
                                                     ->values(array_map(static fn (RepositoryType $case) => $case->value, RepositoryType::cases()))
                                                 ->end()
-                                                ->scalarNode('path')
-                                                ->end()
                                                 ->enumNode('visibility')
                                                     ->values(array_map(static fn (RepositoryVisibility $case) => $case->value, RepositoryVisibility::cases()))
+                                                ->end()
+                                                ->scalarNode('path')
+                                                ->end()
+                                                ->arrayNode('topics')
+                                                    ->beforeNormalization()->castToArray()->end()
+                                                    ->scalarPrototype()
+                                                    ->end()
+                                                ->end()
+                                                ->arrayNode('languages')
+                                                    ->beforeNormalization()->castToArray()->end()
+                                                    ->scalarPrototype()
+                                                    ->end()
                                                 ->end()
                                             ->end()
                                         ->end()
@@ -156,18 +169,7 @@ final class ValidatingYamlConfigReader implements ConfigReader
 
         $processor = new Processor();
 
-        /** @var array{
-         *     profiles: list<array{
-         *          type: string,
-         *          name: string,
-         *          client: array{auth: array{type: string, token: string}, options: array<string, bool|string>, url?: string},
-         *          templates: list<array{
-         *              name: string,
-         *              filter: array{type?: value-of<RepositoryType>, path?: string, visibility?: value-of<RepositoryVisibility>},
-         *              target: array{attribute: array<string, bool|string>}
-         *          }>
-         *     }>} $config
-         */
+        /** @var TConfig $config */
         $config = $processor->process($builder->buildTree(), [$payload]);
 
         return Config::fromArray($url, $config);
