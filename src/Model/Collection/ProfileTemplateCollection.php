@@ -11,15 +11,17 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sigwin\Ariadne\Model;
+namespace Sigwin\Ariadne\Model\Collection;
+
+use Sigwin\Ariadne\Model\ProfileTemplate;
 
 /**
- * @implements \IteratorAggregate<Template>
+ * @implements \IteratorAggregate<ProfileTemplate>
  */
-final class TemplateCollection implements \Countable, \IteratorAggregate
+final class ProfileTemplateCollection implements \Countable, \IteratorAggregate
 {
     /**
-     * @param array<Template> $templates
+     * @param array<ProfileTemplate> $templates
      */
     public function __construct(private readonly array $templates)
     {

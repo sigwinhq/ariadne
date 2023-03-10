@@ -11,21 +11,24 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sigwin\Ariadne\Model;
+namespace Sigwin\Ariadne\Model\Collection;
+
+use Sigwin\Ariadne\Model\ProfileTemplate;
+use Sigwin\Ariadne\Model\RepositoryChange;
 
 final class RepositoryChangeCollection
 {
     /**
      * @param array<RepositoryChange> $changes
      */
-    private function __construct(public readonly Template $template, public readonly array $changes)
+    private function __construct(public readonly ProfileTemplate $template, public readonly array $changes)
     {
     }
 
     /**
      * @param array<RepositoryChange> $changes
      */
-    public static function fromTemplate(Template $template, array $changes): self
+    public static function fromTemplate(ProfileTemplate $template, array $changes): self
     {
         return new self($template, $changes);
     }

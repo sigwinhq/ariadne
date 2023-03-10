@@ -19,17 +19,17 @@ use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Sigwin\Ariadne\Bridge\Github\GithubProfile;
-use Sigwin\Ariadne\Model\ProfileConfig;
+use Sigwin\Ariadne\Model\Config\ProfileConfig;
 use Sigwin\Ariadne\ProfileTemplateFactory;
 
 /**
  * @covers \Sigwin\Ariadne\Bridge\Github\GithubProfile
  *
- * @uses \Sigwin\Ariadne\Model\ProfileClientConfig
- * @uses \Sigwin\Ariadne\Model\ProfileConfig
- * @uses \Sigwin\Ariadne\Model\ProfileTemplateConfig
+ * @uses \Sigwin\Ariadne\Model\Config\ProfileClientConfig
+ * @uses \Sigwin\Ariadne\Model\Config\ProfileConfig
+ * @uses \Sigwin\Ariadne\Model\Config\ProfileTemplateConfig
+ * @uses \Sigwin\Ariadne\Model\Config\ProfileTemplateTargetConfig
  * @uses \Sigwin\Ariadne\Model\ProfileUser
- * @uses \Sigwin\Ariadne\Model\RepositoryTarget
  *
  * @internal
  *

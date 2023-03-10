@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne\Model;
 
+use Sigwin\Ariadne\Model\Collection\RepositoryChangeCollection;
+
 final class RepositoryPlan
 {
     /**

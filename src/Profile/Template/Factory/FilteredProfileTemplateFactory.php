@@ -14,22 +14,26 @@ declare(strict_types=1);
 namespace Sigwin\Ariadne\Profile\Template\Factory;
 
 use Sigwin\Ariadne\Bridge\Symfony\ExpressionLanguage\ExpressionLanguage;
-use Sigwin\Ariadne\Model\ProfileTemplateConfig;
+use Sigwin\Ariadne\Evaluator;
+use Sigwin\Ariadne\Model\Collection\RepositoryCollection;
+use Sigwin\Ariadne\Model\Config\ProfileTemplateConfig;
+use Sigwin\Ariadne\Model\Config\ProfileTemplateTargetConfig;
+use Sigwin\Ariadne\Model\ProfileTemplate;
+use Sigwin\Ariadne\Model\ProfileTemplateTarget;
 use Sigwin\Ariadne\Model\Repository;
-use Sigwin\Ariadne\Model\RepositoryCollection;
-use Sigwin\Ariadne\Model\Template;
 use Sigwin\Ariadne\ProfileTemplateFactory;
-use Symfony\Component\ExpressionLanguage\SyntaxError;
 
-final class ExpressionLanguageFilteredTemplateFactory implements ProfileTemplateFactory
+final class FilteredProfileTemplateFactory implements Evaluator, ProfileTemplateFactory
 {
+    private const PREFIX = '@=';
+
     public function __construct(private readonly ExpressionLanguage $expressionLanguage)
     {
     }
 
-    public function create(ProfileTemplateConfig $config, RepositoryCollection $repositories): Template
+    public function create(ProfileTemplateConfig $config, RepositoryCollection $repositories): ProfileTemplate
     {
-        return new Template($config->name, $config->target, $repositories->filter(function (Repository $repository) use ($config): bool {
+        return new ProfileTemplate($config->name, $this->createTemplateTarget($config->target), $repositories->filter(function (Repository $repository) use ($config): bool {
             foreach ($config->filter as $name => $value) {
                 /**
                  * @var null|array<string>|string|\UnitEnum $repositoryValue
@@ -61,17 +65,16 @@ final class ExpressionLanguageFilteredTemplateFactory implements ProfileTemplate
                     continue;
                 }
 
-                try {
-                    $expressionValue = $this->expressionLanguage->evaluate($value, [
+                if (str_starts_with($value, self::PREFIX)) {
+                    $expressionValue = $this->expressionLanguage->evaluate(mb_substr($value, \mb_strlen(self::PREFIX)), [
                         'property' => $name,
                         'repository' => $repository,
                     ]);
+
                     if ($expressionValue !== true) {
                         return false;
                     }
                     continue;
-                } catch (SyntaxError $e) {
-                    // not a valid expression, compare as a literal
                 }
 
                 if ($repositoryValue instanceof \BackedEnum) {
@@ -95,5 +98,22 @@ final class ExpressionLanguageFilteredTemplateFactory implements ProfileTemplate
 
             return true;
         }));
+    }
+
+    public function evaluate(string|int|bool $value, array $variables): string|int|bool
+    {
+        if (! \is_string($value) || ! str_starts_with($value, self::PREFIX)) {
+            return $value;
+        }
+
+        /** @var bool|int|string $value */
+        $value = $this->expressionLanguage->evaluate(mb_substr($value, mb_strlen(self::PREFIX)), $variables);
+
+        return $value;
+    }
+
+    private function createTemplateTarget(ProfileTemplateTargetConfig $config): ProfileTemplateTarget
+    {
+        return ProfileTemplateTarget::fromConfig($config, $this);
     }
 }

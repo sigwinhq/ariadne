@@ -13,9 +13,10 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne;
 
-use Sigwin\Ariadne\Model\Config\ProfileConfig;
-
-interface ProfileFactory
+interface Evaluator
 {
-    public function create(ProfileConfig $config): Profile;
+    /**
+     * @param array<string, mixed> $variables
+     */
+    public function evaluate(string|int|bool $value, array $variables): string|int|bool;
 }

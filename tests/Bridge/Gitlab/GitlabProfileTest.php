@@ -19,10 +19,12 @@ use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Sigwin\Ariadne\Bridge\Gitlab\GitlabProfile;
-use Sigwin\Ariadne\Model\ProfileConfig;
-use Sigwin\Ariadne\Model\RepositoryCollection;
-use Sigwin\Ariadne\Model\RepositoryTarget;
-use Sigwin\Ariadne\Model\Template;
+use Sigwin\Ariadne\Evaluator;
+use Sigwin\Ariadne\Model\Collection\RepositoryCollection;
+use Sigwin\Ariadne\Model\Config\ProfileConfig;
+use Sigwin\Ariadne\Model\Config\ProfileTemplateTargetConfig;
+use Sigwin\Ariadne\Model\ProfileTemplate;
+use Sigwin\Ariadne\Model\ProfileTemplateTarget;
 use Sigwin\Ariadne\ProfileTemplateFactory;
 
 /**
@@ -30,15 +32,16 @@ use Sigwin\Ariadne\ProfileTemplateFactory;
  *
  * @covers \Sigwin\Ariadne\Bridge\Gitlab\GitlabProfile
  *
- * @uses \Sigwin\Ariadne\Model\ProfileClientConfig
- * @uses \Sigwin\Ariadne\Model\ProfileConfig
+ * @uses \Sigwin\Ariadne\Model\Collection\ProfileTemplateCollection
+ * @uses \Sigwin\Ariadne\Model\Collection\RepositoryCollection
+ * @uses \Sigwin\Ariadne\Model\Config\ProfileClientConfig
+ * @uses \Sigwin\Ariadne\Model\Config\ProfileConfig
+ * @uses \Sigwin\Ariadne\Model\Config\ProfileTemplateConfig
+ * @uses \Sigwin\Ariadne\Model\Config\ProfileTemplateTargetConfig
  * @uses \Sigwin\Ariadne\Model\ProfileSummary
- * @uses \Sigwin\Ariadne\Model\ProfileTemplateConfig
+ * @uses \Sigwin\Ariadne\Model\ProfileTemplate
+ * @uses \Sigwin\Ariadne\Model\ProfileTemplateTarget
  * @uses \Sigwin\Ariadne\Model\ProfileUser
- * @uses \Sigwin\Ariadne\Model\RepositoryCollection
- * @uses \Sigwin\Ariadne\Model\RepositoryTarget
- * @uses \Sigwin\Ariadne\Model\Template
- * @uses \Sigwin\Ariadne\Model\TemplateCollection
  *
  * @small
  */
@@ -186,9 +189,12 @@ final class GitlabProfileTest extends TestCase
 
         $factory
             ->method('create')
-            ->willReturn(new Template(
+            ->willReturn(new ProfileTemplate(
                 'foo',
-                RepositoryTarget::fromArray(['attribute' => []]),
+                ProfileTemplateTarget::fromConfig(
+                    ProfileTemplateTargetConfig::fromArray(['attribute' => []]),
+                    $this->getMockBuilder(Evaluator::class)->getMock(),
+                ),
                 RepositoryCollection::fromArray([]),
             ))
         ;

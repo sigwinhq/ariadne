@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne\Model;
 
+use Sigwin\Ariadne\Model\Collection\RepositoryChangeCollection;
+
 final class Repository
 {
     /**
@@ -24,10 +26,10 @@ final class Repository
     {
     }
 
-    public function createChangeForTemplate(Template $template): RepositoryChangeCollection
+    public function createChangeForTemplate(ProfileTemplate $template): RepositoryChangeCollection
     {
         $changes = [];
-        foreach ($template->target->attribute as $name => $expected) {
+        foreach ($template->getTargetAttributes($this) as $name => $expected) {
             if (\array_key_exists($name, $this->response) === false) {
                 $message = sprintf('Invalid argument "%1$s"', $name);
 

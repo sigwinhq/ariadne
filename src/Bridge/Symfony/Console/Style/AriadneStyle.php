@@ -14,10 +14,10 @@ declare(strict_types=1);
 namespace Sigwin\Ariadne\Bridge\Symfony\Console\Style;
 
 use Sigwin\Ariadne\Bridge\Symfony\Console\Logo;
+use Sigwin\Ariadne\Model\ProfileTemplate;
 use Sigwin\Ariadne\Model\Repository;
 use Sigwin\Ariadne\Model\RepositoryChange;
 use Sigwin\Ariadne\Model\RepositoryPlan;
-use Sigwin\Ariadne\Model\Template;
 use Sigwin\Ariadne\Profile;
 use Symfony\Component\Console\Formatter\OutputFormatter;
 use Symfony\Component\Console\Helper\Dumper;
@@ -122,7 +122,7 @@ final class AriadneStyle extends SymfonyStyle
         }
     }
 
-    private function repository(Profile $profile, Repository $repository, ?Template $template = null, string $prefix = ''): void
+    private function repository(Profile $profile, Repository $repository, ?ProfileTemplate $template = null, string $prefix = ''): void
     {
         $matching = $profile->getMatchingTemplates($repository);
 

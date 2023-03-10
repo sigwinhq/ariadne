@@ -13,13 +13,13 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne\Bridge;
 
+use Sigwin\Ariadne\Model\Collection\ProfileTemplateCollection;
+use Sigwin\Ariadne\Model\Config\ProfileTemplateConfig;
 use Sigwin\Ariadne\Model\ProfileSummary;
-use Sigwin\Ariadne\Model\ProfileTemplateConfig;
+use Sigwin\Ariadne\Model\ProfileTemplate;
 use Sigwin\Ariadne\Model\Repository;
 use Sigwin\Ariadne\Model\RepositoryAttributeAccess;
 use Sigwin\Ariadne\Model\RepositoryPlan;
-use Sigwin\Ariadne\Model\Template;
-use Sigwin\Ariadne\Model\TemplateCollection;
 
 trait ProfileTrait
 {
@@ -55,19 +55,19 @@ trait ProfileTrait
         return new RepositoryPlan($repository, $changes);
     }
 
-    public function getMatchingTemplates(Repository $repository): TemplateCollection
+    public function getMatchingTemplates(Repository $repository): ProfileTemplateCollection
     {
-        return $this->getTemplates()->filter(static fn (Template $template): bool => $template->contains($repository));
+        return $this->getTemplates()->filter(static fn (ProfileTemplate $template): bool => $template->contains($repository));
     }
 
-    public function getTemplates(): TemplateCollection
+    public function getTemplates(): ProfileTemplateCollection
     {
         $templates = [];
         foreach ($this->config->templates as $config) {
             $templates[] = $this->templateFactory->create($config, $this->getRepositories());
         }
 
-        return new TemplateCollection($templates);
+        return new ProfileTemplateCollection($templates);
     }
 
     /**

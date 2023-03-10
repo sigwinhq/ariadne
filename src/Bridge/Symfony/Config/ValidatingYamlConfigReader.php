@@ -15,7 +15,7 @@ namespace Sigwin\Ariadne\Bridge\Symfony\Config;
 
 use Sigwin\Ariadne\ConfigReader;
 use Sigwin\Ariadne\EnvironmentResolver;
-use Sigwin\Ariadne\Model\Config;
+use Sigwin\Ariadne\Model\Config\AdrianeConfig;
 use Sigwin\Ariadne\Model\RepositoryType;
 use Sigwin\Ariadne\Model\RepositoryVisibility;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
@@ -24,7 +24,7 @@ use Symfony\Component\Finder\Finder;
 use Symfony\Component\Yaml\Yaml;
 
 /**
- * @psalm-import-type TConfig from Config
+ * @psalm-import-type TConfig from AdrianeConfig
  */
 final class ValidatingYamlConfigReader implements ConfigReader
 {
@@ -35,7 +35,7 @@ final class ValidatingYamlConfigReader implements ConfigReader
     {
     }
 
-    public function read(?string $url = null): Config
+    public function read(?string $url = null): AdrianeConfig
     {
         if ($url === null) {
             $in = [
@@ -172,6 +172,6 @@ final class ValidatingYamlConfigReader implements ConfigReader
         /** @var TConfig $config */
         $config = $processor->process($builder->buildTree(), [$payload]);
 
-        return Config::fromArray($url, $config);
+        return AdrianeConfig::fromArray($url, $config);
     }
 }
