@@ -24,13 +24,7 @@ final class RepositoryPlan
 
     public function isActual(): bool
     {
-        foreach ($this->changes as $change) {
-            if ($change->isActual() === false) {
-                return false;
-            }
-        }
-
-        return true;
+        return $this->generateAttributeChanges() === [];
     }
 
     /**
