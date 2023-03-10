@@ -19,6 +19,7 @@ use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Sigwin\Ariadne\Bridge\Gitlab\GitlabProfile;
+use Sigwin\Ariadne\Evaluator;
 use Sigwin\Ariadne\Model\Collection\RepositoryCollection;
 use Sigwin\Ariadne\Model\Config\ProfileConfig;
 use Sigwin\Ariadne\Model\Config\ProfileTemplateTargetConfig;
@@ -190,7 +191,10 @@ final class GitlabProfileTest extends TestCase
             ->method('create')
             ->willReturn(new ProfileTemplate(
                 'foo',
-                ProfileTemplateTarget::fromConfig(ProfileTemplateTargetConfig::fromArray(['attribute' => []])),
+                ProfileTemplateTarget::fromConfig(
+                    ProfileTemplateTargetConfig::fromArray(['attribute' => []]),
+                    $this->getMockBuilder(Evaluator::class)->getMock(),
+                ),
                 RepositoryCollection::fromArray([]),
             ))
         ;

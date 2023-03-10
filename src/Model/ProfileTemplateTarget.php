@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne\Model;
 
+use Sigwin\Ariadne\Evaluator;
 use Sigwin\Ariadne\Model\Config\ProfileTemplateTargetConfig;
 
 /**
@@ -20,7 +21,7 @@ use Sigwin\Ariadne\Model\Config\ProfileTemplateTargetConfig;
  */
 final class ProfileTemplateTarget
 {
-    private function __construct(private readonly ProfileTemplateTargetConfig $config)
+    private function __construct(private readonly ProfileTemplateTargetConfig $config, private readonly Evaluator $evaluator)
     {
     }
 
@@ -29,11 +30,19 @@ final class ProfileTemplateTarget
      */
     public function getAttributes(ProfileTemplate $template, Repository $repository): array
     {
-        return $this->config->attribute;
+        $attributes = [];
+        foreach ($this->config->attribute as $name => $value) {
+            $attributes[$name] = $this->evaluator->evaluate($value, [
+                'template' => $template,
+                'repository' => $repository,
+            ]);
+        }
+
+        return $attributes;
     }
 
-    public static function fromConfig(ProfileTemplateTargetConfig $config): self
+    public static function fromConfig(ProfileTemplateTargetConfig $config, Evaluator $evaluator): self
     {
-        return new self($config);
+        return new self($config, $evaluator);
     }
 }
