@@ -32,7 +32,7 @@ use Sigwin\Ariadne\ProfileTemplateFactory;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * @psalm-type TRepository array{id: int, path_with_namespace: string, visibility: string, forked_from_project: ?array<string, int|string>, topics: array<string>, language?: string}
+ * @psalm-type TRepository array{id: int, path_with_namespace: string, visibility: string, forked_from_project: ?array<string, int|string>, topics: array<string>}
  */
 final class GitlabProfile implements Profile
 {
@@ -108,8 +108,23 @@ final class GitlabProfile implements Profile
             /** @var list<TRepository> $response */
             $response = $pager->fetchAllLazy($this->client->projects(), 'all', ['parameters' => $this->options]);
 
+            $needsLanguages = false;
+            foreach ($this->config->templates as $template) {
+                if (($template->filter['languages'] ?? []) !== []) {
+                    $needsLanguages = true;
+                    break;
+                }
+            }
+
             $repositories = [];
             foreach ($response as $repository) {
+                $languages = [];
+                if ($needsLanguages) {
+                    /** @var array<string, int> $languages */
+                    $languages = $this->client->projects()->languages($repository['id']);
+                    $languages = array_keys($languages);
+                }
+
                 $repositories[] = new Repository(
                     $repository,
                     RepositoryType::fromFork(isset($repository['forked_from_project'])),
@@ -117,7 +132,7 @@ final class GitlabProfile implements Profile
                     $repository['path_with_namespace'],
                     RepositoryVisibility::from($repository['visibility']),
                     $repository['topics'],
-                    isset($repository['language']) && $repository['language'] !== '' ? (array) $repository['language'] : [],
+                    $languages,
                 );
             }
             $this->repositories = RepositoryCollection::fromArray($repositories);
