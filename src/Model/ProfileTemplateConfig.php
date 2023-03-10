@@ -13,21 +13,23 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne\Model;
 
+/**
+ * @psalm-import-type TRepositoryTarget from RepositoryTarget
+ *
+ * @psalm-type TProfileTemplateFilter = array{type?: value-of<RepositoryType>, path?: string, visibility?: value-of<RepositoryVisibility>}
+ * @psalm-type TProfileTemplate = array{name: string, filter: TProfileTemplateFilter, target: TRepositoryTarget}
+ */
 final class ProfileTemplateConfig
 {
     /**
-     * @param array{type?: value-of<RepositoryType>, path?: string, visibility?: value-of<RepositoryVisibility>} $filter
+     * @param TProfileTemplateFilter $filter
      */
     public function __construct(public readonly string $name, public readonly array $filter, public readonly RepositoryTarget $target)
     {
     }
 
     /**
-     * @param array{
-     *     name: string,
-     *     filter: array{type?: value-of<RepositoryType>, path?: string, visibility?: value-of<RepositoryVisibility>},
-     *     target: array{attribute: array<string, bool|string|int>}
-     * } $config
+     * @param TProfileTemplate $config
      */
     public static function fromArray(array $config): self
     {

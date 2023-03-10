@@ -13,6 +13,12 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne\Model;
 
+/**
+ * @psalm-import-type TProfileTemplate from ProfileTemplateConfig
+ * @psalm-import-type TProfileClient from ProfileClientConfig
+ *
+ * @psalm-type TProfile = array{type: string, name: string, client: TProfileClient, templates: list<TProfileTemplate>}
+ */
 final class ProfileConfig
 {
     /**
@@ -23,16 +29,7 @@ final class ProfileConfig
     }
 
     /**
-     * @param array{
-     *     type: string,
-     *     name: string,
-     *     client: array{auth: array{type: string, token: string}, options: array<string, bool|string>, url?: string},
-     *     templates: list<array{
-     *          name: string,
-     *          filter: array{type?: value-of<RepositoryType>, path?: string, visibility?: value-of<RepositoryVisibility>},
-     *          target: array{attribute: array<string, bool|string|int>}
-     *     }>
-     * } $config
+     * @param TProfile $config
      */
     public static function fromArray(array $config): self
     {

@@ -13,17 +13,21 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne\Model;
 
+/**
+ * @psalm-type TRepositoryTargetAttribute = array<string, bool|string|int>
+ * @psalm-type TRepositoryTarget = array{attribute: TRepositoryTargetAttribute}
+ */
 final class RepositoryTarget
 {
     /**
-     * @param array<string, bool|int|string> $attribute
+     * @param TRepositoryTargetAttribute $attribute
      */
     private function __construct(public readonly array $attribute)
     {
     }
 
     /**
-     * @param array{attribute: array<string, bool|int|string>} $config
+     * @param TRepositoryTarget $config
      */
     public static function fromArray(array $config): self
     {
