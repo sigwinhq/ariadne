@@ -16,6 +16,7 @@ namespace Sigwin\Ariadne\Model;
 use Sigwin\Ariadne\Model\Change\AttributeUpdate;
 use Sigwin\Ariadne\Model\Change\NamedResourceCreate;
 use Sigwin\Ariadne\Model\Change\NamedResourceDelete;
+use Sigwin\Ariadne\Model\Change\NamedResourceUpdate;
 use Sigwin\Ariadne\Model\Collection\NamedResourceCollection;
 use Sigwin\Ariadne\Model\Collection\RepositoryChangeCollection;
 use Sigwin\Ariadne\NamedResource;
@@ -69,7 +70,7 @@ final class Repository implements NamedResource
             $changes[] = new AttributeUpdate($name, $actual, $expected);
         }
 
-        $changes = array_merge($changes, $this->createChangesForNamedCollections($template->getTargetUsers($this), $this->users, static function (RepositoryUser $expected, RepositoryUser $actual): array {
+        $changes = array_merge($changes, $this->createChangesForNamedCollections($template, $template->getTargetUsers($this), $this->users, static function (RepositoryUser $expected, RepositoryUser $actual): array {
             if ($actual->role === $expected->role) {
                 return [];
             }
@@ -93,7 +94,7 @@ final class Repository implements NamedResource
      *
      * @return array<\Sigwin\Ariadne\RepositoryChange>
      */
-    private function createChangesForNamedCollections(NamedResourceCollection $expected, NamedResourceCollection $actual, \Closure $compare): array
+    private function createChangesForNamedCollections(ProfileTemplate $template, NamedResourceCollection $expected, NamedResourceCollection $actual, \Closure $compare): array
     {
         $changes = [];
         foreach ($expected->diff($actual) as $item) {
@@ -102,9 +103,11 @@ final class Repository implements NamedResource
         foreach ($actual->diff($expected) as $item) {
             $changes[] = new NamedResourceDelete($item);
         }
-
         foreach ($expected->intersect($actual) as $item) {
-            $changes = array_merge($changes, $compare($item, $actual->get($item->getName())));
+            $changes[] = new NamedResourceUpdate(
+                $item,
+                RepositoryChangeCollection::fromTemplate($template, $compare($item, $actual->get($item->getName())))
+            );
         }
 
         return $changes;

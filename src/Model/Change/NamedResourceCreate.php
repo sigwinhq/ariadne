@@ -14,10 +14,16 @@ declare(strict_types=1);
 namespace Sigwin\Ariadne\Model\Change;
 
 use Sigwin\Ariadne\NamedResource;
+use Sigwin\Ariadne\RepositoryChange;
 
-final class NamedResourceCreate
+final class NamedResourceCreate implements RepositoryChange
 {
     public function __construct(public readonly NamedResource $resource)
     {
+    }
+
+    public function isActual(): bool
+    {
+        return false;
     }
 }
