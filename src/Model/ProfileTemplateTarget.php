@@ -45,4 +45,17 @@ final class ProfileTemplateTarget
     {
         return new self($config, $evaluator);
     }
+
+    /**
+     * @return list<RepositoryUser>
+     */
+    public function getUsers(ProfileTemplate $param, Repository $repository): array
+    {
+        $users = [];
+        foreach ($this->config->users as $user) {
+            $users[] = new RepositoryUser($user->username, $user->role);
+        }
+
+        return $users;
+    }
 }

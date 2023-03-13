@@ -15,8 +15,9 @@ namespace Sigwin\Ariadne\Model;
 
 use Sigwin\Ariadne\Model\Change\AttributeUpdate;
 use Sigwin\Ariadne\Model\Collection\RepositoryChangeCollection;
+use Sigwin\Ariadne\NamedResource;
 
-final class Repository
+final class Repository implements NamedResource
 {
     /**
      * @param array<string, null|array<string, int|string>|array<string>|bool|int|string> $response
@@ -24,7 +25,7 @@ final class Repository
      * @param array<string>                                                               $languages
      * @param list<RepositoryUser>                                                        $users
      */
-    public function __construct(private readonly array $response, public readonly RepositoryType $type, public readonly int $id, public readonly string $path, public readonly RepositoryVisibility $visibility, public readonly array $topics, public readonly array $languages, public readonly array $users)
+    public function __construct(private readonly array $response, public readonly RepositoryType $type, public readonly int $id, public readonly string $path, public readonly RepositoryVisibility $visibility, public readonly array $topics, public readonly array $languages, private readonly array $users)
     {
     }
 
@@ -58,5 +59,10 @@ final class Repository
         }
 
         return RepositoryChangeCollection::fromTemplate($template, $changes);
+    }
+
+    public function getName(): string
+    {
+        return $this->path;
     }
 }
