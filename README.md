@@ -84,10 +84,10 @@ profiles:
                 description: Hello!
 ```
 
-When you run `bin/ariadne test` in the same dir as the config file, it will tell you how the target platform sees you and what repos you have access to:
+When you run `bin/ariadne status` in the same dir as the config file, it will tell you how the target platform sees you and what repos you have access to:
 
 ```
-$ bin/ariadne test
+$ bin/ariadne status
 
 Sigwin Ariadne
 ==============
@@ -142,7 +142,7 @@ Apply is like a diff with an option to write the changes. It will ask to
 apply the changes after showing the diff.
 
 ```diff
-$ bin/ariadne diff
+$ bin/ariadne apply
 
 (...)
 
