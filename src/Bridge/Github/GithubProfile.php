@@ -97,7 +97,7 @@ final class GithubProfile implements Profile
     {
         [$username, $repository] = explode('/', $plan->repository->path, 2);
 
-        $this->client->repositories()->update($username, $repository, $plan->generateAttributeChanges());
+        $this->client->repositories()->update($username, $repository, $plan->getAttributeChanges());
     }
 
     private function getRepositories(): RepositoryCollection

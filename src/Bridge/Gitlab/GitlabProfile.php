@@ -174,7 +174,7 @@ final class GitlabProfile implements Profile
 
     public function apply(RepositoryPlan $plan): void
     {
-        $this->client->projects()->update($plan->repository->id, $plan->generateAttributeChanges());
+        $this->client->projects()->update($plan->repository->id, $plan->getAttributeChanges());
     }
 
     /**

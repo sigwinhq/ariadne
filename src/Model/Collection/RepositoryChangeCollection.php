@@ -46,9 +46,9 @@ final class RepositoryChangeCollection
     }
 
     /**
-     * @return array<string, RepositoryChange>
+     * @return array<string, AttributeUpdate>
      */
-    public function generateAttributeChanges(): array
+    public function getAttributeChanges(): array
     {
         $diff = [];
         foreach ($this->changes as $change) {

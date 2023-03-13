@@ -27,7 +27,7 @@ final class RepositoryPlan
 
     public function isActual(): bool
     {
-        return $this->generateAttributeChanges() === [];
+        return $this->getAttributeChanges() === [];
     }
 
     /**
@@ -37,7 +37,7 @@ final class RepositoryPlan
     {
         $diff = [];
         foreach ($this->changes as $change) {
-            $diff = array_replace($diff, $change->generateAttributeChanges());
+            $diff = array_replace($diff, $change->getAttributeChanges());
         }
 
         return array_values($diff);
@@ -46,7 +46,7 @@ final class RepositoryPlan
     /**
      * @return array<string, mixed>
      */
-    public function generateAttributeChanges(): array
+    public function getAttributeChanges(): array
     {
         $changes = [];
         foreach ($this->generateDiff() as $change) {
