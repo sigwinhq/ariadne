@@ -21,8 +21,9 @@ final class Repository
      * @param array<string, null|array<string, int|string>|array<string>|bool|int|string> $response
      * @param array<string>                                                               $topics
      * @param array<string>                                                               $languages
+     * @param list<RepositoryUser>                                                        $users
      */
-    public function __construct(private readonly array $response, public readonly RepositoryType $type, public readonly int $id, public readonly string $path, public readonly RepositoryVisibility $visibility, public readonly array $topics, public readonly array $languages)
+    public function __construct(private readonly array $response, public readonly RepositoryType $type, public readonly int $id, public readonly string $path, public readonly RepositoryVisibility $visibility, public readonly array $topics, public readonly array $languages, public readonly array $users)
     {
     }
 

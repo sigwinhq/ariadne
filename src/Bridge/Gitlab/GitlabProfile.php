@@ -26,6 +26,7 @@ use Sigwin\Ariadne\Model\Repository;
 use Sigwin\Ariadne\Model\RepositoryAttributeAccess;
 use Sigwin\Ariadne\Model\RepositoryPlan;
 use Sigwin\Ariadne\Model\RepositoryType;
+use Sigwin\Ariadne\Model\RepositoryUser;
 use Sigwin\Ariadne\Model\RepositoryVisibility;
 use Sigwin\Ariadne\Profile;
 use Sigwin\Ariadne\ProfileTemplateFactory;
@@ -33,6 +34,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * @psalm-type TRepository array{id: int, path_with_namespace: string, visibility: string, forked_from_project: ?array<string, int|string>, topics: array<string>}
+ * @psalm-type TCollaborator array{username: string}
  */
 final class GitlabProfile implements Profile
 {
@@ -116,6 +118,14 @@ final class GitlabProfile implements Profile
                 }
             }
 
+            $needsUsers = false;
+            foreach ($this->config->templates as $template) {
+                if ($template->target->users !== []) {
+                    $needsUsers = true;
+                    break;
+                }
+            }
+
             $repositories = [];
             foreach ($response as $repository) {
                 $languages = [];
@@ -123,6 +133,15 @@ final class GitlabProfile implements Profile
                     /** @var array<string, int> $languages */
                     $languages = $this->client->projects()->languages($repository['id']);
                     $languages = array_keys($languages);
+                }
+
+                $users = [];
+                if ($needsUsers) {
+                    /** @var list<TCollaborator> $collaborators */
+                    $collaborators = $pager->fetchAll($this->client->projects(), 'users', [$repository['id']]);
+                    foreach ($collaborators as $collaborator) {
+                        $users[] = new RepositoryUser($collaborator['username'], 'user');
+                    }
                 }
 
                 $repositories[] = new Repository(
@@ -133,6 +152,7 @@ final class GitlabProfile implements Profile
                     RepositoryVisibility::from($repository['visibility']),
                     $repository['topics'],
                     $languages,
+                    $users,
                 );
             }
             $this->repositories = RepositoryCollection::fromArray($repositories);
