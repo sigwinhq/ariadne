@@ -19,6 +19,7 @@ use Github\ResultPager;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Client\ClientInterface;
 use Sigwin\Ariadne\Bridge\ProfileTrait;
+use Sigwin\Ariadne\Model\Collection\NamedResourceCollection;
 use Sigwin\Ariadne\Model\Collection\RepositoryCollection;
 use Sigwin\Ariadne\Model\Config\ProfileConfig;
 use Sigwin\Ariadne\Model\ProfileUser;
@@ -127,16 +128,18 @@ final class GithubProfile implements Profile
                         $users[] = new RepositoryUser($collaborator['login'], $collaborator['role_name']);
                     }
                 }
+                /** @var NamedResourceCollection<RepositoryUser> $users */
+                $users = NamedResourceCollection::fromArray($users);
 
                 $repositories[] = new Repository(
                     $repository,
                     RepositoryType::fromFork($repository['fork']),
+                    RepositoryVisibility::fromPrivate($repository['private']),
+                    $users,
                     $repository['id'],
                     $repository['full_name'],
-                    RepositoryVisibility::fromPrivate($repository['private']),
                     $repository['topics'],
                     isset($repository['language']) && $repository['language'] !== '' ? (array) $repository['language'] : [],
-                    $users,
                 );
             }
 

@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Sigwin\Ariadne\Model;
 
 use Sigwin\Ariadne\Evaluator;
+use Sigwin\Ariadne\Model\Collection\NamedResourceCollection;
 use Sigwin\Ariadne\Model\Config\ProfileTemplateTargetConfig;
 
 /**
@@ -47,15 +48,18 @@ final class ProfileTemplateTarget
     }
 
     /**
-     * @return list<RepositoryUser>
+     * @return NamedResourceCollection<RepositoryUser>
      */
-    public function getUsers(ProfileTemplate $param, Repository $repository): array
+    public function getUsers(ProfileTemplate $param, Repository $repository): NamedResourceCollection
     {
         $users = [];
         foreach ($this->config->users as $user) {
             $users[] = new RepositoryUser($user->username, $user->role);
         }
 
-        return $users;
+        /** @var NamedResourceCollection<RepositoryUser> $collection */
+        $collection = NamedResourceCollection::fromArray($users);
+
+        return $collection;
     }
 }

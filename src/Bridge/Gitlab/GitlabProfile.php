@@ -19,6 +19,7 @@ use Gitlab\ResultPager;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Client\ClientInterface;
 use Sigwin\Ariadne\Bridge\ProfileTrait;
+use Sigwin\Ariadne\Model\Collection\NamedResourceCollection;
 use Sigwin\Ariadne\Model\Collection\RepositoryCollection;
 use Sigwin\Ariadne\Model\Config\ProfileConfig;
 use Sigwin\Ariadne\Model\ProfileUser;
@@ -151,16 +152,18 @@ final class GitlabProfile implements Profile
                         $users[] = new RepositoryUser($collaborator['username'], self::USER_ROLE[$collaborator['access_level']]);
                     }
                 }
+                /** @var NamedResourceCollection<RepositoryUser> $users */
+                $users = NamedResourceCollection::fromArray($users);
 
                 $repositories[] = new Repository(
                     $repository,
                     RepositoryType::fromFork(isset($repository['forked_from_project'])),
+                    RepositoryVisibility::from($repository['visibility']),
+                    $users,
                     $repository['id'],
                     $repository['path_with_namespace'],
-                    RepositoryVisibility::from($repository['visibility']),
                     $repository['topics'],
                     $languages,
-                    $users,
                 );
             }
             $this->repositories = RepositoryCollection::fromArray($repositories);

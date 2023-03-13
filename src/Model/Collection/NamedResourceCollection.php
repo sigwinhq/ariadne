@@ -69,6 +69,14 @@ final class NamedResourceCollection implements \Countable, \IteratorAggregate
     }
 
     /**
+     * @param T $item
+     */
+    public function contains(NamedResource $item): bool
+    {
+        return \array_key_exists($item->getName(), $this->items);
+    }
+
+    /**
      * @return \Traversable<T>
      */
     public function getIterator(): \Traversable

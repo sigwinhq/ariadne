@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Sigwin\Ariadne\Model;
 
 use Sigwin\Ariadne\Model\Change\AttributeUpdate;
+use Sigwin\Ariadne\Model\Collection\NamedResourceCollection;
 use Sigwin\Ariadne\Model\Collection\RepositoryChangeCollection;
 use Sigwin\Ariadne\NamedResource;
 
@@ -23,10 +24,18 @@ final class Repository implements NamedResource
      * @param array<string, null|array<string, int|string>|array<string>|bool|int|string> $response
      * @param array<string>                                                               $topics
      * @param array<string>                                                               $languages
-     * @param list<RepositoryUser>                                                        $users
+     * @param NamedResourceCollection<RepositoryUser>                                     $users
      */
-    public function __construct(private readonly array $response, public readonly RepositoryType $type, public readonly int $id, public readonly string $path, public readonly RepositoryVisibility $visibility, public readonly array $topics, public readonly array $languages, private readonly array $users)
-    {
+    public function __construct(
+        private readonly array $response,
+        public readonly RepositoryType $type,
+        public readonly RepositoryVisibility $visibility,
+        public readonly NamedResourceCollection $users,
+        public readonly int $id,
+        public readonly string $path,
+        public readonly array $topics,
+        public readonly array $languages
+    ) {
     }
 
     public function createChangeForTemplate(ProfileTemplate $template): RepositoryChangeCollection
@@ -58,11 +67,25 @@ final class Repository implements NamedResource
             $changes[] = new AttributeUpdate($name, $actual, $expected);
         }
 
+        $this->addChangesForNamedCollections($template->getTargetUsers($this), $this->users, $changes);
+
         return RepositoryChangeCollection::fromTemplate($template, $changes);
     }
 
     public function getName(): string
     {
         return $this->path;
+    }
+
+    /**
+     * @template T of NamedResource
+     *
+     * @param NamedResourceCollection<T>              $expected
+     * @param NamedResourceCollection<T>              $actual
+     * @param array<\Sigwin\Ariadne\RepositoryChange> $changes
+     */
+    private function addChangesForNamedCollections(NamedResourceCollection $expected, NamedResourceCollection $actual, array &$changes): void
+    {
+        dd($expected);
     }
 }

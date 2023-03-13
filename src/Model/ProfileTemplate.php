@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne\Model;
 
+use Sigwin\Ariadne\Model\Collection\NamedResourceCollection;
 use Sigwin\Ariadne\Model\Collection\RepositoryCollection;
 use Sigwin\Ariadne\NamedResource;
 
@@ -51,9 +52,9 @@ final class ProfileTemplate implements \Countable, \IteratorAggregate, NamedReso
     }
 
     /**
-     * @return list<RepositoryUser>
+     * @return NamedResourceCollection<RepositoryUser>
      */
-    public function getUsers(Repository $repository): array
+    public function getTargetUsers(Repository $repository): NamedResourceCollection
     {
         return $this->target->getUsers($this, $repository);
     }
