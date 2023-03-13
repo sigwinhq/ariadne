@@ -13,9 +13,9 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne\Model\Change;
 
-use Sigwin\Ariadne\Change;
+use Sigwin\Ariadne\RepositoryChange;
 
-final class AttributeUpdate implements Change
+final class AttributeUpdate implements RepositoryChange
 {
     public function __construct(public readonly string $name, public readonly null|int|string|bool $actual, public readonly null|int|string|bool $expected)
     {

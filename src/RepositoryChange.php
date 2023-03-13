@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne;
 
-interface Change
+interface RepositoryChange
 {
     public function isActual(): bool;
 }
