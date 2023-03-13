@@ -35,8 +35,9 @@ final class ProfileTemplateTargetConfig
     public static function fromArray(array $config): self
     {
         $users = [];
-        foreach ($config['user'] ?? [] as $identifier => $user) {
-            $user['identifier'] = $identifier;
+        foreach ($config['user'] ?? [] as $username => $user) {
+            // TODO: this shouldn't be required
+            $user['username'] = $username;
 
             $users[] = ProfileTemplateRepositoryUserConfig::fromArray($user);
         }

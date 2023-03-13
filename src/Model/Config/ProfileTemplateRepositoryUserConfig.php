@@ -14,11 +14,11 @@ declare(strict_types=1);
 namespace Sigwin\Ariadne\Model\Config;
 
 /**
- * @psalm-type TProfileTemplateRepositoryUser = array{identifier: string, role: string}
+ * @psalm-type TProfileTemplateRepositoryUser = array{username: string, role: string}
  */
 final class ProfileTemplateRepositoryUserConfig
 {
-    public function __construct(public readonly string $identifier, public readonly string $role)
+    public function __construct(public readonly string $username, public readonly string $role)
     {
     }
 
@@ -27,6 +27,6 @@ final class ProfileTemplateRepositoryUserConfig
      */
     public static function fromArray(array $user): self
     {
-        return new self($user['identifier'], $user['role']);
+        return new self($user['username'], $user['role']);
     }
 }

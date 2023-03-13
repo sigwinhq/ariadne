@@ -154,7 +154,7 @@ final class ValidatingYamlConfigReader implements ConfigReader
                                             ->children()
                                                 ->arrayNode('user')
                                                     ->requiresAtLeastOneElement()
-                                                    ->useAttributeAsKey('identifier')
+                                                    ->useAttributeAsKey('username', false)
                                                     ->arrayPrototype()
                                                         ->children()
                                                             ->scalarNode('role')
