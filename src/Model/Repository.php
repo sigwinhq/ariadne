@@ -14,6 +14,8 @@ declare(strict_types=1);
 namespace Sigwin\Ariadne\Model;
 
 use Sigwin\Ariadne\Model\Change\AttributeUpdate;
+use Sigwin\Ariadne\Model\Change\NamedResourceCreate;
+use Sigwin\Ariadne\Model\Change\NamedResourceDelete;
 use Sigwin\Ariadne\Model\Collection\NamedResourceCollection;
 use Sigwin\Ariadne\Model\Collection\RepositoryChangeCollection;
 use Sigwin\Ariadne\NamedResource;
@@ -67,7 +69,13 @@ final class Repository implements NamedResource
             $changes[] = new AttributeUpdate($name, $actual, $expected);
         }
 
-        $this->addChangesForNamedCollections($template->getTargetUsers($this), $this->users, $changes);
+        $changes = array_merge($changes, $this->createChangesForNamedCollections($template->getTargetUsers($this), $this->users, static function (RepositoryUser $expected, RepositoryUser $actual): array {
+            if ($actual->role === $expected->role) {
+                return [];
+            }
+
+            return [new AttributeUpdate('role', $actual->role, $expected->role)];
+        }));
 
         return RepositoryChangeCollection::fromTemplate($template, $changes);
     }
@@ -80,12 +88,25 @@ final class Repository implements NamedResource
     /**
      * @template T of NamedResource
      *
-     * @param NamedResourceCollection<T>              $expected
-     * @param NamedResourceCollection<T>              $actual
-     * @param array<\Sigwin\Ariadne\RepositoryChange> $changes
+     * @param NamedResourceCollection<T> $expected
+     * @param NamedResourceCollection<T> $actual
+     *
+     * @return array<\Sigwin\Ariadne\RepositoryChange>
      */
-    private function addChangesForNamedCollections(NamedResourceCollection $expected, NamedResourceCollection $actual, array &$changes): void
+    private function createChangesForNamedCollections(NamedResourceCollection $expected, NamedResourceCollection $actual, \Closure $compare): array
     {
-        dd($expected);
+        $changes = [];
+        foreach ($expected->diff($actual) as $item) {
+            $changes[] = new NamedResourceCreate($item);
+        }
+        foreach ($actual->diff($expected) as $item) {
+            $changes[] = new NamedResourceDelete($item);
+        }
+
+        foreach ($expected->intersect($actual) as $item) {
+            $changes = array_merge($changes, $compare($item, $actual->get($item->getName())));
+        }
+
+        return $changes;
     }
 }

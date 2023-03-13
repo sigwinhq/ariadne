@@ -15,18 +15,19 @@ namespace Sigwin\Ariadne\Model\Collection;
 
 use Sigwin\Ariadne\Model\Change\AttributeUpdate;
 use Sigwin\Ariadne\Model\ProfileTemplate;
+use Sigwin\Ariadne\RepositoryChange;
 
 final class RepositoryChangeCollection
 {
     /**
-     * @param array<AttributeUpdate> $changes
+     * @param array<RepositoryChange> $changes
      */
     private function __construct(public readonly ProfileTemplate $template, public readonly array $changes)
     {
     }
 
     /**
-     * @param array<AttributeUpdate> $changes
+     * @param array<RepositoryChange> $changes
      */
     public static function fromTemplate(ProfileTemplate $template, array $changes): self
     {
@@ -45,12 +46,15 @@ final class RepositoryChangeCollection
     }
 
     /**
-     * @return array<string, AttributeUpdate>
+     * @return array<string, RepositoryChange>
      */
-    public function generateDiff(): array
+    public function generateAttributeChanges(): array
     {
         $diff = [];
         foreach ($this->changes as $change) {
+            if ($change instanceof AttributeUpdate === false) {
+                continue;
+            }
             $diff[$change->name] = $change;
         }
 

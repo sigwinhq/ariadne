@@ -37,7 +37,7 @@ final class RepositoryPlan
     {
         $diff = [];
         foreach ($this->changes as $change) {
-            $diff = array_replace($diff, $change->generateDiff());
+            $diff = array_replace($diff, $change->generateAttributeChanges());
         }
 
         return array_values($diff);

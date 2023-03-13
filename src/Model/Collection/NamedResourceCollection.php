@@ -42,9 +42,11 @@ final class NamedResourceCollection implements \Countable, \IteratorAggregate
     }
 
     /**
-     * @param list<T> $items
+     * @template ST of NamedResource
      *
-     * @return self<T>
+     * @param list<ST> $items
+     *
+     * @return self<ST>
      */
     public static function fromArray(array $items): self
     {
@@ -61,6 +63,40 @@ final class NamedResourceCollection implements \Countable, \IteratorAggregate
         $items = [];
         foreach ($this->items as $item) {
             if ($filter($item)) {
+                $items[] = $item;
+            }
+        }
+
+        return self::fromArray($items);
+    }
+
+    /**
+     * @param self<T> $other
+     *
+     * @return self<T>
+     */
+    public function diff(self $other): self
+    {
+        $items = [];
+        foreach ($this->items as $item) {
+            if ($other->contains($item) === false) {
+                $items[] = $item;
+            }
+        }
+
+        return self::fromArray($items);
+    }
+
+    /**
+     * @param self<T> $other
+     *
+     * @return self<T>
+     */
+    public function intersect(self $other): self
+    {
+        $items = [];
+        foreach ($this->items as $item) {
+            if ($other->contains($item)) {
                 $items[] = $item;
             }
         }
@@ -87,5 +123,14 @@ final class NamedResourceCollection implements \Countable, \IteratorAggregate
     public function count(): int
     {
         return \count($this->items);
+    }
+
+    public function get(string $name): NamedResource
+    {
+        if (\array_key_exists($name, $this->items) === false) {
+            throw new \InvalidArgumentException(sprintf('Invalid argument "%1$s"', $name));
+        }
+
+        return $this->items[$name];
     }
 }
