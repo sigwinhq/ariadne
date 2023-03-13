@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne\Model;
 
+use Sigwin\Ariadne\Model\Change\AttributeUpdate;
 use Sigwin\Ariadne\Model\Collection\RepositoryChangeCollection;
 
 final class Repository
@@ -53,7 +54,7 @@ final class Repository
                 throw new \InvalidArgumentException('Unexpected change type found');
             }
 
-            $changes[] = new RepositoryChange($name, $actual, $expected);
+            $changes[] = new AttributeUpdate($name, $actual, $expected);
         }
 
         return RepositoryChangeCollection::fromTemplate($template, $changes);

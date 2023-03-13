@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne\Model;
 
+use Sigwin\Ariadne\Model\Change\AttributeUpdate;
 use Sigwin\Ariadne\Model\Collection\RepositoryChangeCollection;
 
 final class RepositoryPlan
@@ -30,7 +31,7 @@ final class RepositoryPlan
     }
 
     /**
-     * @return list<RepositoryChange>
+     * @return list<AttributeUpdate>
      */
     public function generateDiff(): array
     {

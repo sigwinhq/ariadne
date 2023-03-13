@@ -13,20 +13,20 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne\Model\Collection;
 
+use Sigwin\Ariadne\Model\Change\AttributeUpdate;
 use Sigwin\Ariadne\Model\ProfileTemplate;
-use Sigwin\Ariadne\Model\RepositoryChange;
 
 final class RepositoryChangeCollection
 {
     /**
-     * @param array<RepositoryChange> $changes
+     * @param array<AttributeUpdate> $changes
      */
     private function __construct(public readonly ProfileTemplate $template, public readonly array $changes)
     {
     }
 
     /**
-     * @param array<RepositoryChange> $changes
+     * @param array<AttributeUpdate> $changes
      */
     public static function fromTemplate(ProfileTemplate $template, array $changes): self
     {
@@ -45,7 +45,7 @@ final class RepositoryChangeCollection
     }
 
     /**
-     * @return array<string, RepositoryChange>
+     * @return array<string, AttributeUpdate>
      */
     public function generateDiff(): array
     {

@@ -14,9 +14,9 @@ declare(strict_types=1);
 namespace Sigwin\Ariadne\Bridge\Symfony\Console\Style;
 
 use Sigwin\Ariadne\Bridge\Symfony\Console\Logo;
+use Sigwin\Ariadne\Model\Change\AttributeUpdate;
 use Sigwin\Ariadne\Model\ProfileTemplate;
 use Sigwin\Ariadne\Model\Repository;
-use Sigwin\Ariadne\Model\RepositoryChange;
 use Sigwin\Ariadne\Model\RepositoryPlan;
 use Sigwin\Ariadne\Profile;
 use Symfony\Component\Console\Formatter\OutputFormatter;
@@ -112,7 +112,7 @@ final class AriadneStyle extends SymfonyStyle
         $this->newLine();
     }
 
-    public function diff(RepositoryChange $change): void
+    public function diff(AttributeUpdate $change): void
     {
         if ($change->isActual()) {
             $this->writeln($this->createBlock([sprintf('%1$s = %2$s', $change->name, (string) Helper::removeDecoration($this->getFormatter(), ($this->dumper)($change->actual)))], null, null, '    '));

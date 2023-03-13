@@ -11,9 +11,11 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sigwin\Ariadne\Model;
+namespace Sigwin\Ariadne\Model\Change;
 
-final class RepositoryChange
+use Sigwin\Ariadne\Change;
+
+final class AttributeUpdate implements Change
 {
     public function __construct(public readonly string $name, public readonly null|int|string|bool $actual, public readonly null|int|string|bool $expected)
     {
