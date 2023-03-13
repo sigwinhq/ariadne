@@ -34,11 +34,19 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * @psalm-type TRepository array{id: int, path_with_namespace: string, visibility: string, forked_from_project: ?array<string, int|string>, topics: array<string>}
- * @psalm-type TCollaborator array{username: string}
+ * @psalm-type TCollaborator array{username: string, access_level: int}
  */
 final class GitlabProfile implements Profile
 {
     use ProfileTrait;
+
+    private const USER_ROLE = [
+        10 => 'guest',
+        20 => 'reporter',
+        30 => 'developer',
+        40 => 'maintainer',
+        50 => 'owner',
+    ];
 
     /** @var array{membership: bool, owned: bool} */
     private readonly array $options;
@@ -138,9 +146,9 @@ final class GitlabProfile implements Profile
                 $users = [];
                 if ($needsUsers) {
                     /** @var list<TCollaborator> $collaborators */
-                    $collaborators = $pager->fetchAll($this->client->projects(), 'users', [$repository['id']]);
+                    $collaborators = $pager->fetchAll($this->client->projects(), 'allMembers', [$repository['id']]);
                     foreach ($collaborators as $collaborator) {
-                        $users[] = new RepositoryUser($collaborator['username'], 'user');
+                        $users[] = new RepositoryUser($collaborator['username'], self::USER_ROLE[$collaborator['access_level']]);
                     }
                 }
 
