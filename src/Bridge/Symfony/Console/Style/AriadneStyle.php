@@ -63,7 +63,7 @@ final class AriadneStyle extends SymfonyStyle
             [
                 [
                     $profile->getApiVersion(),
-                    $profile->getApiUser(),
+                    $profile->getApiUser()->getName(),
                     $this->enumerate($summary->getRepositories()),
                     $this->enumerate($summary->getTemplates()),
                 ],
