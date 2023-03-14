@@ -57,9 +57,6 @@ final class ProfileTemplateTarget
             $users[] = new RepositoryUser($user->username, $user->role);
         }
 
-        /** @var NamedResourceCollection<RepositoryUser> $collection */
-        $collection = NamedResourceCollection::fromArray($users);
-
-        return $collection;
+        return NamedResourceCollection::fromArray($users);
     }
 }

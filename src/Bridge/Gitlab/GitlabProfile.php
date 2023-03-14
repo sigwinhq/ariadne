@@ -19,13 +19,13 @@ use Gitlab\ResultPager;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Client\ClientInterface;
 use Sigwin\Ariadne\Bridge\ProfileTrait;
+use Sigwin\Ariadne\Model\Collection\NamedResourceChangeCollection;
 use Sigwin\Ariadne\Model\Collection\NamedResourceCollection;
 use Sigwin\Ariadne\Model\Collection\RepositoryCollection;
 use Sigwin\Ariadne\Model\Config\ProfileConfig;
 use Sigwin\Ariadne\Model\ProfileUser;
 use Sigwin\Ariadne\Model\Repository;
 use Sigwin\Ariadne\Model\RepositoryAttributeAccess;
-use Sigwin\Ariadne\Model\RepositoryPlan;
 use Sigwin\Ariadne\Model\RepositoryType;
 use Sigwin\Ariadne\Model\RepositoryUser;
 use Sigwin\Ariadne\Model\RepositoryVisibility;
@@ -152,7 +152,6 @@ final class GitlabProfile implements Profile
                         $users[] = new RepositoryUser($collaborator['username'], self::USER_ROLE[$collaborator['access_level']]);
                     }
                 }
-                /** @var NamedResourceCollection<RepositoryUser> $users */
                 $users = NamedResourceCollection::fromArray($users);
 
                 $repositories[] = new Repository(
@@ -172,9 +171,12 @@ final class GitlabProfile implements Profile
         return $this->repositories;
     }
 
-    public function apply(RepositoryPlan $plan): void
+    public function apply(NamedResourceChangeCollection $plan): void
     {
-        $this->client->projects()->update($plan->repository->id, $plan->getAttributeChanges());
+        /** @var Repository $repository */
+        $repository = $plan->getResource();
+
+        $this->client->projects()->update($repository->id, $plan->getAttributeChanges());
     }
 
     /**

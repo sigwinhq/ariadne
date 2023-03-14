@@ -16,13 +16,13 @@ namespace Sigwin\Ariadne\Test\Profile\Factory;
 use PHPUnit\Framework\TestCase;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Client\ClientInterface;
+use Sigwin\Ariadne\Model\Collection\NamedResourceChangeCollection;
 use Sigwin\Ariadne\Model\Collection\ProfileTemplateCollection;
 use Sigwin\Ariadne\Model\Collection\RepositoryCollection;
 use Sigwin\Ariadne\Model\Config\ProfileConfig;
 use Sigwin\Ariadne\Model\ProfileSummary;
 use Sigwin\Ariadne\Model\ProfileUser;
 use Sigwin\Ariadne\Model\Repository;
-use Sigwin\Ariadne\Model\RepositoryPlan;
 use Sigwin\Ariadne\Profile;
 use Sigwin\Ariadne\ProfileTemplateFactory;
 
@@ -109,12 +109,12 @@ final class ClassmapProfileFactoryTest extends TestCase implements Profile
         throw new \LogicException('Not implemented');
     }
 
-    public function plan(Repository $repository): RepositoryPlan
+    public function plan(Repository $repository): NamedResourceChangeCollection
     {
         throw new \LogicException('Not implemented');
     }
 
-    public function apply(RepositoryPlan $plan): void
+    public function apply(NamedResourceChangeCollection $plan): void
     {
         throw new \LogicException('Not implemented');
     }

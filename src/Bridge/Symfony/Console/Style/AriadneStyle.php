@@ -14,10 +14,11 @@ declare(strict_types=1);
 namespace Sigwin\Ariadne\Bridge\Symfony\Console\Style;
 
 use Sigwin\Ariadne\Bridge\Symfony\Console\Logo;
-use Sigwin\Ariadne\Model\Change\AttributeUpdate;
+use Sigwin\Ariadne\Model\Change\NamedResourceAttributeUpdate;
+use Sigwin\Ariadne\Model\Collection\NamedResourceChangeCollection;
 use Sigwin\Ariadne\Model\ProfileTemplate;
 use Sigwin\Ariadne\Model\Repository;
-use Sigwin\Ariadne\Model\RepositoryPlan;
+use Sigwin\Ariadne\NamedResourceChange;
 use Sigwin\Ariadne\Profile;
 use Symfony\Component\Console\Formatter\OutputFormatter;
 use Symfony\Component\Console\Helper\Dumper;
@@ -101,25 +102,34 @@ final class AriadneStyle extends SymfonyStyle
         }
     }
 
-    public function plan(RepositoryPlan $plan): void
+    public function diff(NamedResourceChangeCollection $changes): void
     {
-        $this->writeln(sprintf('<info>%1$s</info>', $plan->repository->path));
-
-        $diff = $plan->generateDiff();
-        foreach ($diff as $change) {
-            $this->diff($change);
+        $this->writeln(sprintf('<info>%1$s</info>', $changes->getResource()->getName()));
+        foreach ($changes as $change) {
+            if ($change instanceof NamedResourceChangeCollection) {
+                $this->diff($change);
+            } else {
+                $this->diffAttribute($change);
+            }
         }
         $this->newLine();
     }
 
-    public function diff(AttributeUpdate $change): void
+    private function diffAttribute(NamedResourceChange $change): void
     {
-        if ($change->isActual()) {
-            $this->writeln($this->createBlock([sprintf('%1$s = %2$s', $change->name, (string) Helper::removeDecoration($this->getFormatter(), ($this->dumper)($change->actual)))], null, null, '    '));
-        } else {
-            $this->writeln($this->createBlock([sprintf('%1$s = %2$s', $change->name, ($this->dumper)($change->actual))], null, 'fg=red', '-   '));
-            $this->writeln($this->createBlock([sprintf('%1$s = %2$s', $change->name, ($this->dumper)($change->expected))], null, 'fg=green', '+   '));
+        if ($change instanceof NamedResourceAttributeUpdate) {
+            $name = $change->getResource()->getName();
+            if ($change->isActual()) {
+                $this->writeln($this->createBlock([sprintf('%1$s = %2$s', $name, (string) Helper::removeDecoration($this->getFormatter(), ($this->dumper)($change->actual)))], null, null, '    '));
+            } else {
+                $this->writeln($this->createBlock([sprintf('%1$s = %2$s', $name, ($this->dumper)($change->actual))], null, 'fg=red', '-   '));
+                $this->writeln($this->createBlock([sprintf('%1$s = %2$s', $name, ($this->dumper)($change->expected))], null, 'fg=green', '+   '));
+            }
+
+            return;
         }
+
+        dd($change);
     }
 
     private function repository(Profile $profile, Repository $repository, ?ProfileTemplate $template = null, string $prefix = ''): void

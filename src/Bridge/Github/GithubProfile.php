@@ -19,13 +19,13 @@ use Github\ResultPager;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Client\ClientInterface;
 use Sigwin\Ariadne\Bridge\ProfileTrait;
+use Sigwin\Ariadne\Model\Collection\NamedResourceChangeCollection;
 use Sigwin\Ariadne\Model\Collection\NamedResourceCollection;
 use Sigwin\Ariadne\Model\Collection\RepositoryCollection;
 use Sigwin\Ariadne\Model\Config\ProfileConfig;
 use Sigwin\Ariadne\Model\ProfileUser;
 use Sigwin\Ariadne\Model\Repository;
 use Sigwin\Ariadne\Model\RepositoryAttributeAccess;
-use Sigwin\Ariadne\Model\RepositoryPlan;
 use Sigwin\Ariadne\Model\RepositoryType;
 use Sigwin\Ariadne\Model\RepositoryUser;
 use Sigwin\Ariadne\Model\RepositoryVisibility;
@@ -93,9 +93,9 @@ final class GithubProfile implements Profile
         return new ProfileUser($me['login']);
     }
 
-    public function apply(RepositoryPlan $plan): void
+    public function apply(NamedResourceChangeCollection $plan): void
     {
-        [$username, $repository] = explode('/', $plan->repository->path, 2);
+        [$username, $repository] = explode('/', $plan->getResource()->getName(), 2);
 
         $this->client->repositories()->update($username, $repository, $plan->getAttributeChanges());
     }
@@ -128,7 +128,6 @@ final class GithubProfile implements Profile
                         $users[] = new RepositoryUser($collaborator['login'], $collaborator['role_name']);
                     }
                 }
-                /** @var NamedResourceCollection<RepositoryUser> $users */
                 $users = NamedResourceCollection::fromArray($users);
 
                 $repositories[] = new Repository(

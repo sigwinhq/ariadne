@@ -13,12 +13,12 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne\Model;
 
-use Sigwin\Ariadne\Model\Change\AttributeUpdate;
+use Sigwin\Ariadne\Model\Change\NamedResourceAttributeUpdate;
 use Sigwin\Ariadne\Model\Change\NamedResourceCreate;
 use Sigwin\Ariadne\Model\Change\NamedResourceDelete;
 use Sigwin\Ariadne\Model\Change\NamedResourceUpdate;
+use Sigwin\Ariadne\Model\Collection\NamedResourceChangeCollection;
 use Sigwin\Ariadne\Model\Collection\NamedResourceCollection;
-use Sigwin\Ariadne\Model\Collection\RepositoryChangeCollection;
 use Sigwin\Ariadne\NamedResource;
 
 final class Repository implements NamedResource
@@ -41,7 +41,7 @@ final class Repository implements NamedResource
     ) {
     }
 
-    public function createChangeForTemplate(ProfileTemplate $template): RepositoryChangeCollection
+    public function createChangeForTemplate(ProfileTemplate $template): NamedResourceChangeCollection
     {
         $changes = [];
         foreach ($template->getTargetAttributes($this) as $name => $expected) {
@@ -67,18 +67,18 @@ final class Repository implements NamedResource
                 throw new \InvalidArgumentException('Unexpected change type found');
             }
 
-            $changes[] = new AttributeUpdate($name, $actual, $expected);
+            $changes[] = new NamedResourceAttributeUpdate(new Attribute($name), $actual, $expected);
         }
 
-        $changes = array_merge($changes, $this->createChangesForNamedCollections($template, $template->getTargetUsers($this), $this->users, static function (RepositoryUser $expected, RepositoryUser $actual): array {
+        $this->appendChangesForCollections($changes, $template, $template->getTargetUsers($this), $this->users, static function (RepositoryUser $expected, RepositoryUser $actual): ?array {
             if ($actual->role === $expected->role) {
-                return [];
+                return null;
             }
 
-            return [new AttributeUpdate('role', $actual->role, $expected->role)];
-        }));
+            return [new NamedResourceAttributeUpdate(new Attribute('role'), $actual->role, $expected->role)];
+        });
 
-        return RepositoryChangeCollection::fromTemplate($template, $changes);
+        return NamedResourceChangeCollection::fromResource($template, $changes);
     }
 
     public function getName(): string
@@ -89,14 +89,13 @@ final class Repository implements NamedResource
     /**
      * @template T of NamedResource
      *
-     * @param NamedResourceCollection<T> $expected
-     * @param NamedResourceCollection<T> $actual
-     *
-     * @return array<\Sigwin\Ariadne\RepositoryChange>
+     * @param array<\Sigwin\Ariadne\NamedResourceChange> $changes
+     * @param NamedResourceCollection<T>                 $expected
+     * @param NamedResourceCollection<T>                 $actual
+     * @param \Closure(T, T): (null|array<\Sigwin\Ariadne\NamedResourceChange>) $compare
      */
-    private function createChangesForNamedCollections(ProfileTemplate $template, NamedResourceCollection $expected, NamedResourceCollection $actual, \Closure $compare): array
+    private function appendChangesForCollections(array &$changes, ProfileTemplate $template, NamedResourceCollection $expected, NamedResourceCollection $actual, \Closure $compare): void
     {
-        $changes = [];
         foreach ($expected->diff($actual) as $item) {
             $changes[] = new NamedResourceCreate($item);
         }
@@ -104,12 +103,12 @@ final class Repository implements NamedResource
             $changes[] = new NamedResourceDelete($item);
         }
         foreach ($expected->intersect($actual) as $item) {
-            $changes[] = new NamedResourceUpdate(
-                $item,
-                RepositoryChangeCollection::fromTemplate($template, $compare($item, $actual->get($item->getName())))
-            );
-        }
+            $itemChanges = $compare($item, $actual->get($item->getName()));
+            if ($itemChanges === null) {
+                continue;
+            }
 
-        return $changes;
+            $changes[] = new NamedResourceUpdate($item, NamedResourceChangeCollection::fromResource($template, $itemChanges));
+        }
     }
 }

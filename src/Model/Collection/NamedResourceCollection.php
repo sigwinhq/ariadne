@@ -125,6 +125,9 @@ final class NamedResourceCollection implements \Countable, \IteratorAggregate
         return \count($this->items);
     }
 
+    /**
+     * @return T of NamedResource
+     */
     public function get(string $name): NamedResource
     {
         if (\array_key_exists($name, $this->items) === false) {

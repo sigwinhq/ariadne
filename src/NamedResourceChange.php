@@ -13,7 +13,9 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne;
 
-interface RepositoryChange
+interface NamedResourceChange
 {
+    public function getResource(): NamedResource;
+
     public function isActual(): bool;
 }
