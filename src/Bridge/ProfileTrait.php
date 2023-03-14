@@ -13,13 +13,14 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne\Bridge;
 
-use Sigwin\Ariadne\Model\Collection\NamedResourceChangeCollection;
+use Sigwin\Ariadne\Model\Collection\NamedResourceChangeFlattenedCollection;
 use Sigwin\Ariadne\Model\Collection\ProfileTemplateCollection;
 use Sigwin\Ariadne\Model\Config\ProfileTemplateConfig;
 use Sigwin\Ariadne\Model\ProfileSummary;
 use Sigwin\Ariadne\Model\ProfileTemplate;
 use Sigwin\Ariadne\Model\Repository;
 use Sigwin\Ariadne\Model\RepositoryAttributeAccess;
+use Sigwin\Ariadne\NamedResourceChangeCollection;
 
 trait ProfileTrait
 {
@@ -52,7 +53,7 @@ trait ProfileTrait
             $changes[] = $repository->createChangeForTemplate($template);
         }
 
-        return NamedResourceChangeCollection::fromResource($repository, $changes);
+        return NamedResourceChangeFlattenedCollection::fromResource($repository, $changes);
     }
 
     public function getMatchingTemplates(Repository $repository): ProfileTemplateCollection
