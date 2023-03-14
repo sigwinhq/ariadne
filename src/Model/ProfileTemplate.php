@@ -24,7 +24,7 @@ use Sigwin\Ariadne\NamedResource;
  */
 final class ProfileTemplate implements \Countable, \IteratorAggregate, NamedResource
 {
-    public function __construct(public readonly string $name, private readonly ProfileTemplateTarget $target, private readonly RepositoryCollection $repositories)
+    public function __construct(private readonly string $name, private readonly ProfileTemplateTarget $target, private readonly RepositoryCollection $repositories)
     {
     }
 

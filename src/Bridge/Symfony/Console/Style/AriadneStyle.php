@@ -74,7 +74,7 @@ final class AriadneStyle extends SymfonyStyle
             $this->section('Templates');
 
             foreach ($profile->getTemplates() as $template) {
-                $this->writeln(sprintf('<info>%1$s</info>', $template->name));
+                $this->writeln(sprintf('<info>%1$s</info>', $template->getName()));
                 if (\count($template) > 0) {
                     foreach ($template as $repository) {
                         $this->repository($profile, $repository, $template, '    ');
@@ -166,8 +166,8 @@ final class AriadneStyle extends SymfonyStyle
 
         $additional = [];
         foreach ($matching as $match) {
-            if ($template === null || $match->name !== $template->name) {
-                $additional[] = $match->name;
+            if ($template === null || $match->getName() !== $template->getName()) {
+                $additional[] = $match->getName();
             }
         }
 

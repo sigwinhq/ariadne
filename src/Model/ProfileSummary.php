@@ -51,7 +51,7 @@ final class ProfileSummary
     {
         $summary = [];
         foreach ($this->templates as $template) {
-            $summary[$template->name] = \count($template);
+            $summary[$template->getName()] = \count($template);
         }
 
         return $summary;

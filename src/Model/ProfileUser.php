@@ -13,9 +13,16 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne\Model;
 
-final class ProfileUser
+use Sigwin\Ariadne\NamedResource;
+
+final class ProfileUser implements NamedResource
 {
-    public function __construct(public readonly string $username)
+    public function __construct(private readonly string $username)
     {
+    }
+
+    public function getName(): string
+    {
+        return $this->username;
     }
 }
