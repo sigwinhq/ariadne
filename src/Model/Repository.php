@@ -70,7 +70,16 @@ final class Repository implements NamedResource
             $changes[] = new NamedResourceAttributeUpdate(new Attribute($name), $actual, $expected);
         }
 
-        $this->appendChangesForCollections($changes, $template, $template->getTargetUsers($this), $this->users, static function (RepositoryUser $expected, RepositoryUser $actual): ?array {
+        $this->appendChangesForCollections($changes, $template->getTargetUsers($this), $this->users, static function (?RepositoryUser $expected, ?RepositoryUser $actual): ?array {
+            if ($expected === null && $actual === null) {
+                throw new \LogicException('Cannot both be null');
+            }
+            if ($actual === null) {
+                return [new NamedResourceAttributeUpdate(new Attribute('role'), null, $expected->role)];
+            }
+            if ($expected === null) {
+                return [new NamedResourceAttributeUpdate(new Attribute('role'), $actual->role, null)];
+            }
             if ($actual->role === $expected->role) {
                 return null;
             }
@@ -92,23 +101,30 @@ final class Repository implements NamedResource
      * @param array<\Sigwin\Ariadne\NamedResourceChange> $changes
      * @param NamedResourceCollection<T>                 $expected
      * @param NamedResourceCollection<T>                 $actual
-     * @param \Closure(T, T): (null|array<\Sigwin\Ariadne\NamedResourceChange>) $compare
+     * @param \Closure(T|null, T|null): (null|array<\Sigwin\Ariadne\NamedResourceChange>) $compare
      */
-    private function appendChangesForCollections(array &$changes, ProfileTemplate $template, NamedResourceCollection $expected, NamedResourceCollection $actual, \Closure $compare): void
+    private function appendChangesForCollections(array &$changes, NamedResourceCollection $expected, NamedResourceCollection $actual, \Closure $compare): void
     {
         foreach ($expected->diff($actual) as $item) {
-            $changes[] = new NamedResourceCreate($item);
+            $itemChanges = $compare($item, null);
+            if ($itemChanges === null) {
+                continue;
+            }
+            $changes[] = NamedResourceCreate::fromResource($item, $itemChanges);
         }
         foreach ($actual->diff($expected) as $item) {
-            $changes[] = new NamedResourceDelete($item);
+            $itemChanges = $compare(null, $item);
+            if ($itemChanges === null) {
+                continue;
+            }
+            $changes[] = NamedResourceDelete::fromResource($item, $itemChanges);
         }
         foreach ($expected->intersect($actual) as $item) {
             $itemChanges = $compare($item, $actual->get($item->getName()));
             if ($itemChanges === null) {
                 continue;
             }
-
-            $changes[] = new NamedResourceUpdate($item, NamedResourceChangeCollection::fromResource($template, $itemChanges));
+            $changes[] = NamedResourceUpdate::fromResource($item, $itemChanges);
         }
     }
 }

@@ -15,10 +15,11 @@ namespace Sigwin\Ariadne\Bridge\Symfony\Console\Style;
 
 use Sigwin\Ariadne\Bridge\Symfony\Console\Logo;
 use Sigwin\Ariadne\Model\Change\NamedResourceAttributeUpdate;
-use Sigwin\Ariadne\Model\Collection\NamedResourceChangeCollection;
 use Sigwin\Ariadne\Model\ProfileTemplate;
 use Sigwin\Ariadne\Model\Repository;
+use Sigwin\Ariadne\Model\RepositoryUser;
 use Sigwin\Ariadne\NamedResourceChange;
+use Sigwin\Ariadne\NamedResourceChangeCollection;
 use Sigwin\Ariadne\Profile;
 use Symfony\Component\Console\Formatter\OutputFormatter;
 use Symfony\Component\Console\Helper\Dumper;
@@ -102,34 +103,53 @@ final class AriadneStyle extends SymfonyStyle
         }
     }
 
-    public function diff(NamedResourceChangeCollection $changes): void
+    public function diff(NamedResourceChangeCollection $change): void
     {
-        $this->writeln(sprintf('<info>%1$s</info>', $changes->getResource()->getName()));
-        foreach ($changes as $change) {
-            if ($change instanceof NamedResourceChangeCollection) {
-                $this->diff($change);
-            } else {
-                $this->diffAttribute($change);
-            }
-        }
+        $this->diffCollection($change);
         $this->newLine();
     }
 
-    private function diffAttribute(NamedResourceChange $change): void
+    private function diffCollection(NamedResourceChange $change, int $depth = 0): void
+    {
+        $resource = $change->getResource();
+        $name = match ($resource::class) {
+            Repository::class => $resource->getName(),
+            RepositoryUser::class => sprintf('user: %1$s', $resource->getName()),
+            default => null,
+        };
+
+        if ($name !== null) {
+            $this->newLine();
+            $this->writeln(sprintf('%1$s<question>%2$s</question>', str_repeat(' ', $depth * 2), $name));
+        }
+        if ($change instanceof NamedResourceChangeCollection) {
+            foreach ($change as $item) {
+                if ($item instanceof NamedResourceChangeCollection) {
+                    $this->diffCollection($item, $depth + 1);
+                } else {
+                    $this->diffChange($item, $depth + 1);
+                }
+            }
+        } else {
+            $this->diffChange($change, $depth + 1);
+        }
+    }
+
+    private function diffChange(NamedResourceChange $change, int $depth): void
     {
         if ($change instanceof NamedResourceAttributeUpdate) {
             $name = $change->getResource()->getName();
             if ($change->isActual()) {
-                $this->writeln($this->createBlock([sprintf('%1$s = %2$s', $name, (string) Helper::removeDecoration($this->getFormatter(), ($this->dumper)($change->actual)))], null, null, '    '));
+                $this->writeln($this->createBlock([sprintf('%1$s = %2$s', $name, (string) Helper::removeDecoration($this->getFormatter(), ($this->dumper)($change->actual)))], null, null, str_repeat(' ', $depth * 2)));
             } else {
-                $this->writeln($this->createBlock([sprintf('%1$s = %2$s', $name, ($this->dumper)($change->actual))], null, 'fg=red', '-   '));
-                $this->writeln($this->createBlock([sprintf('%1$s = %2$s', $name, ($this->dumper)($change->expected))], null, 'fg=green', '+   '));
+                $this->writeln($this->createBlock([sprintf('%1$s = %2$s', $name, ($this->dumper)($change->actual))], null, 'fg=red', '-'.str_repeat(' ', $depth * 2 - 1)));
+                $this->writeln($this->createBlock([sprintf('%1$s = %2$s', $name, ($this->dumper)($change->expected))], null, 'fg=green', '+'.str_repeat(' ', $depth * 2 - 1)));
             }
 
             return;
         }
 
-        dd($change);
+        $this->diffCollection($change, $depth + 1);
     }
 
     private function repository(Profile $profile, Repository $repository, ?ProfileTemplate $template = null, string $prefix = ''): void

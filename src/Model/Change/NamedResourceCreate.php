@@ -14,21 +14,13 @@ declare(strict_types=1);
 namespace Sigwin\Ariadne\Model\Change;
 
 use Sigwin\Ariadne\NamedResource;
-use Sigwin\Ariadne\NamedResourceChange;
+use Sigwin\Ariadne\NamedResourceChangeCollection;
 
-final class NamedResourceCreate implements NamedResourceChange
+final class NamedResourceCreate implements NamedResourceChangeCollection
 {
-    public function __construct(private readonly NamedResource $resource)
-    {
-    }
+    use NamedResourceChangeTrait;
 
-    public function getResource(): NamedResource
+    private function __construct(private readonly NamedResource $resource, private readonly NamedResourceChangeCollection $changes)
     {
-        return $this->resource;
-    }
-
-    public function isActual(): bool
-    {
-        return false;
     }
 }
