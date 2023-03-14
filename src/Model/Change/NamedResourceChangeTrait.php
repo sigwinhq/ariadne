@@ -14,6 +14,8 @@ declare(strict_types=1);
 namespace Sigwin\Ariadne\Model\Change;
 
 use Sigwin\Ariadne\Model\Collection\NamedResourceChangeCollection;
+use Sigwin\Ariadne\Model\ProfileTemplate;
+use Sigwin\Ariadne\Model\Repository;
 use Sigwin\Ariadne\NamedResource;
 use Sigwin\Ariadne\NamedResourceChange;
 
@@ -61,14 +63,29 @@ trait NamedResourceChangeTrait
      */
     public function getAttributeChanges(): array
     {
-        $diff = [];
+        $changes = [];
         foreach ($this->changes as $change) {
+            $resource = $change->getResource();
+            if ($change instanceof \Sigwin\Ariadne\NamedResourceChangeCollection) {
+                if ($this->resource !== $resource || ! ($this->resource instanceof Repository && $resource instanceof ProfileTemplate)) {
+                    // unfortunate corner case: treat template and repository as the same resource since they both apply to the repository
+                    continue;
+                }
+                $changes = array_replace($changes, $change->getAttributeChanges());
+            }
+
             if ($change instanceof NamedResourceAttributeUpdate === false) {
                 continue;
             }
-            $diff[$change->getResource()->getName()] = $change;
+            $changes[$resource->getName()] = $change;
         }
 
-        return $diff;
+        foreach ($changes as $name => $change) {
+            if ($change->isActual() === true) {
+                unset($changes[$name]);
+            }
+        }
+
+        return $changes;
     }
 }

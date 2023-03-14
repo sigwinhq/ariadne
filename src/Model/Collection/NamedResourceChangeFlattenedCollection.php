@@ -13,19 +13,13 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne\Model\Collection;
 
-use Sigwin\Ariadne\Model\Change\NamedResourceChangeTrait;
 use Sigwin\Ariadne\NamedResource;
 use Sigwin\Ariadne\NamedResourceChange;
 use Sigwin\Ariadne\NamedResourceChangeCollection;
 
 final class NamedResourceChangeFlattenedCollection implements NamedResourceChangeCollection
 {
-    use NamedResourceChangeTrait;
-
-    /**
-     * @param array<NamedResourceChange> $changes
-     */
-    private function __construct(private readonly NamedResource $resource, private readonly array $changes)
+    private function __construct(private readonly NamedResourceChangeCollection $changes)
     {
     }
 
@@ -34,11 +28,31 @@ final class NamedResourceChangeFlattenedCollection implements NamedResourceChang
      */
     public static function fromResource(NamedResource $resource, array $changes): self
     {
-        return new self($resource, $changes);
+        return new self(\Sigwin\Ariadne\Model\Collection\NamedResourceChangeCollection::fromResource($resource, $changes));
     }
 
     public function getIterator(): \Traversable
     {
-        return new \ArrayIterator($this->changes);
+        return $this->changes;
+    }
+
+    public function count(): int
+    {
+        return \count($this->changes);
+    }
+
+    public function getResource(): NamedResource
+    {
+        return $this->changes->getResource();
+    }
+
+    public function isActual(): bool
+    {
+        return $this->getAttributeChanges() === [];
+    }
+
+    public function getAttributeChanges(): array
+    {
+        return $this->changes->getAttributeChanges();
     }
 }
