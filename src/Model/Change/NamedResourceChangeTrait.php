@@ -32,6 +32,9 @@ trait NamedResourceChangeTrait
         return $this->resource;
     }
 
+    /**
+     * @return \Traversable<NamedResourceChange>
+     */
     public function getIterator(): \Traversable
     {
         return $this->changes;

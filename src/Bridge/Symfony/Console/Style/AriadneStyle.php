@@ -15,6 +15,8 @@ namespace Sigwin\Ariadne\Bridge\Symfony\Console\Style;
 
 use Sigwin\Ariadne\Bridge\Symfony\Console\Logo;
 use Sigwin\Ariadne\Model\Change\NamedResourceAttributeUpdate;
+use Sigwin\Ariadne\Model\Change\NamedResourceCreate;
+use Sigwin\Ariadne\Model\Change\NamedResourceDelete;
 use Sigwin\Ariadne\Model\ProfileTemplate;
 use Sigwin\Ariadne\Model\Repository;
 use Sigwin\Ariadne\Model\RepositoryUser;
@@ -114,13 +116,19 @@ final class AriadneStyle extends SymfonyStyle
         $resource = $change->getResource();
         $name = match ($resource::class) {
             Repository::class => $resource->getName(),
-            RepositoryUser::class => sprintf('user: %1$s', $resource->getName()),
+            RepositoryUser::class => sprintf('user %1$s', $resource->getName()),
             default => null,
+        };
+
+        $type = match ($change::class) {
+            NamedResourceCreate::class => ' <question>create</question>',
+            NamedResourceDelete::class => ' <error>delete</error>',
+            default => '',
         };
 
         if ($name !== null) {
             $this->newLine();
-            $this->writeln(sprintf('%1$s<question>%2$s</question>', str_repeat(' ', $depth * 2), $name));
+            $this->writeln(sprintf('%1$s<info>%2$s</info>%3$s', str_repeat(' ', $depth * 2), $name, $type));
         }
         if ($change instanceof NamedResourceChangeCollection) {
             foreach ($change as $item) {
