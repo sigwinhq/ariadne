@@ -1,0 +1,42 @@
+name: Build
+on:
+    pull_request:
+    push:
+        branches:
+            - "main"
+
+jobs:
+    MutationTest:
+        runs-on: ubuntu-latest
+        env:
+            PHP_VERSION: ${{ matrix.php }}
+        strategy:
+            matrix:
+                php: [ "8.1", "8.2" ]
+                dependencies: [ lowest, highest ]
+        steps:
+            -
+                uses: "actions/checkout@v3"
+            -
+                name: "Composer install: ${{ matrix.dependencies }}"
+                run: make composer/install-${{ matrix.dependencies }}
+            -
+                name: Tests with mutation
+                run: make test
+    CodeQualityAnalysis:
+        runs-on: ubuntu-latest
+        env:
+            PHP_VERSION: ${{ matrix.php }}
+        strategy:
+            matrix:
+                php: [ "8.1", "8.2" ]
+                dependencies: [ lowest, highest ]
+        steps:
+            -
+                uses: "actions/checkout@v3"
+            -
+                name: "Composer install: ${{ matrix.dependencies }}"
+                run: make composer/install-${{ matrix.dependencies }}
+            -
+                name: Run code quality analysis
+                run: make analyze
