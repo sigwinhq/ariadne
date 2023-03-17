@@ -6,13 +6,30 @@ on:
             - "main"
 
 jobs:
+    PHAR:
+        runs-on: ubuntu-latest
+        env:
+            PHP_VERSION: ${{ matrix.php }}
+        strategy:
+            matrix:
+                php: [ "8.1" ]
+                dependencies: [ highest ]
+        steps:
+            -
+                uses: "actions/checkout@v3"
+            -
+                name: "Composer install: ${{ matrix.dependencies }}"
+                run: make composer/install-${{ matrix.dependencies }}
+            -
+                name: Build PHAR file
+                run: make phar
     MutationTest:
         runs-on: ubuntu-latest
         env:
             PHP_VERSION: ${{ matrix.php }}
         strategy:
             matrix:
-                php: [ "8.1", "8.2" ]
+                php: [ "8.1" ]
                 dependencies: [ highest ]
         steps:
             -
@@ -29,7 +46,7 @@ jobs:
             PHP_VERSION: ${{ matrix.php }}
         strategy:
             matrix:
-                php: [ "8.1", "8.2" ]
+                php: [ "8.1" ]
                 dependencies: [ highest ]
         steps:
             -
