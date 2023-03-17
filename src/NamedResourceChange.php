@@ -13,10 +13,9 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne;
 
-use Sigwin\Ariadne\Model\Config\AriadneConfig;
-use Sigwin\Ariadne\Model\ProfileFilter;
-
-interface ProfileCollectionFactory
+interface NamedResourceChange
 {
-    public function create(AriadneConfig $config, ProfileFilter $filter): ProfileCollection;
+    public function getResource(): NamedResource;
+
+    public function isActual(): bool;
 }

@@ -19,20 +19,23 @@ use Github\ResultPager;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Client\ClientInterface;
 use Sigwin\Ariadne\Bridge\ProfileTrait;
+use Sigwin\Ariadne\Model\Collection\NamedResourceCollection;
 use Sigwin\Ariadne\Model\Collection\RepositoryCollection;
 use Sigwin\Ariadne\Model\Config\ProfileConfig;
 use Sigwin\Ariadne\Model\ProfileUser;
 use Sigwin\Ariadne\Model\Repository;
 use Sigwin\Ariadne\Model\RepositoryAttributeAccess;
-use Sigwin\Ariadne\Model\RepositoryPlan;
 use Sigwin\Ariadne\Model\RepositoryType;
+use Sigwin\Ariadne\Model\RepositoryUser;
 use Sigwin\Ariadne\Model\RepositoryVisibility;
+use Sigwin\Ariadne\NamedResourceChangeCollection;
 use Sigwin\Ariadne\Profile;
 use Sigwin\Ariadne\ProfileTemplateFactory;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * @psalm-type TRepository array{id: int, fork: bool, full_name: string, private: bool, topics: array<string>, language?: string}
+ * @psalm-type TCollaborator array{login: string, role_name: string}
  */
 final class GithubProfile implements Profile
 {
@@ -90,11 +93,15 @@ final class GithubProfile implements Profile
         return new ProfileUser($me['login']);
     }
 
-    public function apply(RepositoryPlan $plan): void
+    public function apply(NamedResourceChangeCollection $plan): void
     {
-        [$username, $repository] = explode('/', $plan->repository->path, 2);
+        $parts = explode('/', $plan->getResource()->getName(), 2);
+        if (\count($parts) !== 2) {
+            throw new \InvalidArgumentException('Invalid repository name');
+        }
+        [$username, $repository] = $parts;
 
-        $this->client->repositories()->update($username, $repository, $plan->generateAttributeChanges());
+        $this->client->repositories()->update($username, $repository, $plan->getAttributeChanges());
     }
 
     private function getRepositories(): RepositoryCollection
@@ -104,15 +111,40 @@ final class GithubProfile implements Profile
 
             $pager = new ResultPager($this->client);
 
+            $needsUsers = false;
+            foreach ($this->config->templates as $template) {
+                if ($template->target->users !== []) {
+                    $needsUsers = true;
+                    break;
+                }
+            }
+
             /** @var list<TRepository> $response */
             $response = $pager->fetchAll($this->client->user(), 'myRepositories');
             foreach ($response as $repository) {
+                $users = [];
+                if ($needsUsers) {
+                    $parts = explode('/', $repository['full_name'], 2);
+                    if (\count($parts) !== 2) {
+                        throw new \InvalidArgumentException('Invalid repository name');
+                    }
+                    [$username, $name] = $parts;
+
+                    /** @var list<TCollaborator> $collaborators */
+                    $collaborators = $pager->fetchAll($this->client->repository()->collaborators(), 'all', [$username, $name]);
+                    foreach ($collaborators as $collaborator) {
+                        $users[] = new RepositoryUser($collaborator['login'], $collaborator['role_name']);
+                    }
+                }
+                $users = NamedResourceCollection::fromArray($users);
+
                 $repositories[] = new Repository(
                     $repository,
                     RepositoryType::fromFork($repository['fork']),
+                    RepositoryVisibility::fromPrivate($repository['private']),
+                    $users,
                     $repository['id'],
                     $repository['full_name'],
-                    RepositoryVisibility::fromPrivate($repository['private']),
                     $repository['topics'],
                     isset($repository['language']) && $repository['language'] !== '' ? (array) $repository['language'] : [],
                 );

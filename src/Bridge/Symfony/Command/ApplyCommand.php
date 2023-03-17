@@ -66,7 +66,7 @@ final class ApplyCommand extends Command
                 $profile->apply($plan);
 
                 if ($style->isVerbose()) {
-                    $style->writeln(sprintf('Updated %1$s', $plan->repository->path));
+                    $style->writeln(sprintf('Updated %1$s', $plan->getResource()->getName()));
                 }
             }
         }

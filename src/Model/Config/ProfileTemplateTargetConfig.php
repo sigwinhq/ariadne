@@ -14,15 +14,18 @@ declare(strict_types=1);
 namespace Sigwin\Ariadne\Model\Config;
 
 /**
+ * @psalm-import-type TProfileTemplateRepositoryUser from ProfileTemplateRepositoryUserConfig
+ *
  * @psalm-type TProfileTemplateTargetAttribute = array<string, bool|string|int>
- * @psalm-type TProfileTemplateTarget = array{attribute: TProfileTemplateTargetAttribute}
+ * @psalm-type TProfileTemplateTarget = array{attribute: TProfileTemplateTargetAttribute, user?: array<string, TProfileTemplateRepositoryUser>}
  */
 final class ProfileTemplateTargetConfig
 {
     /**
-     * @param TProfileTemplateTargetAttribute $attribute
+     * @param TProfileTemplateTargetAttribute           $attribute
+     * @param list<ProfileTemplateRepositoryUserConfig> $users
      */
-    private function __construct(public readonly array $attribute)
+    private function __construct(public readonly array $attribute, public readonly array $users)
     {
     }
 
@@ -31,6 +34,14 @@ final class ProfileTemplateTargetConfig
      */
     public static function fromArray(array $config): self
     {
-        return new self($config['attribute']);
+        $users = [];
+        foreach ($config['user'] ?? [] as $username => $user) {
+            // TODO: this shouldn't be required
+            $user['username'] = $username;
+
+            $users[] = ProfileTemplateRepositoryUserConfig::fromArray($user);
+        }
+
+        return new self($config['attribute'], $users);
     }
 }

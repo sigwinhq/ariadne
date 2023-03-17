@@ -19,24 +19,35 @@ use Gitlab\ResultPager;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Client\ClientInterface;
 use Sigwin\Ariadne\Bridge\ProfileTrait;
+use Sigwin\Ariadne\Model\Collection\NamedResourceCollection;
 use Sigwin\Ariadne\Model\Collection\RepositoryCollection;
 use Sigwin\Ariadne\Model\Config\ProfileConfig;
 use Sigwin\Ariadne\Model\ProfileUser;
 use Sigwin\Ariadne\Model\Repository;
 use Sigwin\Ariadne\Model\RepositoryAttributeAccess;
-use Sigwin\Ariadne\Model\RepositoryPlan;
 use Sigwin\Ariadne\Model\RepositoryType;
+use Sigwin\Ariadne\Model\RepositoryUser;
 use Sigwin\Ariadne\Model\RepositoryVisibility;
+use Sigwin\Ariadne\NamedResourceChangeCollection;
 use Sigwin\Ariadne\Profile;
 use Sigwin\Ariadne\ProfileTemplateFactory;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * @psalm-type TRepository array{id: int, path_with_namespace: string, visibility: string, forked_from_project: ?array<string, int|string>, topics: array<string>}
+ * @psalm-type TCollaborator array{username: string, access_level: int}
  */
 final class GitlabProfile implements Profile
 {
     use ProfileTrait;
+
+    private const USER_ROLE = [
+        10 => 'guest',
+        20 => 'reporter',
+        30 => 'developer',
+        40 => 'maintainer',
+        50 => 'owner',
+    ];
 
     /** @var array{membership: bool, owned: bool} */
     private readonly array $options;
@@ -116,6 +127,14 @@ final class GitlabProfile implements Profile
                 }
             }
 
+            $needsUsers = false;
+            foreach ($this->config->templates as $template) {
+                if ($template->target->users !== []) {
+                    $needsUsers = true;
+                    break;
+                }
+            }
+
             $repositories = [];
             foreach ($response as $repository) {
                 $languages = [];
@@ -125,12 +144,23 @@ final class GitlabProfile implements Profile
                     $languages = array_keys($languages);
                 }
 
+                $users = [];
+                if ($needsUsers) {
+                    /** @var list<TCollaborator> $collaborators */
+                    $collaborators = $pager->fetchAll($this->client->projects(), 'allMembers', [$repository['id']]);
+                    foreach ($collaborators as $collaborator) {
+                        $users[] = new RepositoryUser($collaborator['username'], self::USER_ROLE[$collaborator['access_level']]);
+                    }
+                }
+                $users = NamedResourceCollection::fromArray($users);
+
                 $repositories[] = new Repository(
                     $repository,
                     RepositoryType::fromFork(isset($repository['forked_from_project'])),
+                    RepositoryVisibility::from($repository['visibility']),
+                    $users,
                     $repository['id'],
                     $repository['path_with_namespace'],
-                    RepositoryVisibility::from($repository['visibility']),
                     $repository['topics'],
                     $languages,
                 );
@@ -141,9 +171,12 @@ final class GitlabProfile implements Profile
         return $this->repositories;
     }
 
-    public function apply(RepositoryPlan $plan): void
+    public function apply(NamedResourceChangeCollection $plan): void
     {
-        $this->client->projects()->update($plan->repository->id, $plan->generateAttributeChanges());
+        /** @var Repository $repository */
+        $repository = $plan->getResource();
+
+        $this->client->projects()->update($repository->id, $plan->getAttributeChanges());
     }
 
     /**

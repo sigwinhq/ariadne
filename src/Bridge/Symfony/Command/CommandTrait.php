@@ -14,9 +14,9 @@ declare(strict_types=1);
 namespace Sigwin\Ariadne\Bridge\Symfony\Command;
 
 use Sigwin\Ariadne\Bridge\Symfony\Console\Style\AriadneStyle;
-use Sigwin\Ariadne\Model\Config\AdrianeConfig;
+use Sigwin\Ariadne\Model\Config\AriadneConfig;
 use Sigwin\Ariadne\Model\ProfileFilter;
-use Sigwin\Ariadne\Model\RepositoryPlan;
+use Sigwin\Ariadne\NamedResourceChangeCollection;
 use Sigwin\Ariadne\Profile;
 use Sigwin\Ariadne\ProfileCollection;
 use Symfony\Component\Console\Completion\CompletionInput;
@@ -53,7 +53,7 @@ trait CommandTrait
     }
 
     /**
-     * @return array<RepositoryPlan>
+     * @return array<NamedResourceChangeCollection>
      */
     private function renderPlans(Profile $profile, AriadneStyle $style): array
     {
@@ -73,7 +73,7 @@ trait CommandTrait
         }
 
         foreach ($plans as $plan) {
-            $style->plan($plan);
+            $style->diff($plan);
         }
 
         return $plans;
@@ -116,7 +116,7 @@ trait CommandTrait
      *
      * @return array<string>
      */
-    private function getConfigProfileAttributes(AdrianeConfig $config, string $name): array
+    private function getConfigProfileAttributes(AriadneConfig $config, string $name): array
     {
         $attributes = [];
         foreach ($config as $profile) {

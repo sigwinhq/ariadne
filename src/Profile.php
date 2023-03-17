@@ -20,7 +20,6 @@ use Sigwin\Ariadne\Model\Config\ProfileConfig;
 use Sigwin\Ariadne\Model\ProfileSummary;
 use Sigwin\Ariadne\Model\ProfileUser;
 use Sigwin\Ariadne\Model\Repository;
-use Sigwin\Ariadne\Model\RepositoryPlan;
 
 /**
  * @extends \IteratorAggregate<\Sigwin\Ariadne\Model\Repository>
@@ -43,7 +42,7 @@ interface Profile extends \IteratorAggregate
 
     public function getMatchingTemplates(Repository $repository): ProfileTemplateCollection;
 
-    public function plan(Repository $repository): RepositoryPlan;
+    public function plan(Repository $repository): NamedResourceChangeCollection;
 
-    public function apply(RepositoryPlan $plan): void;
+    public function apply(NamedResourceChangeCollection $plan): void;
 }

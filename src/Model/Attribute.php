@@ -13,14 +13,16 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne\Model;
 
-final class RepositoryChange
+use Sigwin\Ariadne\NamedResource;
+
+final class Attribute implements NamedResource
 {
-    public function __construct(public readonly string $name, public readonly null|int|string|bool $actual, public readonly null|int|string|bool $expected)
+    public function __construct(private readonly string $name)
     {
     }
 
-    public function isActual(): bool
+    public function getName(): string
     {
-        return $this->actual === $this->expected;
+        return $this->name;
     }
 }

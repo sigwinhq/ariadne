@@ -15,7 +15,7 @@ namespace Sigwin\Ariadne\Bridge\Symfony\Config;
 
 use Sigwin\Ariadne\ConfigReader;
 use Sigwin\Ariadne\EnvironmentResolver;
-use Sigwin\Ariadne\Model\Config\AdrianeConfig;
+use Sigwin\Ariadne\Model\Config\AriadneConfig;
 use Sigwin\Ariadne\Model\RepositoryType;
 use Sigwin\Ariadne\Model\RepositoryVisibility;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
@@ -24,7 +24,7 @@ use Symfony\Component\Finder\Finder;
 use Symfony\Component\Yaml\Yaml;
 
 /**
- * @psalm-import-type TConfig from AdrianeConfig
+ * @psalm-import-type TConfig from AriadneConfig
  */
 final class ValidatingYamlConfigReader implements ConfigReader
 {
@@ -35,7 +35,7 @@ final class ValidatingYamlConfigReader implements ConfigReader
     {
     }
 
-    public function read(?string $url = null): AdrianeConfig
+    public function read(?string $url = null): AriadneConfig
     {
         if ($url === null) {
             $in = [
@@ -152,6 +152,18 @@ final class ValidatingYamlConfigReader implements ConfigReader
                                         ->arrayNode('target')
                                             ->isRequired()
                                             ->children()
+                                                ->arrayNode('user')
+                                                    ->requiresAtLeastOneElement()
+                                                    ->useAttributeAsKey('username', false)
+                                                    ->arrayPrototype()
+                                                        ->children()
+                                                            ->scalarNode('role')
+                                                                ->isRequired()
+                                                                ->cannotBeEmpty()
+                                                            ->end()
+                                                        ->end()
+                                                    ->end()
+                                                ->end()
                                                 ->arrayNode('attribute')
                                                     ->scalarPrototype()
                                                     ->end()
@@ -172,6 +184,6 @@ final class ValidatingYamlConfigReader implements ConfigReader
         /** @var TConfig $config */
         $config = $processor->process($builder->buildTree(), [$payload]);
 
-        return AdrianeConfig::fromArray($url, $config);
+        return AriadneConfig::fromArray($url, $config);
     }
 }

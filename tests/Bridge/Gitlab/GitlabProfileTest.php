@@ -62,7 +62,7 @@ final class GitlabProfileTest extends TestCase
         $profile = GitlabProfile::fromConfig($config, $httpClient, $factory, $cachePool);
         $login = $profile->getApiUser();
 
-        static::assertSame('ariadne', $login->username);
+        static::assertSame('ariadne', $login->getName());
     }
 
     /**

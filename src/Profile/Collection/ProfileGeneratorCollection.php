@@ -13,14 +13,14 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne\Profile\Collection;
 
-use Sigwin\Ariadne\Model\Config\AdrianeConfig;
+use Sigwin\Ariadne\Model\Config\AriadneConfig;
 use Sigwin\Ariadne\Model\ProfileFilter;
 use Sigwin\Ariadne\ProfileCollection;
 use Sigwin\Ariadne\ProfileFactory;
 
 final class ProfileGeneratorCollection implements ProfileCollection
 {
-    public function __construct(private readonly ProfileFactory $profileFactory, private readonly AdrianeConfig $config, private readonly ProfileFilter $filter)
+    public function __construct(private readonly ProfileFactory $profileFactory, private readonly AriadneConfig $config, private readonly ProfileFilter $filter)
     {
     }
 

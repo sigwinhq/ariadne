@@ -13,10 +13,7 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne;
 
-use Sigwin\Ariadne\Model\Config\AriadneConfig;
-use Sigwin\Ariadne\Model\ProfileFilter;
-
-interface ProfileCollectionFactory
+interface NamedResource
 {
-    public function create(AriadneConfig $config, ProfileFilter $filter): ProfileCollection;
+    public function getName(): string;
 }
