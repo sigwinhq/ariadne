@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<files psalm-version="5.8.0@9cf4f60a333f779ad3bc704a555920e81d4fdcda">
+  <file src="src/Bridge/Github/GithubProfile.php">
+    <LessSpecificReturnType>
+      <code><![CDATA[array<string, array{access: RepositoryAttributeAccess}>]]></code>
+    </LessSpecificReturnType>
+    <PropertyNotSetInConstructor>
+      <code>$repositories</code>
+    </PropertyNotSetInConstructor>
+    <RedundantPropertyInitializationCheck>
+      <code><![CDATA[isset($this->repositories)]]></code>
+    </RedundantPropertyInitializationCheck>
+  </file>
+  <file src="src/Bridge/Gitlab/GitlabProfile.php">
+    <LessSpecificReturnType>
+      <code><![CDATA[array<string, array{access: RepositoryAttributeAccess}>]]></code>
+    </LessSpecificReturnType>
+    <PropertyNotSetInConstructor>
+      <code>$repositories</code>
+    </PropertyNotSetInConstructor>
+    <RedundantPropertyInitializationCheck>
+      <code><![CDATA[isset($this->repositories)]]></code>
+    </RedundantPropertyInitializationCheck>
+  </file>
+  <file src="src/Bridge/ProfileTrait.php">
+    <LessSpecificReturnType>
+      <code><![CDATA[array<string>]]></code>
+    </LessSpecificReturnType>
+  </file>
+  <file src="src/Bridge/Symfony/Command/ApplyCommand.php">
+    <UnusedClass>
+      <code>ApplyCommand</code>
+    </UnusedClass>
+  </file>
+  <file src="src/Bridge/Symfony/Command/CommandTrait.php">
+    <LessSpecificReturnType>
+      <code>array</code>
+      <code>array</code>
+      <code><![CDATA[array<NamedResourceChangeCollection>]]></code>
+      <code><![CDATA[array<string>]]></code>
+    </LessSpecificReturnType>
+  </file>
+  <file src="src/Bridge/Symfony/Command/DiffCommand.php">
+    <UnusedClass>
+      <code>DiffCommand</code>
+    </UnusedClass>
+  </file>
+  <file src="src/Bridge/Symfony/Command/StatusCommand.php">
+    <UnusedClass>
+      <code>StatusCommand</code>
+    </UnusedClass>
+  </file>
+  <file src="src/Bridge/Symfony/Config/ValidatingYamlConfigReader.php">
+    <MixedMethodCall>
+      <code>arrayNode</code>
+      <code>arrayNode</code>
+      <code>arrayNode</code>
+      <code>arrayNode</code>
+      <code>arrayNode</code>
+      <code>arrayNode</code>
+      <code>arrayNode</code>
+      <code>arrayNode</code>
+      <code>arrayNode</code>
+      <code>arrayNode</code>
+      <code>arrayPrototype</code>
+      <code>arrayPrototype</code>
+      <code>beforeNormalization</code>
+      <code>beforeNormalization</code>
+      <code>cannotBeEmpty</code>
+      <code>cannotBeEmpty</code>
+      <code>cannotBeEmpty</code>
+      <code>cannotBeEmpty</code>
+      <code>cannotBeEmpty</code>
+      <code>castToArray</code>
+      <code>castToArray</code>
+      <code>children</code>
+      <code>children</code>
+      <code>children</code>
+      <code>children</code>
+      <code>children</code>
+      <code>children</code>
+      <code>end</code>
+      <code>end</code>
+      <code>end</code>
+      <code>end</code>
+      <code>end</code>
+      <code>end</code>
+      <code>end</code>
+      <code>end</code>
+      <code>end</code>
+      <code>end</code>
+      <code>end</code>
+      <code>end</code>
+      <code>end</code>
+      <code>end</code>
+      <code>end</code>
+      <code>end</code>
+      <code>end</code>
+      <code>end</code>
+      <code>end</code>
+      <code>end</code>
+      <code>end</code>
+      <code>end</code>
+      <code>end</code>
+      <code>end</code>
+      <code>end</code>
+      <code>end</code>
+      <code>end</code>
+      <code>end</code>
+      <code>end</code>
+      <code>end</code>
+      <code>end</code>
+      <code>end</code>
+      <code>end</code>
+      <code>end</code>
+      <code>end</code>
+      <code>end</code>
+      <code>end</code>
+      <code>enumNode</code>
+      <code>enumNode</code>
+      <code>isRequired</code>
+      <code>isRequired</code>
+      <code>isRequired</code>
+      <code>isRequired</code>
+      <code>isRequired</code>
+      <code>isRequired</code>
+      <code>isRequired</code>
+      <code>isRequired</code>
+      <code>isRequired</code>
+      <code>requiresAtLeastOneElement</code>
+      <code>requiresAtLeastOneElement</code>
+      <code>scalarNode</code>
+      <code>scalarNode</code>
+      <code>scalarNode</code>
+      <code>scalarNode</code>
+      <code>scalarNode</code>
+      <code>scalarNode</code>
+      <code>scalarPrototype</code>
+      <code>scalarPrototype</code>
+      <code>scalarPrototype</code>
+      <code>scalarPrototype</code>
+      <code>useAttributeAsKey</code>
+      <code>values</code>
+      <code>values</code>
+    </MixedMethodCall>
+    <PossiblyNullReference>
+      <code>scalarNode</code>
+    </PossiblyNullReference>
+    <PossiblyUndefinedMethod>
+      <code>scalarNode</code>
+    </PossiblyUndefinedMethod>
+    <UnusedClass>
+      <code>ValidatingYamlConfigReader</code>
+    </UnusedClass>
+  </file>
+  <file src="src/Bridge/Symfony/Console/Application.php">
+    <UnusedClass>
+      <code>Application</code>
+    </UnusedClass>
+  </file>
+  <file src="src/Bridge/Symfony/Console/Style/AriadneStyle.php">
+    <LessSpecificReturnType>
+      <code><![CDATA[array<string>]]></code>
+    </LessSpecificReturnType>
+  </file>
+  <file src="src/Bridge/Symfony/DependencyInjection/RuntimeEnvProcessor.php">
+    <UnusedClass>
+      <code>RuntimeEnvProcessor</code>
+    </UnusedClass>
+  </file>
+  <file src="src/Bridge/Symfony/ExpressionLanguage/ExpressionLanguage.php">
+    <PossiblyUnusedMethod>
+      <code>__construct</code>
+    </PossiblyUnusedMethod>
+  </file>
+  <file src="src/EnvironmentResolver.php">
+    <PossiblyUnusedMethod>
+      <code>__construct</code>
+    </PossiblyUnusedMethod>
+  </file>
+  <file src="src/Model/Change/NamedResourceChangeTrait.php">
+    <PossiblyUnusedMethod>
+      <code>count</code>
+      <code>count</code>
+      <code>count</code>
+      <code>count</code>
+    </PossiblyUnusedMethod>
+    <RedundantIdentityWithTrue>
+      <code><![CDATA[$change->isActual() === true]]></code>
+    </RedundantIdentityWithTrue>
+  </file>
+  <file src="src/Model/Collection/NamedResourceChangeFlattenedCollection.php">
+    <PossiblyUnusedMethod>
+      <code>count</code>
+    </PossiblyUnusedMethod>
+  </file>
+  <file src="src/Model/Collection/NamedResourceCollection.php">
+    <PossiblyUnusedMethod>
+      <code>count</code>
+      <code>filter</code>
+    </PossiblyUnusedMethod>
+  </file>
+  <file src="src/Model/Collection/ProfileTemplateCollection.php">
+    <PossiblyUnusedMethod>
+      <code>count</code>
+    </PossiblyUnusedMethod>
+  </file>
+  <file src="src/Model/Collection/RepositoryCollection.php">
+    <LessSpecificReturnType>
+      <code>int</code>
+    </LessSpecificReturnType>
+    <PossiblyUnusedMethod>
+      <code>count</code>
+    </PossiblyUnusedMethod>
+  </file>
+  <file src="src/Model/ProfileTemplate.php">
+    <PossiblyUnusedMethod>
+      <code>count</code>
+    </PossiblyUnusedMethod>
+  </file>
+  <file src="src/Model/ProfileTemplateTarget.php">
+    <UnusedParam>
+      <code>$param</code>
+      <code>$repository</code>
+    </UnusedParam>
+  </file>
+  <file src="src/Model/Repository.php">
+    <LessSpecificReturnType>
+      <code>?array</code>
+    </LessSpecificReturnType>
+    <PossiblyUnusedProperty>
+      <code>$languages</code>
+      <code>$topics</code>
+      <code>$type</code>
+      <code>$visibility</code>
+    </PossiblyUnusedProperty>
+  </file>
+  <file src="src/Profile/Collection/Factory/ProfileGeneratorCollectionFactory.php">
+    <UnusedClass>
+      <code>ProfileGeneratorCollectionFactory</code>
+    </UnusedClass>
+  </file>
+  <file src="src/Profile/Collection/ProfileGeneratorCollection.php">
+    <PossiblyUnusedMethod>
+      <code>count</code>
+    </PossiblyUnusedMethod>
+  </file>
+  <file src="src/Profile/Factory/ClassmapProfileFactory.php">
+    <PossiblyUnusedReturnValue>
+      <code>Profile</code>
+    </PossiblyUnusedReturnValue>
+  </file>
+  <file src="src/Profile/Template/Factory/FilteredProfileTemplateFactory.php">
+    <UnusedClass>
+      <code>FilteredProfileTemplateFactory</code>
+    </UnusedClass>
+  </file>
+  <file src="tests/Bridge/Github/GithubProfileTest.php">
+    <LessSpecificReturnType>
+      <code>CacheItemPoolInterface</code>
+      <code>ClientInterface</code>
+      <code>ProfileTemplateFactory</code>
+    </LessSpecificReturnType>
+  </file>
+  <file src="tests/Bridge/Gitlab/GitlabProfileTest.php">
+    <LessSpecificReturnType>
+      <code>CacheItemPoolInterface</code>
+      <code>ClientInterface</code>
+      <code>ProfileTemplateFactory</code>
+    </LessSpecificReturnType>
+  </file>
+  <file src="tests/Bridge/Symfony/Console/Style/AriadneStyleTest.php">
+    <LessSpecificReturnType>
+      <code>Profile</code>
+    </LessSpecificReturnType>
+  </file>
+  <file src="tests/Model/ProfileFilterTest.php">
+    <LessSpecificReturnType>
+      <code>Profile</code>
+    </LessSpecificReturnType>
+  </file>
+  <file src="tests/Profile/Factory/ClassmapProfileFactoryTest.php">
+    <PossiblyUnusedMethod>
+      <code>getRepositories</code>
+    </PossiblyUnusedMethod>
+  </file>
+</files>

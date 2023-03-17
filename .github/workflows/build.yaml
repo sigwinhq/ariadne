@@ -1,0 +1,57 @@
+name: Build
+on:
+    pull_request:
+    push:
+        branches:
+            - "main"
+
+jobs:
+    PHAR:
+        runs-on: ubuntu-latest
+        steps:
+            -
+                uses: "actions/checkout@v3"
+            -
+                name: Build PHAR file
+                run: make phar
+            -
+                uses: actions/upload-artifact@v3
+                name: Upload the PHAR artifact
+                with:
+                    name: ariadne-phar
+                    path: |
+                        bin/ariadne.phar
+    MutationTest:
+        runs-on: ubuntu-latest
+        env:
+            PHP_VERSION: ${{ matrix.php }}
+        strategy:
+            matrix:
+                php: [ "8.1" ]
+                dependencies: [ highest ]
+        steps:
+            -
+                uses: "actions/checkout@v3"
+            -
+                name: "Composer install: ${{ matrix.dependencies }}"
+                run: make composer/install-${{ matrix.dependencies }}
+            -
+                name: Tests with mutation
+                run: make test
+    CodeQualityAnalysis:
+        runs-on: ubuntu-latest
+        env:
+            PHP_VERSION: ${{ matrix.php }}
+        strategy:
+            matrix:
+                php: [ "8.1" ]
+                dependencies: [ highest ]
+        steps:
+            -
+                uses: "actions/checkout@v3"
+            -
+                name: "Composer install: ${{ matrix.dependencies }}"
+                run: make composer/install-${{ matrix.dependencies }}
+            -
+                name: Run code quality analysis
+                run: make analyze

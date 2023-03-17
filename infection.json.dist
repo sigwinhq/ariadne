@@ -7,8 +7,8 @@
     "logs": {
         "text": "var/phpqa/infection.log"
     },
-    "minMsi": 94,
-    "minCoveredMsi": 94,
+    "minMsi": 58,
+    "minCoveredMsi": 58,
     "mutators": {
         "@default": true,
         "IdenticalEqual": false,

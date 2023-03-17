@@ -7,9 +7,12 @@
          beStrictAboutResourceUsageDuringSmallTests="true"
          beStrictAboutTodoAnnotatedTests="true"
          bootstrap="./vendor/autoload.php"
-         cacheResultFile="var/phpqa/phpunit.cache"
+         cacheResultFile="var/phpqa/phpunit.result.cache"
          colors="true"
+         convertDeprecationsToExceptions="true"
+         enforceTimeLimit="true"
          executionOrder="random"
+         failOnEmptyTestSuite="true"
          failOnRisky="true"
          failOnWarning="true"
          forceCoversAnnotation="true"
@@ -21,7 +24,7 @@
     </coverage>
     <testsuites>
         <testsuite name="Sigwin Ariadne">
-            <directory>tests</directory>
+            <directory>./tests</directory>
         </testsuite>
     </testsuites>
 </phpunit>
