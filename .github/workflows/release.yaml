@@ -1,0 +1,20 @@
+on:
+    release:
+        types: [ published ]
+
+jobs:
+    PHAR:
+        runs-on: ubuntu-latest
+        steps:
+            -
+                uses: "actions/checkout@v3"
+            -
+                name: Build the PHAR artifact
+                run: make phar
+            -
+                uses: actions/upload-artifact@v3
+                name: Upload the PHAR artifact
+                with:
+                    name: ariadne-phar
+                    path: |
+                        bin/ariadne.phar
