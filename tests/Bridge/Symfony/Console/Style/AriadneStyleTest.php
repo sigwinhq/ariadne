@@ -23,6 +23,7 @@ use Sigwin\Ariadne\Model\ProfileSummary;
 use Sigwin\Ariadne\Model\ProfileUser;
 use Sigwin\Ariadne\Model\Repository;
 use Sigwin\Ariadne\Model\RepositoryType;
+use Sigwin\Ariadne\Model\RepositoryUser;
 use Sigwin\Ariadne\Model\RepositoryVisibility;
 use Sigwin\Ariadne\Profile;
 use Symfony\Component\Console\Command\Command;
@@ -112,13 +113,17 @@ final class AriadneStyleTest extends TestCase
             ->willReturn($name)
         ;
 
+        $users = NamedResourceCollection::fromArray([
+            new RepositoryUser('theseus', 'admin'),
+        ]);
+
         $summary = new ProfileSummary(
             RepositoryCollection::fromArray([
                 new Repository(
                     ['path' => 'namespace1/repo1'],
                     RepositoryType::SOURCE,
                     RepositoryVisibility::PUBLIC,
-                    NamedResourceCollection::fromArray([]),
+                    $users,
                     123,
                     'namespace1/repo1',
                     [],
@@ -128,7 +133,7 @@ final class AriadneStyleTest extends TestCase
                     ['path' => 'namespace2/repo1'],
                     RepositoryType::SOURCE,
                     RepositoryVisibility::PUBLIC,
-                    NamedResourceCollection::fromArray([]),
+                    $users,
                     456,
                     'namespace2/repo1',
                     [],
@@ -138,7 +143,7 @@ final class AriadneStyleTest extends TestCase
                     ['path' => 'namespace1/repo2'],
                     RepositoryType::SOURCE,
                     RepositoryVisibility::PUBLIC,
-                    NamedResourceCollection::fromArray([]),
+                    $users,
                     789,
                     'namespace1/repo2',
                     [],
