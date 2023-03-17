@@ -5,6 +5,7 @@
        ensureArrayIntOffsetsExist="true"
        ensureArrayStringOffsetsExist="true"
        errorLevel="1"
+       errorBaseline="psalm.baseline.xml"
        findUnusedBaselineEntry="true"
        findUnusedCode="true"
        findUnusedPsalmSuppress="true"
