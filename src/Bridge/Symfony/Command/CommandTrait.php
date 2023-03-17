@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Sigwin\Ariadne\Bridge\Symfony\Command;
 
 use Sigwin\Ariadne\Bridge\Symfony\Console\Style\AriadneStyle;
-use Sigwin\Ariadne\Model\Config\AdrianeConfig;
+use Sigwin\Ariadne\Model\Config\AriadneConfig;
 use Sigwin\Ariadne\Model\ProfileFilter;
 use Sigwin\Ariadne\NamedResourceChangeCollection;
 use Sigwin\Ariadne\Profile;
@@ -116,7 +116,7 @@ trait CommandTrait
      *
      * @return array<string>
      */
-    private function getConfigProfileAttributes(AdrianeConfig $config, string $name): array
+    private function getConfigProfileAttributes(AriadneConfig $config, string $name): array
     {
         $attributes = [];
         foreach ($config as $profile) {
