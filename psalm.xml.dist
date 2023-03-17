@@ -1,51 +1,28 @@
 <?xml version="1.0"?>
 <psalm xmlns="https://getpsalm.org/schema/config"
        cacheDirectory="var/phpqa/psalm"
+       checkForThrowsInGlobalScope="true"
+       ensureArrayIntOffsetsExist="true"
+       ensureArrayStringOffsetsExist="true"
        errorLevel="1"
+       findUnusedBaselineEntry="true"
+       findUnusedCode="true"
        findUnusedPsalmSuppress="true"
-       findUnusedVariablesAndParams="true">
+       findUnusedVariablesAndParams="true"
+       limitMethodComplexity="true"
+       restrictReturnTypes="true"
+       strictBinaryOperands="true">
     <projectFiles>
         <directory name="./"/>
         <ignoreFiles allowMissingFiles="true">
             <file name=".php-cs-fixer.dist.php"/>
-            <directory name="vendor/"/>
             <directory name="var/"/>
+            <directory name="vendor/"/>
         </ignoreFiles>
     </projectFiles>
 
-    <issueHandlers>
-        <!-- TODO: false positives -->
-        <MixedMethodCall>
-            <errorLevel type="suppress">
-                <file name="src/Bridge/Symfony/Config/ValidatingYamlConfigReader.php"/>
-            </errorLevel>
-        </MixedMethodCall>
-        <PossiblyNullReference>
-            <errorLevel type="suppress">
-                <file name="src/Bridge/Symfony/Config/ValidatingYamlConfigReader.php"/>
-            </errorLevel>
-        </PossiblyNullReference>
-        <PossiblyUndefinedMethod>
-            <errorLevel type="suppress">
-                <referencedMethod name="Symfony\Component\Config\Definition\Builder\VariableNodeDefinition::scalarNode"/>
-            </errorLevel>
-        </PossiblyUndefinedMethod>
-        <PropertyNotSetInConstructor>
-            <errorLevel type="suppress">
-                <referencedProperty name="Sigwin\Ariadne\Bridge\Github\GithubProfile::$repositories"/>
-                <referencedProperty name="Sigwin\Ariadne\Bridge\Gitlab\GitlabProfile::$repositories"/>
-            </errorLevel>
-        </PropertyNotSetInConstructor>
-        <RedundantPropertyInitializationCheck>
-            <errorLevel type="suppress">
-                <file name="src/Bridge/Github/GithubProfile.php"/>
-                <file name="src/Bridge/Gitlab/GitlabProfile.php"/>
-            </errorLevel>
-        </RedundantPropertyInitializationCheck>
-    </issueHandlers>
-
     <plugins>
-        <pluginClass class="Psalm\SymfonyPsalmPlugin\Plugin"/>
         <pluginClass class="Psalm\PhpUnitPlugin\Plugin"/>
+        <pluginClass class="Psalm\SymfonyPsalmPlugin\Plugin"/>
     </plugins>
 </psalm>
