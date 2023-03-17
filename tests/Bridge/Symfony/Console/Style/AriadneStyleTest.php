@@ -34,10 +34,10 @@ use Symfony\Component\Console\Tester\CommandTester;
  *
  * @covers \Sigwin\Ariadne\Bridge\Symfony\Console\Style\AriadneStyle
  *
+ * @uses \Sigwin\Ariadne\Model\Collection\NamedResourceCollection
  * @uses \Sigwin\Ariadne\Model\Collection\ProfileTemplateCollection
  * @uses \Sigwin\Ariadne\Model\Collection\RepositoryCollection
  * @uses \Sigwin\Ariadne\Model\ProfileSummary
- * @uses \Sigwin\Ariadne\Model\Collection\NamedResourceCollection
  * @uses \Sigwin\Ariadne\Model\ProfileUser
  * @uses \Sigwin\Ariadne\Model\Repository
  *
