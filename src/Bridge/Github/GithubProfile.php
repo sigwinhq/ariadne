@@ -95,7 +95,11 @@ final class GithubProfile implements Profile
 
     public function apply(NamedResourceChangeCollection $plan): void
     {
-        [$username, $repository] = explode('/', $plan->getResource()->getName(), 2);
+        $parts = explode('/', $plan->getResource()->getName(), 2);
+        if (\count($parts) !== 2) {
+            throw new \InvalidArgumentException('Invalid repository name');
+        }
+        [$username, $repository] = $parts;
 
         $this->client->repositories()->update($username, $repository, $plan->getAttributeChanges());
     }
@@ -120,7 +124,11 @@ final class GithubProfile implements Profile
             foreach ($response as $repository) {
                 $users = [];
                 if ($needsUsers) {
-                    [$username, $name] = explode('/', $repository['full_name'], 2);
+                    $parts = explode('/', $repository['full_name'], 2);
+                    if (\count($parts) !== 2) {
+                        throw new \InvalidArgumentException('Invalid repository name');
+                    }
+                    [$username, $name] = $parts;
 
                     /** @var list<TCollaborator> $collaborators */
                     $collaborators = $pager->fetchAll($this->client->repository()->collaborators(), 'all', [$username, $name]);

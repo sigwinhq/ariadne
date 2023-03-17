@@ -41,6 +41,7 @@ use Symfony\Component\Console\Tester\CommandTester;
  * @uses \Sigwin\Ariadne\Model\ProfileSummary
  * @uses \Sigwin\Ariadne\Model\ProfileUser
  * @uses \Sigwin\Ariadne\Model\Repository
+ * @uses \Sigwin\Ariadne\Model\RepositoryUser
  *
  * @small
  */
