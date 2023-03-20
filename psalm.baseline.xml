@@ -45,9 +45,9 @@
       <code>DiffCommand</code>
     </UnusedClass>
   </file>
-  <file src="src/Bridge/Symfony/Command/StatusCommand.php">
+  <file src="src/Bridge/Symfony/Command/SummaryCommand.php">
     <UnusedClass>
-      <code>StatusCommand</code>
+      <code>SummaryCommand</code>
     </UnusedClass>
   </file>
   <file src="src/Bridge/Symfony/Config/ValidatingYamlConfigReader.php">
