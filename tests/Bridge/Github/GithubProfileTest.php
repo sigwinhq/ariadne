@@ -109,7 +109,7 @@ final class GithubProfileTest extends TestCase
     }
 
     /**
-     * @return list<array{string, bool|string}>
+     * @return list<array{string, int|bool|string}>
      */
     public function getInvalidAttributeValues(): array
     {
