@@ -15,7 +15,6 @@ namespace Sigwin\Ariadne;
 
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Client\ClientInterface;
-use Sigwin\Ariadne\Model\Collection\NamedResourceCollection;
 use Sigwin\Ariadne\Model\Config\ProfileConfig;
 use Sigwin\Ariadne\Model\ProfileSummary;
 use Sigwin\Ariadne\Model\ProfileTemplate;

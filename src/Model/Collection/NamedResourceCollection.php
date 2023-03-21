@@ -18,9 +18,9 @@ use Sigwin\Ariadne\NamedResource;
 /**
  * @template T of NamedResource
  *
- * @implements \IteratorAggregate<T>
+ * @implements \Sigwin\Ariadne\NamedResourceCollection<T>
  */
-final class NamedResourceCollection implements \Countable, \IteratorAggregate
+final class NamedResourceCollection implements \Sigwin\Ariadne\NamedResourceCollection
 {
     /**
      * @var array<string, T>
@@ -41,24 +41,12 @@ final class NamedResourceCollection implements \Countable, \IteratorAggregate
         $this->items = $items;
     }
 
-    /**
-     * @template ST of NamedResource
-     *
-     * @param list<ST> $items
-     *
-     * @return self<ST>
-     */
     public static function fromArray(array $items): self
     {
         return new self($items);
     }
 
-    /**
-     * @param callable(T): bool $filter
-     *
-     * @return self<T>
-     */
-    public function filter(callable $filter): self
+    public function filter(callable $filter): \Sigwin\Ariadne\NamedResourceCollection
     {
         $items = [];
         foreach ($this->items as $item) {
@@ -70,12 +58,7 @@ final class NamedResourceCollection implements \Countable, \IteratorAggregate
         return self::fromArray($items);
     }
 
-    /**
-     * @param self<T> $other
-     *
-     * @return self<T>
-     */
-    public function diff(self $other): self
+    public function diff(\Sigwin\Ariadne\NamedResourceCollection $other): \Sigwin\Ariadne\NamedResourceCollection
     {
         $items = [];
         foreach ($this->items as $item) {
@@ -87,12 +70,7 @@ final class NamedResourceCollection implements \Countable, \IteratorAggregate
         return self::fromArray($items);
     }
 
-    /**
-     * @param self<T> $other
-     *
-     * @return self<T>
-     */
-    public function intersect(self $other): self
+    public function intersect(\Sigwin\Ariadne\NamedResourceCollection $other): \Sigwin\Ariadne\NamedResourceCollection
     {
         $items = [];
         foreach ($this->items as $item) {
@@ -104,17 +82,11 @@ final class NamedResourceCollection implements \Countable, \IteratorAggregate
         return self::fromArray($items);
     }
 
-    /**
-     * @param T $item
-     */
     public function contains(NamedResource $item): bool
     {
         return \array_key_exists($item->getName(), $this->items);
     }
 
-    /**
-     * @return \Traversable<T>
-     */
     public function getIterator(): \Traversable
     {
         return new \ArrayIterator(array_values($this->items));
@@ -125,9 +97,6 @@ final class NamedResourceCollection implements \Countable, \IteratorAggregate
         return \count($this->items);
     }
 
-    /**
-     * @return T of NamedResource
-     */
     public function get(string $name): NamedResource
     {
         if (\array_key_exists($name, $this->items) === false) {

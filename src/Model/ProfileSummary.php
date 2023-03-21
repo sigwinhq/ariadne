@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne\Model;
 
-use Sigwin\Ariadne\Model\Collection\NamedResourceCollection;
+use Sigwin\Ariadne\NamedResourceCollection;
 
 final class ProfileSummary
 {

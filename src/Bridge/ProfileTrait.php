@@ -57,17 +57,17 @@ trait ProfileTrait
     }
 
     /**
-     * @return NamedResourceCollection<ProfileTemplate>
+     * @return \Sigwin\Ariadne\NamedResourceCollection<ProfileTemplate>
      */
-    public function getMatchingTemplates(Repository $repository): NamedResourceCollection
+    public function getMatchingTemplates(Repository $repository): \Sigwin\Ariadne\NamedResourceCollection
     {
         return $this->getTemplates()->filter(static fn (ProfileTemplate $template): bool => $template->contains($repository));
     }
 
     /**
-     * @return NamedResourceCollection<ProfileTemplate>
+     * @return \Sigwin\Ariadne\NamedResourceCollection<ProfileTemplate>
      */
-    public function getTemplates(): NamedResourceCollection
+    public function getTemplates(): \Sigwin\Ariadne\NamedResourceCollection
     {
         $templates = [];
         foreach ($this->config->templates as $config) {
