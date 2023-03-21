@@ -59,13 +59,13 @@ final class FilteredProfileTemplateFactoryTest extends TestCase
         $repositories = RepositoryCollection::fromArray($all);
         $template = $factory->create($config, $repositories);
 
+        $actual = iterator_to_array($template);
+
         static::assertSame('test', $template->getName());
-        static::assertCount(\count($expected), iterator_to_array($template));
+        static::assertCount(\count($expected), $actual);
 
         // extract the repositories that are expected to be in the template by key
         $expected = array_values(array_intersect_key($all, array_flip($expected)));
-        $actual = iterator_to_array($template);
-
         static::assertSame($expected, $actual);
     }
 
@@ -87,6 +87,14 @@ final class FilteredProfileTemplateFactoryTest extends TestCase
                 [],
                 [],
                 [],
+            ],
+            'literal on a string' => [
+                ['path' => 'foo/bar'],
+                [
+                    $this->createRepository('foo/bar'),
+                    $this->createRepository('bar/foo'),
+                ],
+                [0], // matches foo/bar
             ],
             'expression on a string' => [
                 ['path' => '@=match("^foo")'],
@@ -111,6 +119,38 @@ final class FilteredProfileTemplateFactoryTest extends TestCase
                     $this->createRepository('bar/foo', type: 'fork'),
                 ],
                 [1], // matches bar/foo
+            ],
+            'match on an enum before a literal' => [
+                ['type' => 'fork', 'path' => 'foo/bar'],
+                [
+                    $this->createRepository('foo/bar', type: 'source'),
+                    $this->createRepository('bar/foo', type: 'fork'),
+                ],
+                [], // no matches
+            ],
+            'filter on multiple items, one eliminates each' => [
+                ['path' => '@=match("^foo")', 'type' => 'fork'],
+                [
+                    $this->createRepository('foo/bar', type: 'source'),
+                    $this->createRepository('bar/foo', type: 'fork'),
+                ],
+                [], // no matches
+            ],
+            'filter on multiple items, both eliminates one, both match the other' => [
+                ['path' => '@=match("^foo")', 'type' => 'source'],
+                [
+                    $this->createRepository('foo/bar', type: 'source'),
+                    $this->createRepository('bar/foo', type: 'fork'),
+                ],
+                [0], // matches foo/bar
+            ],
+            'order of the filters is irrelevant' => [
+                ['type' => 'source', 'path' => '@=match("^foo")'],
+                [
+                    $this->createRepository('foo/bar', type: 'source'),
+                    $this->createRepository('bar/foo', type: 'fork'),
+                ],
+                [0], // matches foo/bar
             ],
         ];
     }
