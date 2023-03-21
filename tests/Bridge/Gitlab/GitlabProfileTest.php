@@ -32,7 +32,7 @@ use Sigwin\Ariadne\ProfileTemplateFactory;
  *
  * @covers \Sigwin\Ariadne\Bridge\Gitlab\GitlabProfile
  *
- * @uses \Sigwin\Ariadne\Model\Collection\ProfileTemplateCollection
+ * @uses \Sigwin\Ariadne\Model\Collection\NamedResourceCollection
  * @uses \Sigwin\Ariadne\Model\Collection\RepositoryCollection
  * @uses \Sigwin\Ariadne\Model\Config\ProfileClientConfig
  * @uses \Sigwin\Ariadne\Model\Config\ProfileConfig

@@ -15,9 +15,10 @@ namespace Sigwin\Ariadne;
 
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Client\ClientInterface;
-use Sigwin\Ariadne\Model\Collection\ProfileTemplateCollection;
+use Sigwin\Ariadne\Model\Collection\NamedResourceCollection;
 use Sigwin\Ariadne\Model\Config\ProfileConfig;
 use Sigwin\Ariadne\Model\ProfileSummary;
+use Sigwin\Ariadne\Model\ProfileTemplate;
 use Sigwin\Ariadne\Model\ProfileUser;
 use Sigwin\Ariadne\Model\Repository;
 
@@ -38,9 +39,15 @@ interface Profile extends \IteratorAggregate
 
     public function getSummary(): ProfileSummary;
 
-    public function getTemplates(): ProfileTemplateCollection;
+    /**
+     * @return NamedResourceCollection<ProfileTemplate>
+     */
+    public function getTemplates(): NamedResourceCollection;
 
-    public function getMatchingTemplates(Repository $repository): ProfileTemplateCollection;
+    /**
+     * @return NamedResourceCollection<ProfileTemplate>
+     */
+    public function getMatchingTemplates(Repository $repository): NamedResourceCollection;
 
     public function plan(Repository $repository): NamedResourceChangeCollection;
 

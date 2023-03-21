@@ -16,9 +16,10 @@ namespace Sigwin\Ariadne\Test\Bridge\Symfony\Console\Style;
 use PHPUnit\Framework\TestCase;
 use Sigwin\Ariadne\Bridge\Symfony\Console\Logo;
 use Sigwin\Ariadne\Bridge\Symfony\Console\Style\AriadneStyle;
-use Sigwin\Ariadne\Model\Collection\ProfileTemplateCollection;
+use Sigwin\Ariadne\Model\Collection\NamedResourceCollection;
 use Sigwin\Ariadne\Model\Collection\RepositoryCollection;
 use Sigwin\Ariadne\Model\ProfileSummary;
+use Sigwin\Ariadne\Model\ProfileTemplate;
 use Sigwin\Ariadne\Model\ProfileUser;
 use Sigwin\Ariadne\Profile;
 use Sigwin\Ariadne\Test\ModelGeneratorTrait;
@@ -32,7 +33,6 @@ use Symfony\Component\Console\Tester\CommandTester;
  * @covers \Sigwin\Ariadne\Bridge\Symfony\Console\Style\AriadneStyle
  *
  * @uses \Sigwin\Ariadne\Model\Collection\NamedResourceCollection
- * @uses \Sigwin\Ariadne\Model\Collection\ProfileTemplateCollection
  * @uses \Sigwin\Ariadne\Model\Collection\RepositoryCollection
  * @uses \Sigwin\Ariadne\Model\ProfileSummary
  * @uses \Sigwin\Ariadne\Model\ProfileUser
@@ -112,13 +112,16 @@ final class AriadneStyleTest extends TestCase
             ->willReturn($name)
         ;
 
+        /** @var NamedResourceCollection<ProfileTemplate> $templates */
+        $templates = NamedResourceCollection::fromArray([]);
+
         $summary = new ProfileSummary(
             RepositoryCollection::fromArray([
                 $this->createRepository('namespace1/repo1'),
                 $this->createRepository('namespace2/repo1'),
                 $this->createRepository('namespace1/repo2'),
             ]),
-            new ProfileTemplateCollection([])
+            $templates
         );
         $profile
             ->method('getSummary')

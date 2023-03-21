@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Sigwin\Ariadne\Bridge;
 
 use Sigwin\Ariadne\Model\Collection\NamedResourceChangeFlattenedCollection;
-use Sigwin\Ariadne\Model\Collection\ProfileTemplateCollection;
+use Sigwin\Ariadne\Model\Collection\NamedResourceCollection;
 use Sigwin\Ariadne\Model\Config\ProfileTemplateConfig;
 use Sigwin\Ariadne\Model\ProfileSummary;
 use Sigwin\Ariadne\Model\ProfileTemplate;
@@ -56,19 +56,25 @@ trait ProfileTrait
         return NamedResourceChangeFlattenedCollection::fromResource($repository, $changes);
     }
 
-    public function getMatchingTemplates(Repository $repository): ProfileTemplateCollection
+    /**
+     * @return NamedResourceCollection<ProfileTemplate>
+     */
+    public function getMatchingTemplates(Repository $repository): NamedResourceCollection
     {
         return $this->getTemplates()->filter(static fn (ProfileTemplate $template): bool => $template->contains($repository));
     }
 
-    public function getTemplates(): ProfileTemplateCollection
+    /**
+     * @return NamedResourceCollection<ProfileTemplate>
+     */
+    public function getTemplates(): NamedResourceCollection
     {
         $templates = [];
         foreach ($this->config->templates as $config) {
             $templates[] = $this->templateFactory->create($config, $this->getRepositories());
         }
 
-        return new ProfileTemplateCollection($templates);
+        return NamedResourceCollection::fromArray($templates);
     }
 
     /**

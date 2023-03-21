@@ -16,7 +16,6 @@ namespace Sigwin\Ariadne\Test;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Client\ClientInterface;
 use Sigwin\Ariadne\Model\Collection\NamedResourceCollection;
-use Sigwin\Ariadne\Model\Collection\ProfileTemplateCollection;
 use Sigwin\Ariadne\Model\Config\ProfileConfig;
 use Sigwin\Ariadne\Model\ProfileSummary;
 use Sigwin\Ariadne\Model\ProfileUser;
@@ -140,12 +139,12 @@ trait ModelGeneratorTrait
                 throw new \LogicException('Not implemented');
             }
 
-            public function getTemplates(): ProfileTemplateCollection
+            public function getTemplates(): NamedResourceCollection
             {
                 throw new \LogicException('Not implemented');
             }
 
-            public function getMatchingTemplates(Repository $repository): ProfileTemplateCollection
+            public function getMatchingTemplates(Repository $repository): NamedResourceCollection
             {
                 throw new \LogicException('Not implemented');
             }
