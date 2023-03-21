@@ -168,16 +168,6 @@
       <code>RuntimeEnvProcessor</code>
     </UnusedClass>
   </file>
-  <file src="src/Bridge/Symfony/ExpressionLanguage/ExpressionLanguage.php">
-    <PossiblyUnusedMethod>
-      <code>__construct</code>
-    </PossiblyUnusedMethod>
-  </file>
-  <file src="src/EnvironmentResolver.php">
-    <PossiblyUnusedMethod>
-      <code>__construct</code>
-    </PossiblyUnusedMethod>
-  </file>
   <file src="src/Model/Change/NamedResourceChangeTrait.php">
     <PossiblyUnusedMethod>
       <code>count</code>
@@ -249,11 +239,6 @@
     <PossiblyUnusedReturnValue>
       <code>Profile</code>
     </PossiblyUnusedReturnValue>
-  </file>
-  <file src="src/Profile/Template/Factory/FilteredProfileTemplateFactory.php">
-    <UnusedClass>
-      <code>FilteredProfileTemplateFactory</code>
-    </UnusedClass>
   </file>
   <file src="tests/Bridge/Github/GithubProfileTest.php">
     <LessSpecificReturnType>
