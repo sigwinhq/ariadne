@@ -17,5 +17,5 @@ use Sigwin\Ariadne\Model\Config\ProfileConfig;
 
 interface ProfileFactory
 {
-    public function create(ProfileConfig $config): Profile;
+    public function fromConfig(ProfileConfig $config): Profile;
 }

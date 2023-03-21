@@ -228,7 +228,7 @@ final class GitlabProfileTest extends TestCase
         /** @var NamedResourceCollection<Repository> $repositories */
         $repositories = SortedNamedResourceCollection::fromArray([]);
         $factory
-            ->method('create')
+            ->method('fromConfig')
             ->willReturn(new ProfileTemplate(
                 'foo',
                 ProfileTemplateTarget::fromConfig(

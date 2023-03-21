@@ -26,7 +26,7 @@ final class FilteredProfileGeneratorCollectionFactory implements ProfileCollecti
     {
     }
 
-    public function create(AriadneConfig $config, ProfileFilter $filter): ProfileCollection
+    public function fromConfig(AriadneConfig $config, ProfileFilter $filter): ProfileCollection
     {
         return new FilteredProfileGeneratorCollection($this->clientFactory, $config, $filter);
     }

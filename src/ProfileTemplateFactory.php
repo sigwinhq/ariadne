@@ -22,5 +22,5 @@ interface ProfileTemplateFactory
     /**
      * @param NamedResourceCollection<Repository> $repositories
      */
-    public function create(ProfileTemplateConfig $config, NamedResourceCollection $repositories): ProfileTemplate;
+    public function fromConfig(ProfileTemplateConfig $config, NamedResourceCollection $repositories): ProfileTemplate;
 }

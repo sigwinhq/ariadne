@@ -77,7 +77,7 @@ trait ProfileTrait
     {
         $templates = [];
         foreach ($this->config->templates as $config) {
-            $templates[] = $this->templateFactory->create($config, $this->getRepositories());
+            $templates[] = $this->templateFactory->fromConfig($config, $this->getRepositories());
         }
 
         return SortedNamedResourceCollection::fromArray($templates);

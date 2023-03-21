@@ -18,5 +18,5 @@ use Sigwin\Ariadne\Model\ProfileFilter;
 
 interface ProfileCollectionFactory
 {
-    public function create(AriadneConfig $config, ProfileFilter $filter): ProfileCollection;
+    public function fromConfig(AriadneConfig $config, ProfileFilter $filter): ProfileCollection;
 }
