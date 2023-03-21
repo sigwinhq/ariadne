@@ -20,7 +20,7 @@ use Sigwin\Ariadne\NamedResource;
  *
  * @implements \Sigwin\Ariadne\NamedResourceCollection<T>
  */
-final class NamedResourceCollection implements \Sigwin\Ariadne\NamedResourceCollection
+final class SortedNamedResourceCollection implements \Sigwin\Ariadne\NamedResourceCollection
 {
     /**
      * @var array<string, T>

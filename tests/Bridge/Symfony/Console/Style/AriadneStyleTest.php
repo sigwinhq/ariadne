@@ -16,6 +16,7 @@ namespace Sigwin\Ariadne\Test\Bridge\Symfony\Console\Style;
 use PHPUnit\Framework\TestCase;
 use Sigwin\Ariadne\Bridge\Symfony\Console\Logo;
 use Sigwin\Ariadne\Bridge\Symfony\Console\Style\AriadneStyle;
+use Sigwin\Ariadne\Model\Collection\SortedNamedResourceCollection;
 use Sigwin\Ariadne\Model\ProfileSummary;
 use Sigwin\Ariadne\Model\ProfileTemplate;
 use Sigwin\Ariadne\Model\ProfileUser;
@@ -31,7 +32,7 @@ use Symfony\Component\Console\Tester\CommandTester;
  *
  * @covers \Sigwin\Ariadne\Bridge\Symfony\Console\Style\AriadneStyle
  *
- * @uses \Sigwin\Ariadne\Model\Collection\NamedResourceCollection
+ * @uses \Sigwin\Ariadne\Model\Collection\SortedNamedResourceCollection
  * @uses \Sigwin\Ariadne\Model\ProfileSummary
  * @uses \Sigwin\Ariadne\Model\ProfileUser
  * @uses \Sigwin\Ariadne\Model\Repository
@@ -111,10 +112,10 @@ final class AriadneStyleTest extends TestCase
         ;
 
         /** @var NamedResourceCollection<ProfileTemplate> $templates */
-        $templates = \Sigwin\Ariadne\Model\Collection\NamedResourceCollection::fromArray([]);
+        $templates = SortedNamedResourceCollection::fromArray([]);
 
         $summary = new ProfileSummary(
-            \Sigwin\Ariadne\Model\Collection\NamedResourceCollection::fromArray([
+            SortedNamedResourceCollection::fromArray([
                 $this->createRepository('namespace1/repo1'),
                 $this->createRepository('namespace2/repo1'),
                 $this->createRepository('namespace1/repo2'),

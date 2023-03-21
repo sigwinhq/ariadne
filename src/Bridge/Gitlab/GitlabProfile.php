@@ -19,7 +19,7 @@ use Gitlab\ResultPager;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Client\ClientInterface;
 use Sigwin\Ariadne\Bridge\ProfileTrait;
-use Sigwin\Ariadne\Model\Collection\NamedResourceCollection;
+use Sigwin\Ariadne\Model\Collection\SortedNamedResourceCollection;
 use Sigwin\Ariadne\Model\Config\ProfileConfig;
 use Sigwin\Ariadne\Model\ProfileUser;
 use Sigwin\Ariadne\Model\Repository;
@@ -28,6 +28,7 @@ use Sigwin\Ariadne\Model\RepositoryType;
 use Sigwin\Ariadne\Model\RepositoryUser;
 use Sigwin\Ariadne\Model\RepositoryVisibility;
 use Sigwin\Ariadne\NamedResourceChangeCollection;
+use Sigwin\Ariadne\NamedResourceCollection;
 use Sigwin\Ariadne\Profile;
 use Sigwin\Ariadne\ProfileTemplateFactory;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -110,9 +111,9 @@ final class GitlabProfile implements Profile
     }
 
     /**
-     * @return \Sigwin\Ariadne\NamedResourceCollection<Repository>
+     * @return NamedResourceCollection<Repository>
      */
-    private function getRepositories(): \Sigwin\Ariadne\NamedResourceCollection
+    private function getRepositories(): NamedResourceCollection
     {
         if (! isset($this->repositories)) {
             $pager = new ResultPager($this->client);
@@ -152,7 +153,7 @@ final class GitlabProfile implements Profile
                         $users[] = new RepositoryUser($collaborator['username'], self::USER_ROLE[$collaborator['access_level']]);
                     }
                 }
-                $users = NamedResourceCollection::fromArray($users);
+                $users = SortedNamedResourceCollection::fromArray($users);
 
                 $repositories[] = new Repository(
                     $repository,
@@ -165,7 +166,7 @@ final class GitlabProfile implements Profile
                     $languages,
                 );
             }
-            $this->repositories = NamedResourceCollection::fromArray($repositories);
+            $this->repositories = SortedNamedResourceCollection::fromArray($repositories);
         }
 
         return $this->repositories;
