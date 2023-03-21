@@ -14,17 +14,8 @@ declare(strict_types=1);
 namespace Sigwin\Ariadne\Test\Model;
 
 use PHPUnit\Framework\TestCase;
-use Psr\Cache\CacheItemPoolInterface;
-use Psr\Http\Client\ClientInterface;
-use Sigwin\Ariadne\Model\Collection\ProfileTemplateCollection;
-use Sigwin\Ariadne\Model\Config\ProfileConfig;
 use Sigwin\Ariadne\Model\ProfileFilter;
-use Sigwin\Ariadne\Model\ProfileSummary;
-use Sigwin\Ariadne\Model\ProfileUser;
-use Sigwin\Ariadne\Model\Repository;
-use Sigwin\Ariadne\NamedResourceChangeCollection;
-use Sigwin\Ariadne\Profile;
-use Sigwin\Ariadne\ProfileTemplateFactory;
+use Sigwin\Ariadne\Test\ModelGeneratorTrait;
 
 /**
  * @internal
@@ -35,6 +26,8 @@ use Sigwin\Ariadne\ProfileTemplateFactory;
  */
 final class ProfileFilterTest extends TestCase
 {
+    use ModelGeneratorTrait;
+
     public function testEmptyFilterMatchesEverything(): void
     {
         $filter = ProfileFilter::create(null, null);
@@ -70,65 +63,5 @@ final class ProfileFilterTest extends TestCase
 
         $filter = ProfileFilter::create('not foo', 'fake');
         static::assertFalse($filter->match($this->createProfile()));
-    }
-
-    private function createProfile(): Profile
-    {
-        return new class() implements Profile {
-            public function getName(): string
-            {
-                return 'foo';
-            }
-
-            public static function getType(): string
-            {
-                return 'fake';
-            }
-
-            public function getIterator(): \Traversable
-            {
-                throw new \LogicException('Not implemented');
-            }
-
-            public static function fromConfig(ProfileConfig $config, ClientInterface $client, ProfileTemplateFactory $templateFactory, CacheItemPoolInterface $cachePool): Profile
-            {
-                throw new \LogicException('Not implemented');
-            }
-
-            public function getApiUser(): ProfileUser
-            {
-                throw new \LogicException('Not implemented');
-            }
-
-            public function getApiVersion(): string
-            {
-                throw new \LogicException('Not implemented');
-            }
-
-            public function getSummary(): ProfileSummary
-            {
-                throw new \LogicException('Not implemented');
-            }
-
-            public function getTemplates(): ProfileTemplateCollection
-            {
-                throw new \LogicException('Not implemented');
-            }
-
-            public function getMatchingTemplates(Repository $repository): ProfileTemplateCollection
-            {
-                throw new \LogicException('Not implemented');
-            }
-
-            public function plan(Repository $repository): NamedResourceChangeCollection
-            {
-                throw new \LogicException('Not implemented');
-            }
-
-            public function apply(NamedResourceChangeCollection $plan): void
-            {
-                throw new \LogicException('Not implemented');
-            }
-        };
     }
 }

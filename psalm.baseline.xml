@@ -225,12 +225,7 @@
       <code>$visibility</code>
     </PossiblyUnusedProperty>
   </file>
-  <file src="src/Profile/Collection/Factory/ProfileGeneratorCollectionFactory.php">
-    <UnusedClass>
-      <code>ProfileGeneratorCollectionFactory</code>
-    </UnusedClass>
-  </file>
-  <file src="src/Profile/Collection/ProfileGeneratorCollection.php">
+  <file src="src/Profile/Collection/FilteredProfileGeneratorCollection.php">
     <PossiblyUnusedMethod>
       <code>count</code>
     </PossiblyUnusedMethod>
@@ -259,14 +254,35 @@
       <code>Profile</code>
     </LessSpecificReturnType>
   </file>
-  <file src="tests/Model/ProfileFilterTest.php">
+  <file src="tests/ModelGeneratorTrait.php">
     <LessSpecificReturnType>
       <code>Profile</code>
+      <code>ProfileFactory</code>
     </LessSpecificReturnType>
+    <MixedArrayOffset>
+      <code>$configs[$idx++]</code>
+      <code>$configs[$idx]</code>
+    </MixedArrayOffset>
+    <MixedAssignment>
+      <code>$idx</code>
+    </MixedAssignment>
+    <MixedOperand>
+      <code>$idx</code>
+    </MixedOperand>
+  </file>
+  <file src="tests/Profile/Collection/FilteredProfileGeneratorCollectionTest.php">
+    <ArgumentTypeCoercion>
+      <code>iterator_to_array($config) + iterator_to_array($config)</code>
+    </ArgumentTypeCoercion>
   </file>
   <file src="tests/Profile/Factory/ClassmapProfileFactoryTest.php">
     <PossiblyUnusedMethod>
       <code>getRepositories</code>
     </PossiblyUnusedMethod>
+  </file>
+  <file src="tests/Profile/Template/Factory/FilteredProfileTemplateFactoryTest.php">
+    <ArgumentTypeCoercion>
+      <code>$actual</code>
+    </ArgumentTypeCoercion>
   </file>
 </files>

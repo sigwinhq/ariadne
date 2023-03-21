@@ -64,9 +64,7 @@ final class FilteredProfileTemplateFactoryTest extends TestCase
         static::assertSame('test', $template->getName());
         static::assertCount(\count($expected), $actual);
 
-        // extract the repositories that are expected to be in the template by key
-        $expected = array_values(array_intersect_key($all, array_flip($expected)));
-        static::assertSame($expected, $actual);
+        self::assertArrayInArrayByKey($all, $expected, $actual);
     }
 
     /**
