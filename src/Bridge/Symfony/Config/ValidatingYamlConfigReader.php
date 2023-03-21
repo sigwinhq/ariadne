@@ -14,10 +14,10 @@ declare(strict_types=1);
 namespace Sigwin\Ariadne\Bridge\Symfony\Config;
 
 use Sigwin\Ariadne\ConfigReader;
-use Sigwin\Ariadne\EnvironmentResolver;
 use Sigwin\Ariadne\Model\Config\AriadneConfig;
 use Sigwin\Ariadne\Model\RepositoryType;
 use Sigwin\Ariadne\Model\RepositoryVisibility;
+use Sigwin\Ariadne\Resolver\XdgEnvironmentResolver;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\Finder\Finder;
@@ -31,7 +31,7 @@ final class ValidatingYamlConfigReader implements ConfigReader
     /**
      * @param array<string, class-string<\Sigwin\Ariadne\Profile>> $profilesMap
      */
-    public function __construct(private readonly array $profilesMap, private readonly EnvironmentResolver $environmentResolver)
+    public function __construct(private readonly array $profilesMap, private readonly XdgEnvironmentResolver $environmentResolver)
     {
     }
 

@@ -11,41 +11,41 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sigwin\Ariadne\Test;
+namespace Sigwin\Ariadne\Test\Resolver;
 
 use PHPUnit\Framework\TestCase;
-use Sigwin\Ariadne\EnvironmentResolver;
+use Sigwin\Ariadne\Resolver\XdgEnvironmentResolver;
 
 /**
  * @internal
  *
- * @covers \Sigwin\Ariadne\EnvironmentResolver
+ * @covers \Sigwin\Ariadne\Resolver\XdgEnvironmentResolver
  *
  * @small
  */
-final class EnvironmentResolverTest extends TestCase
+final class XdgEnvironmentResolverTest extends TestCase
 {
     public function testWillUseXdgCacheHomeIfPassed(): void
     {
-        $resolver = new EnvironmentResolver('/cacheee', null, '/home');
+        $resolver = new XdgEnvironmentResolver('/cacheee', null, '/home');
         static::assertSame('/cacheee/ariadne', $resolver->getCacheDir());
     }
 
     public function testWillFallBackToHomeCacheIfXdgCacheHomeNotPassed(): void
     {
-        $resolver = new EnvironmentResolver(null, null, '/home');
+        $resolver = new XdgEnvironmentResolver(null, null, '/home');
         static::assertSame('/home/.cache/ariadne', $resolver->getCacheDir());
     }
 
     public function testWillUseXdgConfigHomeIfPassed(): void
     {
-        $resolver = new EnvironmentResolver(null, '/configgg', '/home');
+        $resolver = new XdgEnvironmentResolver(null, '/configgg', '/home');
         static::assertSame('/configgg/ariadne', $resolver->getConfigDir());
     }
 
     public function testWillFallBackToHomeConfigIfXdgConfigHomeNotPassed(): void
     {
-        $resolver = new EnvironmentResolver(null, null, '/home');
+        $resolver = new XdgEnvironmentResolver(null, null, '/home');
         static::assertSame('/home/.config/ariadne', $resolver->getConfigDir());
     }
 }
