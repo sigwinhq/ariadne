@@ -14,8 +14,8 @@ declare(strict_types=1);
 namespace Sigwin\Ariadne\Model;
 
 use Sigwin\Ariadne\Evaluator;
-use Sigwin\Ariadne\Model\Collection\NamedResourceCollection;
 use Sigwin\Ariadne\Model\Config\ProfileTemplateTargetConfig;
+use Sigwin\Ariadne\NamedResourceCollection;
 
 /**
  * @psalm-import-type TProfileTemplateTargetAttribute from ProfileTemplateTargetConfig
@@ -57,6 +57,6 @@ final class ProfileTemplateTarget
             $users[] = new RepositoryUser($user->username, $user->role);
         }
 
-        return NamedResourceCollection::fromArray($users);
+        return \Sigwin\Ariadne\Model\Collection\NamedResourceCollection::fromArray($users);
     }
 }

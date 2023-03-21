@@ -18,8 +18,8 @@ use Sigwin\Ariadne\Model\Change\NamedResourceCreate;
 use Sigwin\Ariadne\Model\Change\NamedResourceDelete;
 use Sigwin\Ariadne\Model\Change\NamedResourceUpdate;
 use Sigwin\Ariadne\Model\Collection\NamedResourceChangeCollection;
-use Sigwin\Ariadne\Model\Collection\NamedResourceCollection;
 use Sigwin\Ariadne\NamedResource;
+use Sigwin\Ariadne\NamedResourceCollection;
 
 final class Repository implements NamedResource
 {

@@ -24,6 +24,11 @@ use Sigwin\Ariadne\NamedResourceChangeCollection;
 
 trait ProfileTrait
 {
+    /**
+     * @var \Sigwin\Ariadne\NamedResourceCollection<Repository>
+     */
+    private \Sigwin\Ariadne\NamedResourceCollection $repositories;
+
     public function getName(): string
     {
         return $this->name;

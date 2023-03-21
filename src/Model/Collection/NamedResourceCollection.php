@@ -41,7 +41,14 @@ final class NamedResourceCollection implements \Sigwin\Ariadne\NamedResourceColl
         $this->items = $items;
     }
 
-    public static function fromArray(array $items): self
+    /**
+     * @template ST of NamedResource
+     *
+     * @param list<ST> $items
+     *
+     * @return \Sigwin\Ariadne\NamedResourceCollection<ST>
+     */
+    public static function fromArray(array $items): \Sigwin\Ariadne\NamedResourceCollection
     {
         return new self($items);
     }

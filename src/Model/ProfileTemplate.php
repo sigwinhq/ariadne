@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne\Model;
 
-use Sigwin\Ariadne\Model\Collection\NamedResourceCollection;
 use Sigwin\Ariadne\NamedResource;
+use Sigwin\Ariadne\NamedResourceCollection;
 
 /**
  * @psalm-import-type TProfileTemplateTargetAttribute from \Sigwin\Ariadne\Model\Config\ProfileTemplateTargetConfig

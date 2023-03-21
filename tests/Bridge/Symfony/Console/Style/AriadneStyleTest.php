@@ -16,10 +16,10 @@ namespace Sigwin\Ariadne\Test\Bridge\Symfony\Console\Style;
 use PHPUnit\Framework\TestCase;
 use Sigwin\Ariadne\Bridge\Symfony\Console\Logo;
 use Sigwin\Ariadne\Bridge\Symfony\Console\Style\AriadneStyle;
-use Sigwin\Ariadne\Model\Collection\NamedResourceCollection;
 use Sigwin\Ariadne\Model\ProfileSummary;
 use Sigwin\Ariadne\Model\ProfileTemplate;
 use Sigwin\Ariadne\Model\ProfileUser;
+use Sigwin\Ariadne\NamedResourceCollection;
 use Sigwin\Ariadne\Profile;
 use Sigwin\Ariadne\Test\ModelGeneratorTrait;
 use Symfony\Component\Console\Command\Command;
@@ -111,10 +111,10 @@ final class AriadneStyleTest extends TestCase
         ;
 
         /** @var NamedResourceCollection<ProfileTemplate> $templates */
-        $templates = NamedResourceCollection::fromArray([]);
+        $templates = \Sigwin\Ariadne\Model\Collection\NamedResourceCollection::fromArray([]);
 
         $summary = new ProfileSummary(
-            NamedResourceCollection::fromArray([
+            \Sigwin\Ariadne\Model\Collection\NamedResourceCollection::fromArray([
                 $this->createRepository('namespace1/repo1'),
                 $this->createRepository('namespace2/repo1'),
                 $this->createRepository('namespace1/repo2'),

@@ -40,11 +40,6 @@ final class GithubProfile implements Profile
 {
     use ProfileTrait;
 
-    /**
-     * @var NamedResourceCollection<Repository>
-     */
-    private NamedResourceCollection $repositories;
-
     private function __construct(private readonly Client $client, private readonly ProfileTemplateFactory $templateFactory, private readonly string $name, private readonly ProfileConfig $config)
     {
         $this->validateAttributes($this->config->templates);
@@ -107,9 +102,9 @@ final class GithubProfile implements Profile
     }
 
     /**
-     * @return NamedResourceCollection<Repository>
+     * @return \Sigwin\Ariadne\NamedResourceCollection<Repository>
      */
-    private function getRepositories(): NamedResourceCollection
+    private function getRepositories(): \Sigwin\Ariadne\NamedResourceCollection
     {
         if (! isset($this->repositories)) {
             $repositories = [];

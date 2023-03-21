@@ -51,11 +51,6 @@ final class GitlabProfile implements Profile
     /** @var array{membership: bool, owned: bool} */
     private readonly array $options;
 
-    /**
-     * @var NamedResourceCollection<Repository>
-     */
-    private NamedResourceCollection $repositories;
-
     private function __construct(private readonly Client $client, private readonly ProfileTemplateFactory $templateFactory, private readonly string $name, private readonly ProfileConfig $config)
     {
         $this->options = $this->validateOptions($this->config->client->options);
@@ -115,9 +110,9 @@ final class GitlabProfile implements Profile
     }
 
     /**
-     * @return NamedResourceCollection<Repository>
+     * @return \Sigwin\Ariadne\NamedResourceCollection<Repository>
      */
-    private function getRepositories(): NamedResourceCollection
+    private function getRepositories(): \Sigwin\Ariadne\NamedResourceCollection
     {
         if (! isset($this->repositories)) {
             $pager = new ResultPager($this->client);
