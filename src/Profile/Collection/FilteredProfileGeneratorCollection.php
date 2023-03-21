@@ -18,7 +18,7 @@ use Sigwin\Ariadne\Model\ProfileFilter;
 use Sigwin\Ariadne\ProfileCollection;
 use Sigwin\Ariadne\ProfileFactory;
 
-final class ProfileGeneratorCollection implements ProfileCollection
+final class FilteredProfileGeneratorCollection implements ProfileCollection
 {
     public function __construct(private readonly ProfileFactory $profileFactory, private readonly AriadneConfig $config, private readonly ProfileFilter $filter)
     {

@@ -225,12 +225,12 @@
       <code>$visibility</code>
     </PossiblyUnusedProperty>
   </file>
-  <file src="src/Profile/Collection/Factory/ProfileGeneratorCollectionFactory.php">
+  <file src="src/Profile/Collection/Factory/FilteredProfileGeneratorCollectionFactory.php">
     <UnusedClass>
-      <code>ProfileGeneratorCollectionFactory</code>
+      <code>FilteredProfileGeneratorCollectionFactory</code>
     </UnusedClass>
   </file>
-  <file src="src/Profile/Collection/ProfileGeneratorCollection.php">
+  <file src="src/Profile/Collection/FilteredProfileGeneratorCollection.php">
     <PossiblyUnusedMethod>
       <code>count</code>
     </PossiblyUnusedMethod>

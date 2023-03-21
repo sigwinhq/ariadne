@@ -15,12 +15,12 @@ namespace Sigwin\Ariadne\Profile\Collection\Factory;
 
 use Sigwin\Ariadne\Model\Config\AriadneConfig;
 use Sigwin\Ariadne\Model\ProfileFilter;
-use Sigwin\Ariadne\Profile\Collection\ProfileGeneratorCollection;
+use Sigwin\Ariadne\Profile\Collection\FilteredProfileGeneratorCollection;
 use Sigwin\Ariadne\ProfileCollection;
 use Sigwin\Ariadne\ProfileCollectionFactory;
 use Sigwin\Ariadne\ProfileFactory;
 
-final class ProfileGeneratorCollectionFactory implements ProfileCollectionFactory
+final class FilteredProfileGeneratorCollectionFactory implements ProfileCollectionFactory
 {
     public function __construct(private readonly ProfileFactory $clientFactory)
     {
@@ -28,6 +28,6 @@ final class ProfileGeneratorCollectionFactory implements ProfileCollectionFactor
 
     public function create(AriadneConfig $config, ProfileFilter $filter): ProfileCollection
     {
-        return new ProfileGeneratorCollection($this->clientFactory, $config, $filter);
+        return new FilteredProfileGeneratorCollection($this->clientFactory, $config, $filter);
     }
 }
