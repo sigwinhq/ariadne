@@ -15,12 +15,12 @@ namespace Sigwin\Ariadne\Profile\Template\Factory;
 
 use Sigwin\Ariadne\Bridge\Symfony\ExpressionLanguage\ExpressionLanguage;
 use Sigwin\Ariadne\Evaluator;
-use Sigwin\Ariadne\Model\Collection\RepositoryCollection;
 use Sigwin\Ariadne\Model\Config\ProfileTemplateConfig;
 use Sigwin\Ariadne\Model\Config\ProfileTemplateTargetConfig;
 use Sigwin\Ariadne\Model\ProfileTemplate;
 use Sigwin\Ariadne\Model\ProfileTemplateTarget;
 use Sigwin\Ariadne\Model\Repository;
+use Sigwin\Ariadne\NamedResourceCollection;
 use Sigwin\Ariadne\ProfileTemplateFactory;
 
 final class FilteredProfileTemplateFactory implements Evaluator, ProfileTemplateFactory
@@ -31,7 +31,7 @@ final class FilteredProfileTemplateFactory implements Evaluator, ProfileTemplate
     {
     }
 
-    public function create(ProfileTemplateConfig $config, RepositoryCollection $repositories): ProfileTemplate
+    public function create(ProfileTemplateConfig $config, NamedResourceCollection $repositories): ProfileTemplate
     {
         return new ProfileTemplate($config->name, $this->createTemplateTarget($config->target), $repositories->filter(function (Repository $repository) use ($config): bool {
             foreach ($config->filter as $name => $value) {

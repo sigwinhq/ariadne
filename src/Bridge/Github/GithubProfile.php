@@ -20,7 +20,6 @@ use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Client\ClientInterface;
 use Sigwin\Ariadne\Bridge\ProfileTrait;
 use Sigwin\Ariadne\Model\Collection\NamedResourceCollection;
-use Sigwin\Ariadne\Model\Collection\RepositoryCollection;
 use Sigwin\Ariadne\Model\Config\ProfileConfig;
 use Sigwin\Ariadne\Model\ProfileUser;
 use Sigwin\Ariadne\Model\Repository;
@@ -40,8 +39,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 final class GithubProfile implements Profile
 {
     use ProfileTrait;
-
-    private RepositoryCollection $repositories;
 
     private function __construct(private readonly Client $client, private readonly ProfileTemplateFactory $templateFactory, private readonly string $name, private readonly ProfileConfig $config)
     {
@@ -104,7 +101,10 @@ final class GithubProfile implements Profile
         $this->client->repositories()->update($username, $repository, $plan->getAttributeChanges());
     }
 
-    private function getRepositories(): RepositoryCollection
+    /**
+     * @return \Sigwin\Ariadne\NamedResourceCollection<Repository>
+     */
+    private function getRepositories(): \Sigwin\Ariadne\NamedResourceCollection
     {
         if (! isset($this->repositories)) {
             $repositories = [];
@@ -150,7 +150,7 @@ final class GithubProfile implements Profile
                 );
             }
 
-            $this->repositories = RepositoryCollection::fromArray($repositories);
+            $this->repositories = NamedResourceCollection::fromArray($repositories);
         }
 
         return $this->repositories;

@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Sigwin\Ariadne\Bridge;
 
 use Sigwin\Ariadne\Model\Collection\NamedResourceChangeFlattenedCollection;
-use Sigwin\Ariadne\Model\Collection\ProfileTemplateCollection;
+use Sigwin\Ariadne\Model\Collection\NamedResourceCollection;
 use Sigwin\Ariadne\Model\Config\ProfileTemplateConfig;
 use Sigwin\Ariadne\Model\ProfileSummary;
 use Sigwin\Ariadne\Model\ProfileTemplate;
@@ -24,6 +24,11 @@ use Sigwin\Ariadne\NamedResourceChangeCollection;
 
 trait ProfileTrait
 {
+    /**
+     * @var \Sigwin\Ariadne\NamedResourceCollection<Repository>
+     */
+    private \Sigwin\Ariadne\NamedResourceCollection $repositories;
+
     public function getName(): string
     {
         return $this->name;
@@ -56,19 +61,25 @@ trait ProfileTrait
         return NamedResourceChangeFlattenedCollection::fromResource($repository, $changes);
     }
 
-    public function getMatchingTemplates(Repository $repository): ProfileTemplateCollection
+    /**
+     * @return \Sigwin\Ariadne\NamedResourceCollection<ProfileTemplate>
+     */
+    public function getMatchingTemplates(Repository $repository): \Sigwin\Ariadne\NamedResourceCollection
     {
         return $this->getTemplates()->filter(static fn (ProfileTemplate $template): bool => $template->contains($repository));
     }
 
-    public function getTemplates(): ProfileTemplateCollection
+    /**
+     * @return \Sigwin\Ariadne\NamedResourceCollection<ProfileTemplate>
+     */
+    public function getTemplates(): \Sigwin\Ariadne\NamedResourceCollection
     {
         $templates = [];
         foreach ($this->config->templates as $config) {
             $templates[] = $this->templateFactory->create($config, $this->getRepositories());
         }
 
-        return new ProfileTemplateCollection($templates);
+        return NamedResourceCollection::fromArray($templates);
     }
 
     /**

@@ -13,9 +13,8 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne\Model;
 
-use Sigwin\Ariadne\Model\Collection\NamedResourceCollection;
-use Sigwin\Ariadne\Model\Collection\RepositoryCollection;
 use Sigwin\Ariadne\NamedResource;
+use Sigwin\Ariadne\NamedResourceCollection;
 
 /**
  * @psalm-import-type TProfileTemplateTargetAttribute from \Sigwin\Ariadne\Model\Config\ProfileTemplateTargetConfig
@@ -24,7 +23,10 @@ use Sigwin\Ariadne\NamedResource;
  */
 final class ProfileTemplate implements \Countable, \IteratorAggregate, NamedResource
 {
-    public function __construct(private readonly string $name, private readonly ProfileTemplateTarget $target, private readonly RepositoryCollection $repositories)
+    /**
+     * @param NamedResourceCollection<Repository> $repositories
+     */
+    public function __construct(private readonly string $name, private readonly ProfileTemplateTarget $target, private readonly NamedResourceCollection $repositories)
     {
     }
 

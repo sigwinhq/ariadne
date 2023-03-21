@@ -15,8 +15,6 @@ namespace Sigwin\Ariadne\Test;
 
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Client\ClientInterface;
-use Sigwin\Ariadne\Model\Collection\NamedResourceCollection;
-use Sigwin\Ariadne\Model\Collection\ProfileTemplateCollection;
 use Sigwin\Ariadne\Model\Config\ProfileConfig;
 use Sigwin\Ariadne\Model\ProfileSummary;
 use Sigwin\Ariadne\Model\ProfileUser;
@@ -25,6 +23,7 @@ use Sigwin\Ariadne\Model\RepositoryType;
 use Sigwin\Ariadne\Model\RepositoryUser;
 use Sigwin\Ariadne\Model\RepositoryVisibility;
 use Sigwin\Ariadne\NamedResourceChangeCollection;
+use Sigwin\Ariadne\NamedResourceCollection;
 use Sigwin\Ariadne\Profile;
 use Sigwin\Ariadne\ProfileFactory;
 use Sigwin\Ariadne\ProfileTemplateFactory;
@@ -49,7 +48,7 @@ trait ModelGeneratorTrait
      */
     private function createUsers(array $list = []): NamedResourceCollection
     {
-        return NamedResourceCollection::fromArray(array_map($this->createUser(...), array_column($list, 0), array_column($list, 1)));
+        return \Sigwin\Ariadne\Model\Collection\NamedResourceCollection::fromArray(array_map($this->createUser(...), array_column($list, 0), array_column($list, 1)));
     }
 
     private function createUser(string $name = 'theseus', string $role = 'admin'): RepositoryUser
@@ -140,12 +139,12 @@ trait ModelGeneratorTrait
                 throw new \LogicException('Not implemented');
             }
 
-            public function getTemplates(): ProfileTemplateCollection
+            public function getTemplates(): NamedResourceCollection
             {
                 throw new \LogicException('Not implemented');
             }
 
-            public function getMatchingTemplates(Repository $repository): ProfileTemplateCollection
+            public function getMatchingTemplates(Repository $repository): NamedResourceCollection
             {
                 throw new \LogicException('Not implemented');
             }

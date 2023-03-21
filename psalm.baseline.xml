@@ -5,7 +5,7 @@
       <code><![CDATA[array<string, array{access: RepositoryAttributeAccess}>]]></code>
     </LessSpecificReturnType>
     <PropertyNotSetInConstructor>
-      <code>$repositories</code>
+      <code>GithubProfile</code>
     </PropertyNotSetInConstructor>
     <RedundantPropertyInitializationCheck>
       <code><![CDATA[isset($this->repositories)]]></code>
@@ -16,7 +16,7 @@
       <code><![CDATA[array<string, array{access: RepositoryAttributeAccess}>]]></code>
     </LessSpecificReturnType>
     <PropertyNotSetInConstructor>
-      <code>$repositories</code>
+      <code>GitlabProfile</code>
     </PropertyNotSetInConstructor>
     <RedundantPropertyInitializationCheck>
       <code><![CDATA[isset($this->repositories)]]></code>
@@ -185,20 +185,6 @@
     </PossiblyUnusedMethod>
   </file>
   <file src="src/Model/Collection/NamedResourceCollection.php">
-    <PossiblyUnusedMethod>
-      <code>count</code>
-      <code>filter</code>
-    </PossiblyUnusedMethod>
-  </file>
-  <file src="src/Model/Collection/ProfileTemplateCollection.php">
-    <PossiblyUnusedMethod>
-      <code>count</code>
-    </PossiblyUnusedMethod>
-  </file>
-  <file src="src/Model/Collection/RepositoryCollection.php">
-    <LessSpecificReturnType>
-      <code>int</code>
-    </LessSpecificReturnType>
     <PossiblyUnusedMethod>
       <code>count</code>
     </PossiblyUnusedMethod>

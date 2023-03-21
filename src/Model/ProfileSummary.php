@@ -13,12 +13,15 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne\Model;
 
-use Sigwin\Ariadne\Model\Collection\ProfileTemplateCollection;
-use Sigwin\Ariadne\Model\Collection\RepositoryCollection;
+use Sigwin\Ariadne\NamedResourceCollection;
 
 final class ProfileSummary
 {
-    public function __construct(private readonly RepositoryCollection $repositories, private readonly ProfileTemplateCollection $templates)
+    /**
+     * @param NamedResourceCollection<Repository>      $repositories
+     * @param NamedResourceCollection<ProfileTemplate> $templates
+     */
+    public function __construct(private readonly NamedResourceCollection $repositories, private readonly NamedResourceCollection $templates)
     {
     }
 
