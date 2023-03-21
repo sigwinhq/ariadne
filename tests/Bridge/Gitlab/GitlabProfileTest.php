@@ -106,13 +106,16 @@ final class GitlabProfileTest extends TestCase
         GitlabProfile::fromConfig($config, $httpClient, $factory, $cachePool);
     }
 
-    public function testCanSetReadWriteAttributes(): void
+    /**
+     * @dataProvider getValidAttributeValues
+     */
+    public function testCanSetReadWriteAttributes(string $name, bool|string $value): void
     {
         $httpClient = $this->mockHttpClient([]);
         $factory = $this->mockTemplateFactory();
         $cachePool = $this->mockCachePool();
         $config = ProfileConfig::fromArray(['type' => 'gitlab', 'name' => 'GL', 'client' => ['auth' => ['token' => 'ABC', 'type' => 'http_token'], 'options' => []], 'templates' => [
-            ['name' => 'Desc', 'filter' => [], 'target' => ['attribute' => ['description' => 'desc']]],
+            ['name' => 'Desc', 'filter' => [], 'target' => ['attribute' => [$name => $value]]],
         ]]);
 
         $profile = GitlabProfile::fromConfig($config, $httpClient, $factory, $cachePool);
@@ -133,6 +136,40 @@ final class GitlabProfileTest extends TestCase
         ]]);
 
         GitlabProfile::fromConfig($config, $httpClient, $factory, $cachePool);
+    }
+
+    /**
+     * @return list<array{string, bool|string}>
+     */
+    public function getValidAttributeValues(): array
+    {
+        return [
+            ['description', 'foo'],
+            ['issues_enabled', true],
+            ['lfs_enabled', true],
+            ['merge_requests_enabled', true],
+            ['container_registry_enabled', true],
+            ['wiki_enabled', true],
+            ['service_desk_enabled', true],
+            ['snippets_enabled', true],
+            ['packages_enabled', true],
+            ['remove_source_branch_after_merge', true],
+            ['only_allow_merge_if_pipeline_succeeds', true],
+            ['only_allow_merge_if_all_discussions_are_resolved', true],
+            ['allow_merge_on_skipped_pipeline', true],
+            ['monitor_access_level', 'public'],
+            ['pages_access_level', 'public'],
+            ['forking_access_level', 'public'],
+            ['analytics_access_level', 'public'],
+            ['security_and_compliance_access_level', 'public'],
+            ['environments_access_level', 'public'],
+            ['feature_flags_access_level', 'public'],
+            ['infrastructure_access_level', 'public'],
+            ['releases_access_level', 'public'],
+            ['merge_method', 'ff'],
+            ['squash_option', 'always'],
+            ['squash_commit_template', '%{title} (%{reference})'],
+        ];
     }
 
     public function testWillGetDidYouMeanWhenSettingAttributesWithATypo(): void
