@@ -62,8 +62,11 @@ final class FilteredProfileTemplateFactoryTest extends TestCase
         static::assertSame('test', $template->getName());
         static::assertCount(\count($expected), iterator_to_array($template));
 
-        // TODO: assert that the template contains exactly the expected repositories
-        // static::assert(Repository::class, $expected, iterator_to_array($template));
+        // extract the repositories that are expected to be in the template by key
+        $expected = array_values(array_intersect_key($all, array_flip($expected)));
+        $actual = iterator_to_array($template);
+
+        static::assertSame($expected, $actual);
     }
 
     /**
@@ -100,6 +103,14 @@ final class FilteredProfileTemplateFactoryTest extends TestCase
                     $this->createRepository('bar/foo'),
                 ],
                 [], // no matches
+            ],
+            'match on an enum' => [
+                ['type' => 'fork'],
+                [
+                    $this->createRepository('foo/bar', type: 'source'),
+                    $this->createRepository('bar/foo', type: 'fork'),
+                ],
+                [1], // matches bar/foo
             ],
         ];
     }

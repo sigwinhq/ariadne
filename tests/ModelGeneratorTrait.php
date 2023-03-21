@@ -39,11 +39,11 @@ trait ModelGeneratorTrait
     /**
      * @param list<array{string, string}>|null $users
      */
-    private function createRepository(string $path, ?array $users = null): Repository
+    private function createRepository(string $path, ?array $users = null, ?string $type = null): Repository
     {
         return new Repository(
             ['path' => $path],
-            RepositoryType::SOURCE,
+            $type !== null ? RepositoryType::from($type) : RepositoryType::SOURCE,
             RepositoryVisibility::PUBLIC,
             $this->createUsers($users ?? []),
             time(),
