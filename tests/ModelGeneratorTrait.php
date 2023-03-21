@@ -38,8 +38,9 @@ trait ModelGeneratorTrait
 
     /**
      * @param list<array{string, string}>|null $users
+     * @param null|list<string> $topics
      */
-    private function createRepository(string $path, ?array $users = null, ?string $type = null): Repository
+    private function createRepository(string $path, ?array $users = null, ?string $type = null, ?array $topics = null): Repository
     {
         return new Repository(
             ['path' => $path],
@@ -48,7 +49,7 @@ trait ModelGeneratorTrait
             $this->createUsers($users ?? []),
             time(),
             $path,
-            [],
+            $topics ?? [],
             []
         );
     }

@@ -38,7 +38,7 @@ use Sigwin\Ariadne\Test\ModelGeneratorTrait;
  *
  * @small
  *
- * @psalm-type TFilter = array{type?: 'fork'|'source', path?: string, visibility?:'private'|'public', topics?: array<string>, languages?: array<string>}
+ * @psalm-type TFilter = array{type?: 'fork'|'source', path?: string|list<string>, visibility?:'private'|'public', topics?: array<string>, languages?: array<string>}
  */
 final class FilteredProfileTemplateFactoryTest extends TestCase
 {
@@ -117,6 +117,38 @@ final class FilteredProfileTemplateFactoryTest extends TestCase
                 [
                     $this->createRepository('foo/bar', type: 'source'),
                     $this->createRepository('bar/foo', type: 'fork'),
+                ],
+                [1], // matches bar/foo
+            ],
+            'match on an array' => [
+                ['topics' => ['bar']],
+                [
+                    $this->createRepository('foo/bar', topics: ['foo']),
+                    $this->createRepository('bar/foo', topics: ['bar']),
+                ],
+                [1], // matches bar/foo
+            ],
+            'match on an array with an unknown requirement' => [
+                ['topics' => ['unknown']],
+                [
+                    $this->createRepository('foo/bar', topics: ['foo']),
+                    $this->createRepository('bar/foo', topics: ['bar']),
+                ],
+                [], // no matches
+            ],
+            'match on an array must match at least one element' => [
+                ['topics' => ['unknown', 'foo']],
+                [
+                    $this->createRepository('foo/bar', topics: ['foo']),
+                    $this->createRepository('bar/foo', topics: ['bar']),
+                ],
+                [0], // matches foo/bar
+            ],
+            'filter can be an array even if the property is not' => [
+                ['path' => ['unknown', 'bar/foo']],
+                [
+                    $this->createRepository('foo/bar'),
+                    $this->createRepository('bar/foo'),
                 ],
                 [1], // matches bar/foo
             ],
