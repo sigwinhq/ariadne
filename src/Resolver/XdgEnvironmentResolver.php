@@ -11,9 +11,9 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sigwin\Ariadne;
+namespace Sigwin\Ariadne\Resolver;
 
-final class EnvironmentResolver
+final class XdgEnvironmentResolver
 {
     public function __construct(private readonly ?string $cacheHome, private readonly ?string $configHome, private readonly string $home)
     {

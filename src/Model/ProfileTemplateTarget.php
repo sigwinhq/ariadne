@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Sigwin\Ariadne\Model;
 
 use Sigwin\Ariadne\Evaluator;
+use Sigwin\Ariadne\Model\Collection\SortedNamedResourceCollection;
 use Sigwin\Ariadne\Model\Config\ProfileTemplateTargetConfig;
 use Sigwin\Ariadne\NamedResourceCollection;
 
@@ -57,6 +58,6 @@ final class ProfileTemplateTarget
             $users[] = new RepositoryUser($user->username, $user->role);
         }
 
-        return \Sigwin\Ariadne\Model\Collection\NamedResourceCollection::fromArray($users);
+        return SortedNamedResourceCollection::fromArray($users);
     }
 }

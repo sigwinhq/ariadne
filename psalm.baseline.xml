@@ -184,7 +184,7 @@
       <code>count</code>
     </PossiblyUnusedMethod>
   </file>
-  <file src="src/Model/Collection/NamedResourceCollection.php">
+  <file src="src/Model/Collection/SortedNamedResourceCollection.php">
     <PossiblyUnusedMethod>
       <code>count</code>
     </PossiblyUnusedMethod>

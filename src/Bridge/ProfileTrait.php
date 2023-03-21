@@ -14,20 +14,21 @@ declare(strict_types=1);
 namespace Sigwin\Ariadne\Bridge;
 
 use Sigwin\Ariadne\Model\Collection\NamedResourceChangeFlattenedCollection;
-use Sigwin\Ariadne\Model\Collection\NamedResourceCollection;
+use Sigwin\Ariadne\Model\Collection\SortedNamedResourceCollection;
 use Sigwin\Ariadne\Model\Config\ProfileTemplateConfig;
 use Sigwin\Ariadne\Model\ProfileSummary;
 use Sigwin\Ariadne\Model\ProfileTemplate;
 use Sigwin\Ariadne\Model\Repository;
 use Sigwin\Ariadne\Model\RepositoryAttributeAccess;
 use Sigwin\Ariadne\NamedResourceChangeCollection;
+use Sigwin\Ariadne\NamedResourceCollection;
 
 trait ProfileTrait
 {
     /**
-     * @var \Sigwin\Ariadne\NamedResourceCollection<Repository>
+     * @var NamedResourceCollection<Repository>
      */
-    private \Sigwin\Ariadne\NamedResourceCollection $repositories;
+    private NamedResourceCollection $repositories;
 
     public function getName(): string
     {
@@ -62,24 +63,24 @@ trait ProfileTrait
     }
 
     /**
-     * @return \Sigwin\Ariadne\NamedResourceCollection<ProfileTemplate>
+     * @return NamedResourceCollection<ProfileTemplate>
      */
-    public function getMatchingTemplates(Repository $repository): \Sigwin\Ariadne\NamedResourceCollection
+    public function getMatchingTemplates(Repository $repository): NamedResourceCollection
     {
         return $this->getTemplates()->filter(static fn (ProfileTemplate $template): bool => $template->contains($repository));
     }
 
     /**
-     * @return \Sigwin\Ariadne\NamedResourceCollection<ProfileTemplate>
+     * @return NamedResourceCollection<ProfileTemplate>
      */
-    public function getTemplates(): \Sigwin\Ariadne\NamedResourceCollection
+    public function getTemplates(): NamedResourceCollection
     {
         $templates = [];
         foreach ($this->config->templates as $config) {
             $templates[] = $this->templateFactory->create($config, $this->getRepositories());
         }
 
-        return NamedResourceCollection::fromArray($templates);
+        return SortedNamedResourceCollection::fromArray($templates);
     }
 
     /**

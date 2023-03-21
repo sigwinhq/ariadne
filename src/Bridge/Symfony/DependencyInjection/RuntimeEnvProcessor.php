@@ -13,12 +13,12 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne\Bridge\Symfony\DependencyInjection;
 
-use Sigwin\Ariadne\EnvironmentResolver;
+use Sigwin\Ariadne\Resolver\XdgEnvironmentResolver;
 use Symfony\Component\DependencyInjection\EnvVarProcessorInterface;
 
 final class RuntimeEnvProcessor implements EnvVarProcessorInterface
 {
-    public function __construct(private readonly EnvironmentResolver $resolver)
+    public function __construct(private readonly XdgEnvironmentResolver $resolver)
     {
     }
 

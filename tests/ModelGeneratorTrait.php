@@ -15,6 +15,7 @@ namespace Sigwin\Ariadne\Test;
 
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Client\ClientInterface;
+use Sigwin\Ariadne\Model\Collection\SortedNamedResourceCollection;
 use Sigwin\Ariadne\Model\Config\ProfileConfig;
 use Sigwin\Ariadne\Model\ProfileSummary;
 use Sigwin\Ariadne\Model\ProfileUser;
@@ -48,7 +49,7 @@ trait ModelGeneratorTrait
      */
     private function createUsers(array $list = []): NamedResourceCollection
     {
-        return \Sigwin\Ariadne\Model\Collection\NamedResourceCollection::fromArray(array_map($this->createUser(...), array_column($list, 0), array_column($list, 1)));
+        return SortedNamedResourceCollection::fromArray(array_map($this->createUser(...), array_column($list, 0), array_column($list, 1)));
     }
 
     private function createUser(string $name = 'theseus', string $role = 'admin'): RepositoryUser
