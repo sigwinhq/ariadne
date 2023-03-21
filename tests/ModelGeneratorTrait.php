@@ -84,7 +84,7 @@ trait ModelGeneratorTrait
         $mock = $this->createMock(ProfileFactory::class);
         $mock
             ->expects(static::exactly(\count($configs)))
-            ->method('create')
+            ->method('fromConfig')
             ->with(static::callback(static function (ProfileConfig $config) use (&$idx, $configs) {
                 static::assertSame($configs[$idx]->name, $config->name);
 

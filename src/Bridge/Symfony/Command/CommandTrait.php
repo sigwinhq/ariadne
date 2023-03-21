@@ -49,7 +49,7 @@ trait CommandTrait
         $names = $this->getConfigProfileAttributes($config, 'name');
         $types = $this->getConfigProfileAttributes($config, 'type');
 
-        return $this->clientCollectionFactory->create($config, ProfileFilter::create($this->getInputVariable($input->getArgument('profile-name'), 'name', $names), $this->getInputVariable($input->getOption('profile-type'), 'type', $types)));
+        return $this->clientCollectionFactory->fromConfig($config, ProfileFilter::create($this->getInputVariable($input->getArgument('profile-name'), 'name', $names), $this->getInputVariable($input->getOption('profile-type'), 'type', $types)));
     }
 
     /**

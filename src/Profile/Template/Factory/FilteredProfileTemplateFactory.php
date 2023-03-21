@@ -31,7 +31,7 @@ final class FilteredProfileTemplateFactory implements Evaluator, ProfileTemplate
     {
     }
 
-    public function create(ProfileTemplateConfig $config, NamedResourceCollection $repositories): ProfileTemplate
+    public function fromConfig(ProfileTemplateConfig $config, NamedResourceCollection $repositories): ProfileTemplate
     {
         return new ProfileTemplate($config->name, $this->createTemplateTarget($config->target), $repositories->filter(function (Repository $repository) use ($config): bool {
             foreach ($config->filter as $name => $value) {

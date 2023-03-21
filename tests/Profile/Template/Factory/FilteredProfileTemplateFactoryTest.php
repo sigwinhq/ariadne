@@ -56,7 +56,7 @@ final class FilteredProfileTemplateFactoryTest extends TestCase
 
         $config = $this->createTemplateConfig($filter);
         $repositories = SortedNamedResourceCollection::fromArray($all);
-        $template = $factory->create($config, $repositories);
+        $template = $factory->fromConfig($config, $repositories);
 
         $actual = iterator_to_array($template);
 

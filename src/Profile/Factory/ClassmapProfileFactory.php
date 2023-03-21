@@ -32,7 +32,7 @@ final class ClassmapProfileFactory implements ProfileFactory
     /**
      * {@inheritDoc}
      */
-    public function create(ProfileConfig $config): Profile
+    public function fromConfig(ProfileConfig $config): Profile
     {
         if (! \array_key_exists($config->type, $this->profilesMap)) {
             throw new \LogicException(sprintf('Unable to create profile type "%1$s", unknown profile type', $config->type));

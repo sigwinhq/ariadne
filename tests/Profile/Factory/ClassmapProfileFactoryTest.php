@@ -44,7 +44,7 @@ final class ClassmapProfileFactoryTest extends TestCase implements Profile
         $cachePool = $this->getMockBuilder(CacheItemPoolInterface::class)->getMock();
 
         $factory = new Profile\Factory\ClassmapProfileFactory(['self' => self::class], $httpClient, $templateFactory, $cachePool);
-        $factory->create(ProfileConfig::fromArray(['type' => 'self', 'name' => 'My Self', 'client' => ['auth' => ['type' => '', 'token' => ''], 'options' => []], 'templates' => []]));
+        $factory->fromConfig(ProfileConfig::fromArray(['type' => 'self', 'name' => 'My Self', 'client' => ['auth' => ['type' => '', 'token' => ''], 'options' => []], 'templates' => []]));
     }
 
     public function testWillThrowAnExceptionOnInvalidType(): void
@@ -57,7 +57,7 @@ final class ClassmapProfileFactoryTest extends TestCase implements Profile
         $cachePool = $this->getMockBuilder(CacheItemPoolInterface::class)->getMock();
 
         $factory = new Profile\Factory\ClassmapProfileFactory(['foo' => self::class], $httpClient, $templateFactory, $cachePool);
-        $factory->create(ProfileConfig::fromArray(['type' => 'no such type', 'name' => 'My Foo', 'client' => ['auth' => ['type' => '', 'token' => ''], 'options' => []], 'templates' => []]));
+        $factory->fromConfig(ProfileConfig::fromArray(['type' => 'no such type', 'name' => 'My Foo', 'client' => ['auth' => ['type' => '', 'token' => ''], 'options' => []], 'templates' => []]));
     }
 
     public static function fromConfig(ProfileConfig $config, ClientInterface $client, ProfileTemplateFactory $templateFactory, CacheItemPoolInterface $cachePool): Profile

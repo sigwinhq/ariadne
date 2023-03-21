@@ -27,7 +27,7 @@ final class FilteredProfileGeneratorCollection implements ProfileCollection
     public function getIterator(): \Traversable
     {
         foreach ($this->config as $profileConfig) {
-            $profile = $this->profileFactory->create($profileConfig);
+            $profile = $this->profileFactory->fromConfig($profileConfig);
 
             if ($this->filter->match($profile)) {
                 yield $profile;
