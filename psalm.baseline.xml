@@ -190,14 +190,6 @@
       <code>filter</code>
     </PossiblyUnusedMethod>
   </file>
-  <file src="src/Model/Collection/RepositoryCollection.php">
-    <LessSpecificReturnType>
-      <code>int</code>
-    </LessSpecificReturnType>
-    <PossiblyUnusedMethod>
-      <code>count</code>
-    </PossiblyUnusedMethod>
-  </file>
   <file src="src/Model/ProfileTemplate.php">
     <PossiblyUnusedMethod>
       <code>count</code>

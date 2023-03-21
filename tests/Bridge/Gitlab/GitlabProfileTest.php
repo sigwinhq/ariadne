@@ -20,11 +20,12 @@ use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Sigwin\Ariadne\Bridge\Gitlab\GitlabProfile;
 use Sigwin\Ariadne\Evaluator;
-use Sigwin\Ariadne\Model\Collection\RepositoryCollection;
+use Sigwin\Ariadne\Model\Collection\NamedResourceCollection;
 use Sigwin\Ariadne\Model\Config\ProfileConfig;
 use Sigwin\Ariadne\Model\Config\ProfileTemplateTargetConfig;
 use Sigwin\Ariadne\Model\ProfileTemplate;
 use Sigwin\Ariadne\Model\ProfileTemplateTarget;
+use Sigwin\Ariadne\Model\Repository;
 use Sigwin\Ariadne\ProfileTemplateFactory;
 
 /**
@@ -33,7 +34,6 @@ use Sigwin\Ariadne\ProfileTemplateFactory;
  * @covers \Sigwin\Ariadne\Bridge\Gitlab\GitlabProfile
  *
  * @uses \Sigwin\Ariadne\Model\Collection\NamedResourceCollection
- * @uses \Sigwin\Ariadne\Model\Collection\RepositoryCollection
  * @uses \Sigwin\Ariadne\Model\Config\ProfileClientConfig
  * @uses \Sigwin\Ariadne\Model\Config\ProfileConfig
  * @uses \Sigwin\Ariadne\Model\Config\ProfileTemplateConfig
@@ -224,6 +224,8 @@ final class GitlabProfileTest extends TestCase
     {
         $factory = $this->getMockBuilder(ProfileTemplateFactory::class)->getMock();
 
+        /** @var NamedResourceCollection<Repository> $repositories */
+        $repositories = NamedResourceCollection::fromArray([]);
         $factory
             ->method('create')
             ->willReturn(new ProfileTemplate(
@@ -232,7 +234,7 @@ final class GitlabProfileTest extends TestCase
                     ProfileTemplateTargetConfig::fromArray(['attribute' => []]),
                     $this->getMockBuilder(Evaluator::class)->getMock(),
                 ),
-                RepositoryCollection::fromArray([]),
+                $repositories,
             ))
         ;
 

@@ -15,7 +15,7 @@ namespace Sigwin\Ariadne\Test\Profile\Template\Factory;
 
 use PHPUnit\Framework\TestCase;
 use Sigwin\Ariadne\Bridge\Symfony\ExpressionLanguage\ExpressionLanguage;
-use Sigwin\Ariadne\Model\Collection\RepositoryCollection;
+use Sigwin\Ariadne\Model\Collection\NamedResourceCollection;
 use Sigwin\Ariadne\Model\Config\ProfileTemplateConfig;
 use Sigwin\Ariadne\Model\Repository;
 use Sigwin\Ariadne\Profile\Template\Factory\FilteredProfileTemplateFactory;
@@ -29,7 +29,6 @@ use Sigwin\Ariadne\Test\ModelGeneratorTrait;
  * @uses \Sigwin\Ariadne\Bridge\Symfony\ExpressionLanguage\ExpressionLanguage
  * @uses \Sigwin\Ariadne\Bridge\Symfony\ExpressionLanguage\LanguageProvider\FilterExpressionLanguageProvider
  * @uses \Sigwin\Ariadne\Model\Collection\NamedResourceCollection
- * @uses \Sigwin\Ariadne\Model\Collection\RepositoryCollection
  * @uses \Sigwin\Ariadne\Model\Config\ProfileTemplateConfig
  * @uses \Sigwin\Ariadne\Model\Config\ProfileTemplateTargetConfig
  * @uses \Sigwin\Ariadne\Model\ProfileTemplate
@@ -56,7 +55,7 @@ final class FilteredProfileTemplateFactoryTest extends TestCase
         $factory = new FilteredProfileTemplateFactory(new ExpressionLanguage());
 
         $config = $this->createTemplateConfig($filter);
-        $repositories = RepositoryCollection::fromArray($all);
+        $repositories = NamedResourceCollection::fromArray($all);
         $template = $factory->create($config, $repositories);
 
         $actual = iterator_to_array($template);

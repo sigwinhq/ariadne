@@ -20,7 +20,6 @@ use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Client\ClientInterface;
 use Sigwin\Ariadne\Bridge\ProfileTrait;
 use Sigwin\Ariadne\Model\Collection\NamedResourceCollection;
-use Sigwin\Ariadne\Model\Collection\RepositoryCollection;
 use Sigwin\Ariadne\Model\Config\ProfileConfig;
 use Sigwin\Ariadne\Model\ProfileUser;
 use Sigwin\Ariadne\Model\Repository;
@@ -52,7 +51,10 @@ final class GitlabProfile implements Profile
     /** @var array{membership: bool, owned: bool} */
     private readonly array $options;
 
-    private RepositoryCollection $repositories;
+    /**
+     * @var NamedResourceCollection<Repository>
+     */
+    private NamedResourceCollection $repositories;
 
     private function __construct(private readonly Client $client, private readonly ProfileTemplateFactory $templateFactory, private readonly string $name, private readonly ProfileConfig $config)
     {
@@ -112,7 +114,10 @@ final class GitlabProfile implements Profile
         return new ProfileUser($me['username']);
     }
 
-    private function getRepositories(): RepositoryCollection
+    /**
+     * @return NamedResourceCollection<Repository>
+     */
+    private function getRepositories(): NamedResourceCollection
     {
         if (! isset($this->repositories)) {
             $pager = new ResultPager($this->client);
@@ -165,7 +170,7 @@ final class GitlabProfile implements Profile
                     $languages,
                 );
             }
-            $this->repositories = RepositoryCollection::fromArray($repositories);
+            $this->repositories = NamedResourceCollection::fromArray($repositories);
         }
 
         return $this->repositories;
