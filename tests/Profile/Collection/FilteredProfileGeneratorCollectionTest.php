@@ -35,53 +35,36 @@ final class FilteredProfileGeneratorCollectionTest extends TestCase
 {
     use ModelGeneratorTrait;
 
-    public function testWillNotFilterOutAnyProfilesIfFilterIsEmpty(): void
+    /**
+     * @dataProvider provideFilterConfigAndExpectedMatches
+     */
+    public function testWillFilterOutUnmatchedProfiles(ProfileFilter $filter, int $matches): void
     {
         $config = AriadneConfig::fromArray('file:///ariadne.yaml', ['profiles' => [
-            ['type' => 'fake', 'name' => 'Foo Indeed', 'client' => ['auth' => ['token' => 'ABC'], 'options' => []],  'templates' => []],
-            ['type' => 'fake', 'name' => 'This one is bar', 'client' => ['auth' => ['token' => 'ABC'], 'options' => []],  'templates' => []],
+            ['type' => 'fake', 'name' => 'Foo Indeed', 'client' => ['auth' => ['token' => 'ABC', 'type' => 'token'], 'options' => []],  'templates' => []],
+            ['type' => 'fake', 'name' => 'This one is bar', 'client' => ['auth' => ['token' => 'ABC', 'type' => 'token'], 'options' => []],  'templates' => []],
         ]]);
 
         $collection = new FilteredProfileGeneratorCollection(
             $this->createProfileFactory(iterator_to_array($config) + iterator_to_array($config)),
             $config,
-            ProfileFilter::create(null, null)
+            $filter
         );
 
-        static::assertCount(2, $collection);
+        static::assertCount($matches, $collection);
     }
 
-    public function testWillFilterByType(): void
+    /**
+     * @return list<array{ProfileFilter, int}>
+     */
+    public function provideFilterConfigAndExpectedMatches(): array
     {
-        $config = AriadneConfig::fromArray('file:///ariadne.yaml', ['profiles' => [
-            ['type' => 'fake', 'name' => 'Foo Indeed', 'client' => ['auth' => ['token' => 'ABC'], 'options' => []],  'templates' => []],
-            ['type' => 'fake', 'name' => 'This one is bar', 'client' => ['auth' => ['token' => 'ABC'], 'options' => []],  'templates' => []],
-        ]]);
-
-        $collection = new FilteredProfileGeneratorCollection(
-            // note: the config is passed twice, because the factory will recreate the profile when doing count()
-            $this->createProfileFactory(iterator_to_array($config) + iterator_to_array($config)),
-            $config,
-            ProfileFilter::create(null, 'very fake')
-        );
-
-        static::assertCount(0, iterator_to_array($collection));
-    }
-
-    public function testWillFilterByName(): void
-    {
-        $config = AriadneConfig::fromArray('file:///ariadne.yaml', ['profiles' => [
-            ['type' => 'fake', 'name' => 'Foo Indeed', 'client' => ['auth' => ['token' => 'ABC'], 'options' => []],  'templates' => []],
-            ['type' => 'fake', 'name' => 'This one is bar', 'client' => ['auth' => ['token' => 'ABC'], 'options' => []],  'templates' => []],
-        ]]);
-
-        $collection = new FilteredProfileGeneratorCollection(
-            // note: the config is passed twice, because the factory will recreate the profile when doing count()
-            $this->createProfileFactory(iterator_to_array($config) + iterator_to_array($config)),
-            $config,
-            ProfileFilter::create('Foo Indeed', null),
-        );
-
-        static::assertCount(1, iterator_to_array($collection));
+        return [
+            [ProfileFilter::create(null, null), 2],
+            [ProfileFilter::create('Foo Indeed', null), 1],
+            [ProfileFilter::create(null, 'fake'), 2],
+            [ProfileFilter::create('Foo Indeed', 'fake'), 1],
+            [ProfileFilter::create('Foo Indeed', 'very fake'), 0],
+        ];
     }
 }

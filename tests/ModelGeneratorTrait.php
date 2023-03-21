@@ -32,6 +32,17 @@ use Sigwin\Ariadne\ProfileTemplateFactory;
 trait ModelGeneratorTrait
 {
     /**
+     * @param list<mixed> $all
+     * @param list<int>   $expected
+     * @param list<mixed> $actual
+     */
+    private static function assertArrayInArrayByKey(array $all, array $expected, array $actual): void
+    {
+        $expected = array_values(array_intersect_key($all, array_flip($expected)));
+        static::assertSame($expected, $actual);
+    }
+
+    /**
      * @param list<array{string, string}> $list
      *
      * @return NamedResourceCollection<RepositoryUser>
@@ -74,7 +85,7 @@ trait ModelGeneratorTrait
         $mock
             ->expects(static::exactly(\count($configs)))
             ->method('create')
-            ->with(static::callback(static function ($config) use (&$idx, $configs) {
+            ->with(static::callback(static function (ProfileConfig $config) use (&$idx, $configs) {
                 static::assertSame($configs[$idx]->name, $config->name);
 
                 return true;
