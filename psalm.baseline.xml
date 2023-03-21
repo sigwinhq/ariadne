@@ -173,11 +173,6 @@
       <code>__construct</code>
     </PossiblyUnusedMethod>
   </file>
-  <file src="src/EnvironmentResolver.php">
-    <PossiblyUnusedMethod>
-      <code>__construct</code>
-    </PossiblyUnusedMethod>
-  </file>
   <file src="src/Model/Change/NamedResourceChangeTrait.php">
     <PossiblyUnusedMethod>
       <code>count</code>
