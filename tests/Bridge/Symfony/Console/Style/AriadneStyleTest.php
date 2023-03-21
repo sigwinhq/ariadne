@@ -16,16 +16,12 @@ namespace Sigwin\Ariadne\Test\Bridge\Symfony\Console\Style;
 use PHPUnit\Framework\TestCase;
 use Sigwin\Ariadne\Bridge\Symfony\Console\Logo;
 use Sigwin\Ariadne\Bridge\Symfony\Console\Style\AriadneStyle;
-use Sigwin\Ariadne\Model\Collection\NamedResourceCollection;
 use Sigwin\Ariadne\Model\Collection\ProfileTemplateCollection;
 use Sigwin\Ariadne\Model\Collection\RepositoryCollection;
 use Sigwin\Ariadne\Model\ProfileSummary;
 use Sigwin\Ariadne\Model\ProfileUser;
-use Sigwin\Ariadne\Model\Repository;
-use Sigwin\Ariadne\Model\RepositoryType;
-use Sigwin\Ariadne\Model\RepositoryUser;
-use Sigwin\Ariadne\Model\RepositoryVisibility;
 use Sigwin\Ariadne\Profile;
+use Sigwin\Ariadne\Test\ModelGeneratorTrait;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Tester\CommandTester;
@@ -47,6 +43,8 @@ use Symfony\Component\Console\Tester\CommandTester;
  */
 final class AriadneStyleTest extends TestCase
 {
+    use ModelGeneratorTrait;
+
     /**
      * @return array<string, array{0: \Closure(AriadneStyle): void, 1: string}>
      */
@@ -114,42 +112,11 @@ final class AriadneStyleTest extends TestCase
             ->willReturn($name)
         ;
 
-        $users = NamedResourceCollection::fromArray([
-            new RepositoryUser('theseus', 'admin'),
-        ]);
-
         $summary = new ProfileSummary(
             RepositoryCollection::fromArray([
-                new Repository(
-                    ['path' => 'namespace1/repo1'],
-                    RepositoryType::SOURCE,
-                    RepositoryVisibility::PUBLIC,
-                    $users,
-                    123,
-                    'namespace1/repo1',
-                    [],
-                    []
-                ),
-                new Repository(
-                    ['path' => 'namespace2/repo1'],
-                    RepositoryType::SOURCE,
-                    RepositoryVisibility::PUBLIC,
-                    $users,
-                    456,
-                    'namespace2/repo1',
-                    [],
-                    []
-                ),
-                new Repository(
-                    ['path' => 'namespace1/repo2'],
-                    RepositoryType::SOURCE,
-                    RepositoryVisibility::PUBLIC,
-                    $users,
-                    789,
-                    'namespace1/repo2',
-                    [],
-                    []
-                ),
+                $this->createRepository('namespace1/repo1'),
+                $this->createRepository('namespace2/repo1'),
+                $this->createRepository('namespace1/repo2'),
             ]),
             new ProfileTemplateCollection([])
         );

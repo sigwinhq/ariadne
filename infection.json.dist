@@ -16,6 +16,7 @@
         ],
         "@default": true,
         "IdenticalEqual": false,
-        "NotIdenticalNotEqual": false
+        "NotIdenticalNotEqual": false,
+        "MBString": false
     }
 }
