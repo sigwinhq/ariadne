@@ -55,13 +55,16 @@ final class GithubProfileTest extends TestCase
         static::assertSame('ariadne', $login->getName());
     }
 
-    public function testCanSetReadWriteAttributes(): void
+    /**
+     * @dataProvider getValidAttributeValues
+     */
+    public function testCanSetReadWriteAttributes(string $name, bool|string $value): void
     {
         $httpClient = $this->mockHttpClient([]);
         $factory = $this->mockTemplateFactory();
         $cachePool = $this->mockCachePool();
         $config = ProfileConfig::fromArray(['type' => 'github', 'name' => 'GH', 'client' => ['auth' => ['token' => 'ABC', 'type' => 'access_token_header'], 'options' => []], 'templates' => [
-            ['name' => 'Desc', 'filter' => [], 'target' => ['attribute' => ['description' => 'desc']]],
+            ['name' => 'Desc', 'filter' => [], 'target' => ['attribute' => [$name => $value]]],
         ]]);
 
         $profile = GithubProfile::fromConfig($config, $httpClient, $factory, $cachePool);
@@ -69,21 +72,52 @@ final class GithubProfileTest extends TestCase
         static::assertSame('GH', $profile->getName());
     }
 
-    public function testCannotSetReadOnlyAttributes(): void
+    /**
+     * @return list<array{string, bool|string}>
+     */
+    public function getValidAttributeValues(): array
+    {
+        return [
+            ['description', 'desc'],
+            ['has_discussions', false],
+            ['has_downloads', false],
+            ['has_issues', true],
+            ['has_pages', false],
+            ['has_projects', false],
+            ['has_wiki', false],
+        ];
+    }
+
+    /**
+     * @dataProvider getInvalidAttributeValues
+     */
+    public function testCannotSetReadOnlyAttributes(string $name, int|bool|string $value): void
     {
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Attribute "stargazers_count" is read-only.');
+        $this->expectExceptionMessage(sprintf('Attribute "%1$s" is read-only.', $name));
 
         $httpClient = $this->mockHttpClient([]);
         $factory = $this->mockTemplateFactory();
         $cachePool = $this->mockCachePool();
         $config = ProfileConfig::fromArray(['type' => 'github', 'name' => 'GH', 'client' => ['auth' => ['token' => 'ABC', 'type' => 'access_token_header'], 'options' => []], 'templates' => [
-            ['name' => 'Desc', 'filter' => [], 'target' => ['attribute' => ['stargazers_count' => 1000]]],
+            ['name' => 'Desc', 'filter' => [], 'target' => ['attribute' => [$name => $value]]],
         ]]);
 
         $profile = GithubProfile::fromConfig($config, $httpClient, $factory, $cachePool);
 
         static::assertSame('GH', $profile->getName());
+    }
+
+    /**
+     * @return list<array{string, bool|string}>
+     */
+    public function getInvalidAttributeValues(): array
+    {
+        return [
+            ['open_issues_count', -1],
+            ['stargazers_count', 10000],
+            ['watchers_count', 10000],
+        ];
     }
 
     public function testWillGetDidYouMeanWhenSettingAttributesWithATypo(): void
