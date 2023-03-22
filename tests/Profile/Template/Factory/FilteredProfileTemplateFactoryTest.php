@@ -37,7 +37,7 @@ use Sigwin\Ariadne\Test\ModelGeneratorTrait;
  *
  * @small
  *
- * @psalm-type TFilter = array{type?: 'fork'|'source', path?: string|list<string>, visibility?:'private'|'public', topics?: array<string>, languages?: array<string>}
+ * @psalm-type TFilter = array{type?: 'fork'|'source', path?: string|list<string>, visibility?:'private'|'public', topics?: string|list<string>, languages?: array<string>}
  */
 final class FilteredProfileTemplateFactoryTest extends TestCase
 {
@@ -71,6 +71,11 @@ final class FilteredProfileTemplateFactoryTest extends TestCase
      */
     public function createTemplateConfig(array $filter): ProfileTemplateConfig
     {
+        /**
+         * @phpstan-ignore-next-line
+         *
+         * @psalm-suppress InvalidArgument We're breaking it by design
+         */
         return ProfileTemplateConfig::fromArray(['name' => 'test', 'filter' => $filter, 'target' => ['attribute' => []]]);
     }
 
@@ -148,6 +153,38 @@ final class FilteredProfileTemplateFactoryTest extends TestCase
                     $this->createRepository('bar/foo'),
                 ],
                 [1], // matches bar/foo
+            ],
+            'property can be an array even if the filter is not' => [
+                ['topics' => 'foo'],
+                [
+                    $this->createRepository('foo/bar', topics: ['foo']),
+                    $this->createRepository('bar/foo', topics: ['bar']),
+                ],
+                [0], // matches foo/bar
+            ],
+            'match on both arrays before a miss' => [
+                ['topics' => ['foo'], 'path' => 'invalid'],
+                [
+                    $this->createRepository('foo/bar', topics: ['foo']),
+                    $this->createRepository('bar/foo', topics: ['bar']),
+                ],
+                [], // no matches
+            ],
+            'match on an array filter before a miss' => [
+                ['path' => ['foo/bar'], 'topics' => 'invalid'],
+                [
+                    $this->createRepository('foo/bar', topics: ['foo']),
+                    $this->createRepository('bar/foo', topics: ['bar']),
+                ],
+                [], // no matches
+            ],
+            'match on an array property before a miss' => [
+                ['topics' => 'foo', 'path' => 'invalid'],
+                [
+                    $this->createRepository('foo/bar', topics: ['foo']),
+                    $this->createRepository('bar/foo', topics: ['bar']),
+                ],
+                [], // no matches
             ],
             'match on an enum before a literal' => [
                 ['type' => 'fork', 'path' => 'foo/bar'],
