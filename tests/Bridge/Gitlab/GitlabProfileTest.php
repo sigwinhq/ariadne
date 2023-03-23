@@ -14,20 +14,14 @@ declare(strict_types=1);
 namespace Sigwin\Ariadne\Test\Bridge\Gitlab;
 
 use Nyholm\Psr7\Response;
-use PHPUnit\Framework\TestCase;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Sigwin\Ariadne\Bridge\Gitlab\GitlabProfile;
-use Sigwin\Ariadne\Evaluator;
-use Sigwin\Ariadne\Model\Collection\SortedNamedResourceCollection;
 use Sigwin\Ariadne\Model\Config\ProfileConfig;
-use Sigwin\Ariadne\Model\Config\ProfileTemplateTargetConfig;
-use Sigwin\Ariadne\Model\ProfileTemplate;
-use Sigwin\Ariadne\Model\ProfileTemplateTarget;
-use Sigwin\Ariadne\Model\Repository;
-use Sigwin\Ariadne\NamedResourceCollection;
+use Sigwin\Ariadne\Profile;
 use Sigwin\Ariadne\ProfileTemplateFactory;
+use Sigwin\Ariadne\Test\Bridge\ProfileTestCase;
 
 /**
  * @internal
@@ -46,39 +40,37 @@ use Sigwin\Ariadne\ProfileTemplateFactory;
  *
  * @small
  */
-final class GitlabProfileTest extends TestCase
+final class GitlabProfileTest extends ProfileTestCase
 {
     /**
-     * @dataProvider getUrls
+     * @dataProvider provideUrls
      */
     public function testCanFetchApiUser(?string $baseUrl): void
     {
-        $httpClient = $this->mockHttpClient([
-            $this->generateUrl($baseUrl, '/user') => '{"username": "ariadne"}',
+        $httpClient = $this->createHttpClient([
+            $this->createUrl($baseUrl, '/user') => '{"username": "ariadne"}',
         ]);
-        $factory = $this->mockTemplateFactory();
-        $cachePool = $this->mockCachePool();
-        $config = $this->generateConfig($baseUrl);
-
-        $profile = GitlabProfile::fromConfig($config, $httpClient, $factory, $cachePool);
+        $factory = $this->createTemplateFactory();
+        $cachePool = $this->createCachePool();
+        $config = $this->createConfig($baseUrl);
+        $profile = $this->createProfileInstance($config, $httpClient, $factory, $cachePool);
         $login = $profile->getApiUser();
 
         static::assertSame('ariadne', $login->getName());
     }
 
     /**
-     * @dataProvider getUrls
+     * @dataProvider provideUrls
      */
     public function testCanFetchTemplates(?string $baseUrl): void
     {
-        $httpClient = $this->mockHttpClient([
-            $this->generateUrl($baseUrl, '/projects?membership=false&owned=true&per_page=50') => '[]',
+        $httpClient = $this->createHttpClient([
+            $this->createUrl($baseUrl, '/projects?membership=false&owned=true&per_page=50') => '[]',
         ]);
-        $factory = $this->mockTemplateFactory();
-        $cachePool = $this->mockCachePool();
-        $config = $this->generateConfig($baseUrl);
-
-        $profile = GitlabProfile::fromConfig($config, $httpClient, $factory, $cachePool);
+        $factory = $this->createTemplateFactory();
+        $cachePool = $this->createCachePool();
+        $config = $this->createConfig($baseUrl);
+        $profile = $this->createProfileInstance($config, $httpClient, $factory, $cachePool);
 
         static::assertCount(1, $profile->getSummary()->getTemplates());
     }
@@ -87,62 +79,30 @@ final class GitlabProfileTest extends TestCase
     {
         $this->expectException(\InvalidArgumentException::class);
 
-        $httpClient = $this->mockHttpClient();
-        $factory = $this->mockTemplateFactory();
-        $cachePool = $this->mockCachePool();
-        $config = ProfileConfig::fromArray(['type' => 'gitlab', 'name' => 'GL', 'client' => ['auth' => ['token' => 'ABC', 'type' => 'http_token'], 'options' => ['membership' => 'aa']], 'templates' => []]);
+        $httpClient = $this->createHttpClient();
+        $factory = $this->createTemplateFactory();
+        $cachePool = $this->createCachePool();
+        $config = $this->createConfig(options: ['membership' => 'aa']);
 
-        GitlabProfile::fromConfig($config, $httpClient, $factory, $cachePool);
+        $this->createProfileInstance($config, $httpClient, $factory, $cachePool);
     }
 
     public function testCanRecognizeInvalidOwnedOption(): void
     {
         $this->expectException(\InvalidArgumentException::class);
 
-        $httpClient = $this->mockHttpClient();
-        $factory = $this->mockTemplateFactory();
-        $cachePool = $this->mockCachePool();
-        $config = ProfileConfig::fromArray(['type' => 'gitlab', 'name' => 'GL', 'client' => ['auth' => ['token' => 'ABC', 'type' => 'http_token'], 'options' => ['owned' => 'aa']], 'templates' => []]);
+        $httpClient = $this->createHttpClient();
+        $factory = $this->createTemplateFactory();
+        $cachePool = $this->createCachePool();
+        $config = $this->createConfig(options: ['owned' => 'aa']);
 
-        GitlabProfile::fromConfig($config, $httpClient, $factory, $cachePool);
+        $this->createProfileInstance($config, $httpClient, $factory, $cachePool);
     }
 
     /**
-     * @dataProvider getValidAttributeValues
+     * @return iterable<array{string, bool|string}>
      */
-    public function testCanSetReadWriteAttributes(string $name, bool|string $value): void
-    {
-        $httpClient = $this->mockHttpClient([]);
-        $factory = $this->mockTemplateFactory();
-        $cachePool = $this->mockCachePool();
-        $config = ProfileConfig::fromArray(['type' => 'gitlab', 'name' => 'GL', 'client' => ['auth' => ['token' => 'ABC', 'type' => 'http_token'], 'options' => []], 'templates' => [
-            ['name' => 'Desc', 'filter' => [], 'target' => ['attribute' => [$name => $value]]],
-        ]]);
-
-        $profile = GitlabProfile::fromConfig($config, $httpClient, $factory, $cachePool);
-
-        static::assertSame('GL', $profile->getName());
-    }
-
-    public function testCannotSetReadOnlyAttributes(): void
-    {
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Attribute "star_count" is read-only.');
-
-        $httpClient = $this->mockHttpClient([]);
-        $factory = $this->mockTemplateFactory();
-        $cachePool = $this->mockCachePool();
-        $config = ProfileConfig::fromArray(['type' => 'gitlab', 'name' => 'GL', 'client' => ['auth' => ['token' => 'ABC', 'type' => 'http_token'], 'options' => []], 'templates' => [
-            ['name' => 'Desc', 'filter' => [], 'target' => ['attribute' => ['star_count' => 1000]]],
-        ]]);
-
-        GitlabProfile::fromConfig($config, $httpClient, $factory, $cachePool);
-    }
-
-    /**
-     * @return list<array{string, bool|string}>
-     */
-    public function getValidAttributeValues(): array
+    protected function provideValidAttributeValues(): iterable
     {
         return [
             ['description', 'foo'],
@@ -173,34 +133,20 @@ final class GitlabProfileTest extends TestCase
         ];
     }
 
-    public function testWillGetDidYouMeanWhenSettingAttributesWithATypo(): void
-    {
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Attribute "desciption" does not exist. Did you mean "description"?');
-
-        $httpClient = $this->mockHttpClient([]);
-        $factory = $this->mockTemplateFactory();
-        $cachePool = $this->mockCachePool();
-        $config = ProfileConfig::fromArray(['type' => 'gitlab', 'name' => 'GL', 'client' => ['auth' => ['token' => 'ABC', 'type' => 'http_token'], 'options' => []], 'templates' => [
-            ['name' => 'Desc', 'filter' => [], 'target' => ['attribute' => ['desciption' => 'desc']]],
-        ]]);
-
-        GitlabProfile::fromConfig($config, $httpClient, $factory, $cachePool);
-    }
-
     /**
-     * @return iterable<string, array{0: null|string}>
+     * @return iterable<array{string, int|bool|string}>
      */
-    public function getUrls(): iterable
+    protected function provideInvalidAttributeValues(): iterable
     {
-        yield 'default' => [null];
-        yield 'custom' => ['https://example.com'];
+        return [
+            ['star_count', 10000],
+        ];
     }
 
     /**
      * @param array<string, string> $requests
      */
-    private function mockHttpClient(array $requests = []): ClientInterface
+    protected function createHttpClient(array $requests = []): ClientInterface
     {
         $httpClient = $this->getMockBuilder(ClientInterface::class)->getMock();
 
@@ -221,40 +167,19 @@ final class GitlabProfileTest extends TestCase
         return $httpClient;
     }
 
-    private function mockTemplateFactory(): ProfileTemplateFactory
+    protected function createProfileInstance(ProfileConfig $config, ClientInterface $client, ProfileTemplateFactory $factory, CacheItemPoolInterface $cachePool): Profile
     {
-        $factory = $this->getMockBuilder(ProfileTemplateFactory::class)->getMock();
-
-        /** @var NamedResourceCollection<Repository> $repositories */
-        $repositories = SortedNamedResourceCollection::fromArray([]);
-        $factory
-            ->method('fromConfig')
-            ->willReturn(new ProfileTemplate(
-                'foo',
-                ProfileTemplateTarget::fromConfig(
-                    ProfileTemplateTargetConfig::fromArray(['attribute' => []]),
-                    $this->getMockBuilder(Evaluator::class)->getMock(),
-                ),
-                $repositories,
-            ))
-        ;
-
-        return $factory;
+        return GitlabProfile::fromConfig($config, $client, $factory, $cachePool);
     }
 
-    private function mockCachePool(): CacheItemPoolInterface
-    {
-        return $this->getMockBuilder(CacheItemPoolInterface::class)->getMock();
-    }
-
-    private function generateConfig(?string $url = null): ProfileConfig
+    protected function createConfig(?string $url = null, ?array $options = null, ?array $attribute = null): ProfileConfig
     {
         $config = [
             'type' => 'gitlab',
             'name' => 'GL',
-            'client' => ['auth' => ['token' => 'ABC', 'type' => 'http_token'], 'options' => []],
+            'client' => ['auth' => ['token' => 'ABC', 'type' => 'http_token'], 'options' => $options ?? []],
             'templates' => [
-                ['name' => 'foo', 'filter' => [], 'target' => ['attribute' => []]],
+                ['name' => 'foo', 'filter' => [], 'target' => ['attribute' => $attribute ?? []]],
             ],
         ];
         if ($url !== null) {
@@ -264,7 +189,7 @@ final class GitlabProfileTest extends TestCase
         return ProfileConfig::fromArray($config);
     }
 
-    private function generateUrl(?string $baseUrl, string $path): string
+    protected function createUrl(?string $baseUrl, string $path): string
     {
         return sprintf('%1$s/api/v4%2$s', $baseUrl ?? 'https://gitlab.com', $path);
     }

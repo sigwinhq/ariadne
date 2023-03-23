@@ -14,68 +14,71 @@ declare(strict_types=1);
 namespace Sigwin\Ariadne\Test\Bridge\Github;
 
 use Nyholm\Psr7\Response;
-use PHPUnit\Framework\TestCase;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Sigwin\Ariadne\Bridge\Github\GithubProfile;
 use Sigwin\Ariadne\Model\Config\ProfileConfig;
+use Sigwin\Ariadne\Profile;
 use Sigwin\Ariadne\ProfileTemplateFactory;
+use Sigwin\Ariadne\Test\Bridge\ProfileTestCase;
 
 /**
  * @covers \Sigwin\Ariadne\Bridge\Github\GithubProfile
  *
+ * @uses \Sigwin\Ariadne\Model\Collection\SortedNamedResourceCollection
  * @uses \Sigwin\Ariadne\Model\Config\ProfileClientConfig
  * @uses \Sigwin\Ariadne\Model\Config\ProfileConfig
  * @uses \Sigwin\Ariadne\Model\Config\ProfileTemplateConfig
  * @uses \Sigwin\Ariadne\Model\Config\ProfileTemplateTargetConfig
+ * @uses \Sigwin\Ariadne\Model\ProfileSummary
+ * @uses \Sigwin\Ariadne\Model\ProfileTemplate
+ * @uses \Sigwin\Ariadne\Model\ProfileTemplateTarget
  * @uses \Sigwin\Ariadne\Model\ProfileUser
  *
  * @internal
  *
  * @small
  */
-final class GithubProfileTest extends TestCase
+final class GithubProfileTest extends ProfileTestCase
 {
     /**
-     * @dataProvider getUrls
+     * @dataProvider provideUrls
      */
     public function testCanFetchApiUser(?string $baseUrl): void
     {
-        $httpClient = $this->mockHttpClient([
-            $this->generateUrl($baseUrl, '/user') => '{"login": "ariadne"}',
+        $httpClient = $this->createHttpClient([
+            $this->createUrl($baseUrl, '/user') => '{"login": "ariadne"}',
         ]);
-        $factory = $this->mockTemplateFactory();
-        $cachePool = $this->mockCachePool();
-        $config = $this->generateConfig($baseUrl);
-
-        $profile = GithubProfile::fromConfig($config, $httpClient, $factory, $cachePool);
+        $factory = $this->createTemplateFactory();
+        $cachePool = $this->createCachePool();
+        $config = $this->createConfig($baseUrl);
+        $profile = $this->createProfileInstance($config, $httpClient, $factory, $cachePool);
         $login = $profile->getApiUser();
 
         static::assertSame('ariadne', $login->getName());
     }
 
     /**
-     * @dataProvider getValidAttributeValues
+     * @dataProvider provideUrls
      */
-    public function testCanSetReadWriteAttributes(string $name, bool|string $value): void
+    public function testCanFetchTemplates(?string $baseUrl): void
     {
-        $httpClient = $this->mockHttpClient([]);
-        $factory = $this->mockTemplateFactory();
-        $cachePool = $this->mockCachePool();
-        $config = ProfileConfig::fromArray(['type' => 'github', 'name' => 'GH', 'client' => ['auth' => ['token' => 'ABC', 'type' => 'access_token_header'], 'options' => []], 'templates' => [
-            ['name' => 'Desc', 'filter' => [], 'target' => ['attribute' => [$name => $value]]],
-        ]]);
+        $httpClient = $this->createHttpClient([
+            $this->createUrl($baseUrl, '/user/repos?per_page=100') => '[]',
+        ]);
+        $factory = $this->createTemplateFactory();
+        $cachePool = $this->createCachePool();
+        $config = $this->createConfig($baseUrl);
+        $profile = $this->createProfileInstance($config, $httpClient, $factory, $cachePool);
 
-        $profile = GithubProfile::fromConfig($config, $httpClient, $factory, $cachePool);
-
-        static::assertSame('GH', $profile->getName());
+        static::assertCount(1, $profile->getSummary()->getTemplates());
     }
 
     /**
-     * @return list<array{string, bool|string}>
+     * @return iterable<array{string, bool|string}>
      */
-    public function getValidAttributeValues(): array
+    protected function provideValidAttributeValues(): iterable
     {
         return [
             ['description', 'desc'],
@@ -89,29 +92,9 @@ final class GithubProfileTest extends TestCase
     }
 
     /**
-     * @dataProvider getInvalidAttributeValues
+     * @return iterable<array{string, int|bool|string}>
      */
-    public function testCannotSetReadOnlyAttributes(string $name, int|bool|string $value): void
-    {
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage(sprintf('Attribute "%1$s" is read-only.', $name));
-
-        $httpClient = $this->mockHttpClient([]);
-        $factory = $this->mockTemplateFactory();
-        $cachePool = $this->mockCachePool();
-        $config = ProfileConfig::fromArray(['type' => 'github', 'name' => 'GH', 'client' => ['auth' => ['token' => 'ABC', 'type' => 'access_token_header'], 'options' => []], 'templates' => [
-            ['name' => 'Desc', 'filter' => [], 'target' => ['attribute' => [$name => $value]]],
-        ]]);
-
-        $profile = GithubProfile::fromConfig($config, $httpClient, $factory, $cachePool);
-
-        static::assertSame('GH', $profile->getName());
-    }
-
-    /**
-     * @return list<array{string, int|bool|string}>
-     */
-    public function getInvalidAttributeValues(): array
+    protected function provideInvalidAttributeValues(): iterable
     {
         return [
             ['open_issues_count', -1],
@@ -120,34 +103,10 @@ final class GithubProfileTest extends TestCase
         ];
     }
 
-    public function testWillGetDidYouMeanWhenSettingAttributesWithATypo(): void
-    {
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Attribute "desciption" does not exist. Did you mean "description"?');
-
-        $httpClient = $this->mockHttpClient([]);
-        $factory = $this->mockTemplateFactory();
-        $cachePool = $this->mockCachePool();
-        $config = ProfileConfig::fromArray(['type' => 'github', 'name' => 'GH', 'client' => ['auth' => ['token' => 'ABC', 'type' => 'access_token_header'], 'options' => []], 'templates' => [
-            ['name' => 'Desc', 'filter' => [], 'target' => ['attribute' => ['desciption' => 'desc']]],
-        ]]);
-
-        GithubProfile::fromConfig($config, $httpClient, $factory, $cachePool);
-    }
-
-    /**
-     * @return iterable<string, array{0: null|string}>
-     */
-    public function getUrls(): iterable
-    {
-        yield 'default' => [null];
-        yield 'custom' => ['https://example.com'];
-    }
-
     /**
      * @param array<string, string> $requests
      */
-    private function mockHttpClient(array $requests): ClientInterface
+    protected function createHttpClient(array $requests = []): ClientInterface
     {
         $httpClient = $this->getMockBuilder(ClientInterface::class)->getMock();
 
@@ -168,19 +127,21 @@ final class GithubProfileTest extends TestCase
         return $httpClient;
     }
 
-    private function mockTemplateFactory(): ProfileTemplateFactory
+    protected function createProfileInstance(ProfileConfig $config, ClientInterface $client, ProfileTemplateFactory $factory, CacheItemPoolInterface $cachePool): Profile
     {
-        return $this->getMockBuilder(ProfileTemplateFactory::class)->getMock();
+        return GithubProfile::fromConfig($config, $client, $factory, $cachePool);
     }
 
-    private function mockCachePool(): CacheItemPoolInterface
+    protected function createConfig(?string $url = null, ?array $options = null, ?array $attribute = null): ProfileConfig
     {
-        return $this->getMockBuilder(CacheItemPoolInterface::class)->getMock();
-    }
-
-    private function generateConfig(?string $url = null): ProfileConfig
-    {
-        $config = ['type' => 'github', 'name' => 'GH', 'client' => ['auth' => ['token' => 'ABC', 'type' => 'access_token_header'], 'options' => []], 'templates' => []];
+        $config = [
+            'type' => 'github',
+            'name' => 'GH',
+            'client' => ['auth' => ['token' => 'ABC', 'type' => 'access_token_header'], 'options' => $options ?? []],
+            'templates' => [
+                ['name' => 'foo', 'filter' => [], 'target' => ['attribute' => $attribute ?? []]],
+            ],
+        ];
         if ($url !== null) {
             $config['client']['url'] = $url;
         }
@@ -188,7 +149,7 @@ final class GithubProfileTest extends TestCase
         return ProfileConfig::fromArray($config);
     }
 
-    private function generateUrl(?string $baseUrl, string $path): string
+    protected function createUrl(?string $baseUrl, string $path): string
     {
         return sprintf('%1$s%2$s%3$s', $baseUrl ?? 'https://api.github.com', $baseUrl === null ? '' : '/api/v3', $path);
     }
