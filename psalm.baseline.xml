@@ -221,19 +221,11 @@
       <code>Profile</code>
     </PossiblyUnusedReturnValue>
   </file>
-  <file src="tests/Bridge/Github/GithubProfileTest.php">
-    <LessSpecificReturnType>
-      <code>CacheItemPoolInterface</code>
-      <code>ClientInterface</code>
-      <code>ProfileTemplateFactory</code>
-    </LessSpecificReturnType>
-  </file>
-  <file src="tests/Bridge/Gitlab/GitlabProfileTest.php">
-    <LessSpecificReturnType>
-      <code>CacheItemPoolInterface</code>
-      <code>ClientInterface</code>
-      <code>ProfileTemplateFactory</code>
-    </LessSpecificReturnType>
+  <file src="tests/Bridge/ProfileTestCase.php">
+    <MixedInferredReturnType>
+      <code><![CDATA[iterable<array{string, bool|string}>]]></code>
+      <code><![CDATA[iterable<array{string, int|bool|string}>]]></code>
+    </MixedInferredReturnType>
   </file>
   <file src="tests/Bridge/Symfony/Console/Style/AriadneStyleTest.php">
     <LessSpecificReturnType>
@@ -241,10 +233,6 @@
     </LessSpecificReturnType>
   </file>
   <file src="tests/ModelGeneratorTrait.php">
-    <LessSpecificReturnType>
-      <code>Profile</code>
-      <code>ProfileFactory</code>
-    </LessSpecificReturnType>
     <MixedArrayOffset>
       <code>$configs[$idx++]</code>
       <code>$configs[$idx]</code>

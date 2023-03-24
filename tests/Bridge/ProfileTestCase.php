@@ -16,6 +16,7 @@ namespace Sigwin\Ariadne\Test\Bridge;
 use PHPUnit\Framework\TestCase;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestInterface;
 use Sigwin\Ariadne\Model\Config\ProfileConfig;
 use Sigwin\Ariadne\Profile;
 use Sigwin\Ariadne\ProfileTemplateFactory;
@@ -77,12 +78,24 @@ abstract class ProfileTestCase extends TestCase
         yield 'custom' => ['https://example.com'];
     }
 
+    abstract protected function validateRequest(RequestInterface $request): void;
+
+    /**
+     * @return iterable<array{string, bool|string}>
+     */
     abstract protected function provideValidAttributeValues(): iterable;
 
+    /**
+     * @return iterable<array{string, int|bool|string}>
+     */
     abstract protected function provideInvalidAttributeValues(): iterable;
 
     abstract protected function createProfileInstance(ProfileConfig $config, ClientInterface $client, ProfileTemplateFactory $factory, CacheItemPoolInterface $cachePool): Profile;
 
+    /**
+     * @param null|array<string, bool|string>     $options
+     * @param null|array<string, bool|int|string> $attribute
+     */
     abstract protected function createConfig(?string $url = null, ?array $options = null, ?array $attribute = null): ProfileConfig;
 
     abstract protected function createUrl(?string $baseUrl, string $path): string;

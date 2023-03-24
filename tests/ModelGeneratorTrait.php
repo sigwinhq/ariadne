@@ -13,8 +13,10 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne\Test;
 
+use Nyholm\Psr7\Response;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestInterface;
 use Sigwin\Ariadne\Evaluator;
 use Sigwin\Ariadne\Model\Collection\SortedNamedResourceCollection;
 use Sigwin\Ariadne\Model\Config\ProfileConfig;
@@ -103,6 +105,37 @@ trait ModelGeneratorTrait
             $topics ?? [],
             []
         );
+    }
+
+    /**
+     * @param array<string, string> $requests
+     */
+    protected function createHttpClient(array $requests = []): ClientInterface
+    {
+        $httpClient = $this->getMockBuilder(ClientInterface::class)->getMock();
+
+        foreach ($requests as $url => $response) {
+            $httpClient
+                ->expects(static::once())
+                ->method('sendRequest')
+                ->willReturnCallback(function (RequestInterface $request) use ($url, $response): Response {
+                    self::assertSame('GET', $request->getMethod());
+                    self::assertSame($url, $request->getUri()->__toString());
+                    $this->validateRequest($request);
+
+                    return new Response(200, ['Content-Type' => 'application/json'], $response);
+                })
+            ;
+        }
+
+        return $httpClient;
+    }
+
+    /**
+     * @psalm-suppress PossiblyUnusedParam
+     */
+    protected function validateRequest(RequestInterface $request): void
+    {
     }
 
     /**

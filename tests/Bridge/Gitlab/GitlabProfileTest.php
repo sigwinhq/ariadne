@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne\Test\Bridge\Gitlab;
 
-use Nyholm\Psr7\Response;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
@@ -99,9 +98,6 @@ final class GitlabProfileTest extends ProfileTestCase
         $this->createProfileInstance($config, $httpClient, $factory, $cachePool);
     }
 
-    /**
-     * @return iterable<array{string, bool|string}>
-     */
     protected function provideValidAttributeValues(): iterable
     {
         return [
@@ -133,9 +129,6 @@ final class GitlabProfileTest extends ProfileTestCase
         ];
     }
 
-    /**
-     * @return iterable<array{string, int|bool|string}>
-     */
     protected function provideInvalidAttributeValues(): iterable
     {
         return [
@@ -143,28 +136,9 @@ final class GitlabProfileTest extends ProfileTestCase
         ];
     }
 
-    /**
-     * @param array<string, string> $requests
-     */
-    protected function createHttpClient(array $requests = []): ClientInterface
+    protected function validateRequest(RequestInterface $request): void
     {
-        $httpClient = $this->getMockBuilder(ClientInterface::class)->getMock();
-
-        foreach ($requests as $url => $response) {
-            $httpClient
-                ->expects(static::once())
-                ->method('sendRequest')
-                ->willReturnCallback(static function (RequestInterface $request) use ($url, $response): Response {
-                    self::assertSame('GET', $request->getMethod());
-                    self::assertSame($url, $request->getUri()->__toString());
-                    self::assertSame('ABC', $request->getHeaderLine('PRIVATE-TOKEN'));
-
-                    return new Response(200, ['Content-Type' => 'application/json'], $response);
-                })
-            ;
-        }
-
-        return $httpClient;
+        static::assertSame('ABC', $request->getHeaderLine('PRIVATE-TOKEN'));
     }
 
     protected function createProfileInstance(ProfileConfig $config, ClientInterface $client, ProfileTemplateFactory $factory, CacheItemPoolInterface $cachePool): Profile
