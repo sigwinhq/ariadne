@@ -76,12 +76,12 @@ final class GithubProfileTest extends ProfileTestCase
 
     protected function provideValidOptions(): iterable
     {
-        return [];
+        static::markTestSkipped('Github profile does not provide options');
     }
 
     protected function provideInvalidOptions(): iterable
     {
-        return [];
+        static::markTestSkipped('Github profile does not provide options');
     }
 
     protected function provideValidAttributeValues(): iterable

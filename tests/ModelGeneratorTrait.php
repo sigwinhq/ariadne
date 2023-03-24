@@ -48,22 +48,38 @@ trait ModelGeneratorTrait
         static::assertSame($expected, $actual);
     }
 
+    /**
+     * @param list<array{string, array<Repository>}> $list
+     *
+     * @return NamedResourceCollection<ProfileTemplate>
+     */
+    protected function createTemplates(array $list = []): NamedResourceCollection
+    {
+        return SortedNamedResourceCollection::fromArray(array_map($this->createTemplate(...), array_column($list, 0), array_column($list, 1)));
+    }
+
+    /**
+     * @param array<Repository> $repositories
+     */
+    protected function createTemplate(string $name, array $repositories = []): ProfileTemplate
+    {
+        return new ProfileTemplate(
+            $name,
+            ProfileTemplateTarget::fromConfig(
+                ProfileTemplateTargetConfig::fromArray(['attribute' => []]),
+                $this->getMockBuilder(Evaluator::class)->getMock(),
+            ),
+            SortedNamedResourceCollection::fromArray($repositories),
+        );
+    }
+
     protected function createTemplateFactory(): ProfileTemplateFactory
     {
         $factory = $this->getMockBuilder(ProfileTemplateFactory::class)->getMock();
 
-        /** @var NamedResourceCollection<Repository> $repositories */
-        $repositories = SortedNamedResourceCollection::fromArray([]);
         $factory
             ->method('fromConfig')
-            ->willReturn(new ProfileTemplate(
-                'foo',
-                ProfileTemplateTarget::fromConfig(
-                    ProfileTemplateTargetConfig::fromArray(['attribute' => []]),
-                    $this->getMockBuilder(Evaluator::class)->getMock(),
-                ),
-                $repositories,
-            ))
+            ->willReturn($this->createTemplate('foo'))
         ;
 
         return $factory;

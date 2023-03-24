@@ -18,9 +18,7 @@ use Sigwin\Ariadne\Bridge\Symfony\Console\Logo;
 use Sigwin\Ariadne\Bridge\Symfony\Console\Style\AriadneStyle;
 use Sigwin\Ariadne\Model\Collection\SortedNamedResourceCollection;
 use Sigwin\Ariadne\Model\ProfileSummary;
-use Sigwin\Ariadne\Model\ProfileTemplate;
 use Sigwin\Ariadne\Model\ProfileUser;
-use Sigwin\Ariadne\NamedResourceCollection;
 use Sigwin\Ariadne\Profile;
 use Sigwin\Ariadne\Test\ModelGeneratorTrait;
 use Symfony\Component\Console\Command\Command;
@@ -33,7 +31,10 @@ use Symfony\Component\Console\Tester\CommandTester;
  * @covers \Sigwin\Ariadne\Bridge\Symfony\Console\Style\AriadneStyle
  *
  * @uses \Sigwin\Ariadne\Model\Collection\SortedNamedResourceCollection
+ * @uses \Sigwin\Ariadne\Model\Config\ProfileTemplateTargetConfig
  * @uses \Sigwin\Ariadne\Model\ProfileSummary
+ * @uses \Sigwin\Ariadne\Model\ProfileTemplate
+ * @uses \Sigwin\Ariadne\Model\ProfileTemplateTarget
  * @uses \Sigwin\Ariadne\Model\ProfileUser
  * @uses \Sigwin\Ariadne\Model\Repository
  * @uses \Sigwin\Ariadne\Model\RepositoryUser
@@ -64,6 +65,7 @@ final class AriadneStyleTest extends TestCase
 
                     myth1
                     =====
+                     [WARNING] Template "tpl3" does not match any repositories.
                     EOT
             ],
             'summary' => [
@@ -74,12 +76,15 @@ final class AriadneStyleTest extends TestCase
 
                     myth2
                     =====
+                     [WARNING] Template "tpl3" does not match any repositories.
                      -------------- ---------------
                       API Version    1.2.3
                       API User       theseus
                       Repositories   namespace1: 2
                                      namespace2: 1
-                      Templates
+                      Templates      tpl1: 1
+                                     tpl2: 2
+                                     tpl3: none
                      -------------- ---------------
                     EOT
             ],
@@ -111,16 +116,21 @@ final class AriadneStyleTest extends TestCase
             ->willReturn($name)
         ;
 
-        /** @var NamedResourceCollection<ProfileTemplate> $templates */
-        $templates = SortedNamedResourceCollection::fromArray([]);
+        $repo1NS1 = $this->createRepository('namespace1/repo1');
+        $repo2NS1 = $this->createRepository('namespace1/repo2');
+        $repo1NS2 = $this->createRepository('namespace2/repo1');
 
         $summary = new ProfileSummary(
             SortedNamedResourceCollection::fromArray([
-                $this->createRepository('namespace1/repo1'),
-                $this->createRepository('namespace2/repo1'),
-                $this->createRepository('namespace1/repo2'),
+                $repo1NS1,
+                $repo1NS2,
+                $repo2NS1,
             ]),
-            $templates
+            SortedNamedResourceCollection::fromArray([
+                $this->createTemplate('tpl1', [$repo1NS2]),
+                $this->createTemplate('tpl2', [$repo1NS1, $repo2NS1]),
+                $this->createTemplate('tpl3'),
+            ]),
         );
         $profile
             ->method('getSummary')

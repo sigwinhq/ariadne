@@ -190,7 +190,7 @@ final class AriadneStyle extends SymfonyStyle
             if ($count > 0) {
                 $enumeration[] = sprintf('%1$s: %2$d', $item, $count);
             } else {
-                $enumeration[] = sprintf('<error>%1$s: %2$d</error>', $item, $count);
+                $enumeration[] = sprintf('<error>%1$s: none</error>', $item);
             }
         }
 

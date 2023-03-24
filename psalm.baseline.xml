@@ -227,6 +227,10 @@
     </LessSpecificReturnType>
   </file>
   <file src="tests/ModelGeneratorTrait.php">
+    <ArgumentTypeCoercion>
+      <code>$repositories</code>
+      <code>SortedNamedResourceCollection::fromArray($repositories)</code>
+    </ArgumentTypeCoercion>
     <MixedArrayOffset>
       <code>$configs[$idx++]</code>
       <code>$configs[$idx]</code>
@@ -237,6 +241,13 @@
     <MixedOperand>
       <code>$idx</code>
     </MixedOperand>
+    <PossiblyUnusedMethod>
+      <code>createTemplates</code>
+      <code>createTemplates</code>
+      <code>createTemplates</code>
+      <code>createTemplates</code>
+      <code>createTemplates</code>
+    </PossiblyUnusedMethod>
   </file>
   <file src="tests/Profile/Collection/FilteredProfileGeneratorCollectionTest.php">
     <ArgumentTypeCoercion>
