@@ -26,6 +26,8 @@ use Sigwin\Ariadne\Test\Bridge\ProfileTestCase;
  * @internal
  *
  * @covers \Sigwin\Ariadne\Bridge\Gitlab\GitlabProfile
+ * @covers \Sigwin\Ariadne\Model\Change\NamedResourceArrayChangeCollection
+ * @covers \Sigwin\Ariadne\Model\Repository
  *
  * @uses \Sigwin\Ariadne\Model\Collection\SortedNamedResourceCollection
  * @uses \Sigwin\Ariadne\Model\Config\ProfileClientConfig

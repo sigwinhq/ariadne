@@ -23,7 +23,7 @@ use Sigwin\Ariadne\Test\AssertTrait;
  *
  * @covers \Sigwin\Ariadne\Model\Change\NamedResourceUpdate
  *
- * @uses \Sigwin\Ariadne\Model\Collection\NamedResourceChangeCollection
+ * @uses \Sigwin\Ariadne\Model\Change\NamedResourceArrayChangeCollection
  *
  * @small
  */

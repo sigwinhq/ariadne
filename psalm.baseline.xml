@@ -179,11 +179,6 @@
       <code><![CDATA[$change->isActual() === true]]></code>
     </RedundantIdentityWithTrue>
   </file>
-  <file src="src/Model/Collection/NamedResourceChangeFlattenedCollection.php">
-    <PossiblyUnusedMethod>
-      <code>count</code>
-    </PossiblyUnusedMethod>
-  </file>
   <file src="src/Model/Collection/SortedNamedResourceCollection.php">
     <PossiblyUnusedMethod>
       <code>count</code>

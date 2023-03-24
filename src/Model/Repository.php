@@ -13,11 +13,11 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne\Model;
 
+use Sigwin\Ariadne\Model\Change\NamedResourceArrayChangeCollection;
 use Sigwin\Ariadne\Model\Change\NamedResourceAttributeUpdate;
 use Sigwin\Ariadne\Model\Change\NamedResourceCreate;
 use Sigwin\Ariadne\Model\Change\NamedResourceDelete;
 use Sigwin\Ariadne\Model\Change\NamedResourceUpdate;
-use Sigwin\Ariadne\Model\Collection\NamedResourceChangeCollection;
 use Sigwin\Ariadne\NamedResource;
 use Sigwin\Ariadne\NamedResourceCollection;
 
@@ -41,7 +41,7 @@ final class Repository implements NamedResource
     ) {
     }
 
-    public function createChangeForTemplate(ProfileTemplate $template): NamedResourceChangeCollection
+    public function createChangeForTemplate(ProfileTemplate $template): NamedResourceArrayChangeCollection
     {
         $changes = [];
         foreach ($template->getTargetAttributes($this) as $name => $expected) {
@@ -87,7 +87,7 @@ final class Repository implements NamedResource
             return [new NamedResourceAttributeUpdate(new Attribute('role'), $actual->role, $expected->role)];
         });
 
-        return NamedResourceChangeCollection::fromResource($template, $changes);
+        return NamedResourceArrayChangeCollection::fromResource($template, $changes);
     }
 
     public function getName(): string

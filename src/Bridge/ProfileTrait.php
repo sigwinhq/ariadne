@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne\Bridge;
 
-use Sigwin\Ariadne\Model\Collection\NamedResourceChangeFlattenedCollection;
 use Sigwin\Ariadne\Model\Collection\SortedNamedResourceCollection;
 use Sigwin\Ariadne\Model\Config\ProfileTemplateConfig;
 use Sigwin\Ariadne\Model\ProfileSummary;
@@ -59,7 +58,7 @@ trait ProfileTrait
             $changes[] = $repository->createChangeForTemplate($template);
         }
 
-        return NamedResourceChangeFlattenedCollection::fromResource($repository, $changes);
+        return \Sigwin\Ariadne\Model\Change\NamedResourceArrayChangeCollection::fromResource($repository, $changes);
     }
 
     /**
