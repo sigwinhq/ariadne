@@ -74,28 +74,22 @@ final class GitlabProfileTest extends ProfileTestCase
         static::assertCount(1, $profile->getSummary()->getTemplates());
     }
 
-    public function testCanRecognizeInvalidMembershipOption(): void
+    protected function provideValidOptions(): iterable
     {
-        $this->expectException(\InvalidArgumentException::class);
-
-        $httpClient = $this->createHttpClient();
-        $factory = $this->createTemplateFactory();
-        $cachePool = $this->createCachePool();
-        $config = $this->createConfig(options: ['membership' => 'aa']);
-
-        $this->createProfileInstance($config, $httpClient, $factory, $cachePool);
+        return [
+            ['membership', false],
+            ['owned', true],
+        ];
     }
 
-    public function testCanRecognizeInvalidOwnedOption(): void
+    protected function provideInvalidOptions(): iterable
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $error = 'The option "%1$s" with value "aa" is expected to be of type "boolean", but is of type "string".';
 
-        $httpClient = $this->createHttpClient();
-        $factory = $this->createTemplateFactory();
-        $cachePool = $this->createCachePool();
-        $config = $this->createConfig(options: ['owned' => 'aa']);
-
-        $this->createProfileInstance($config, $httpClient, $factory, $cachePool);
+        return [
+            ['membership', 'aa', $error],
+            ['owned', 'aa', $error],
+        ];
     }
 
     protected function provideValidAttributeValues(): iterable
@@ -131,8 +125,10 @@ final class GitlabProfileTest extends ProfileTestCase
 
     protected function provideInvalidAttributeValues(): iterable
     {
+        $error = 'Attribute "%1$s" is read-only.';
+
         return [
-            ['star_count', 10000],
+            ['star_count', 10000, $error],
         ];
     }
 

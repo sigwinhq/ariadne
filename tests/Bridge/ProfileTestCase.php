@@ -27,6 +27,37 @@ abstract class ProfileTestCase extends TestCase
     use ModelGeneratorTrait;
 
     /**
+     * @dataProvider provideValidOptions
+     */
+    public function testCanSetValidOptions(string $name, bool|string $value): void
+    {
+        $httpClient = $this->createHttpClient();
+        $factory = $this->createTemplateFactory();
+        $cachePool = $this->createCachePool();
+        $config = $this->createConfig(options: [$name => $value]);
+
+        $profile = $this->createProfileInstance($config, $httpClient, $factory, $cachePool);
+
+        static::assertSame($config->name, $profile->getName());
+    }
+
+    /**
+     * @dataProvider provideInvalidOptions
+     */
+    public function testCannotSetInvalidOptions(string $name, bool|string $value, string $message): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage(sprintf($message, $name));
+
+        $httpClient = $this->createHttpClient();
+        $factory = $this->createTemplateFactory();
+        $cachePool = $this->createCachePool();
+        $config = $this->createConfig(options: [$name => $value]);
+
+        $this->createProfileInstance($config, $httpClient, $factory, $cachePool);
+    }
+
+    /**
      * @dataProvider provideValidAttributeValues
      */
     public function testCanSetValidAttributes(string $name, bool|string $value): void
@@ -43,10 +74,10 @@ abstract class ProfileTestCase extends TestCase
     /**
      * @dataProvider provideInvalidAttributeValues
      */
-    public function testCannotSetInvalidAttributes(string $name, int|bool|string $value): void
+    public function testCannotSetInvalidAttributes(string $name, int|bool|string $value, string $message): void
     {
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage(sprintf('Attribute "%1$s" is read-only.', $name));
+        $this->expectExceptionMessage(sprintf($message, $name));
 
         $httpClient = $this->createHttpClient();
         $factory = $this->createTemplateFactory();
@@ -81,12 +112,22 @@ abstract class ProfileTestCase extends TestCase
     abstract protected function validateRequest(RequestInterface $request): void;
 
     /**
-     * @return iterable<array{string, bool|string}>
+     * @return iterable<array-key, array{string, bool|string}>
+     */
+    abstract protected function provideValidOptions(): iterable;
+
+    /**
+     * @return iterable<array-key, array{string, bool|string, string}>
+     */
+    abstract protected function provideInvalidOptions(): iterable;
+
+    /**
+     * @return iterable<array-key, array{string, bool|string}>
      */
     abstract protected function provideValidAttributeValues(): iterable;
 
     /**
-     * @return iterable<array{string, int|bool|string}>
+     * @return iterable<array-key, array{string, int|bool|string, string}>
      */
     abstract protected function provideInvalidAttributeValues(): iterable;
 

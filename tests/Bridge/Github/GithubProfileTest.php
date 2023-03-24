@@ -74,6 +74,16 @@ final class GithubProfileTest extends ProfileTestCase
         static::assertCount(1, $profile->getSummary()->getTemplates());
     }
 
+    protected function provideValidOptions(): iterable
+    {
+        return [];
+    }
+
+    protected function provideInvalidOptions(): iterable
+    {
+        return [];
+    }
+
     protected function provideValidAttributeValues(): iterable
     {
         return [
@@ -89,10 +99,12 @@ final class GithubProfileTest extends ProfileTestCase
 
     protected function provideInvalidAttributeValues(): iterable
     {
+        $error = 'Attribute "%1$s" is read-only.';
+
         return [
-            ['open_issues_count', -1],
-            ['stargazers_count', 10000],
-            ['watchers_count', 10000],
+            ['open_issues_count', -1, $error],
+            ['stargazers_count', 10000, $error],
+            ['watchers_count', 10000, $error],
         ];
     }
 
