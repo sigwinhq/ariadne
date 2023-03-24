@@ -16,6 +16,7 @@ namespace Sigwin\Ariadne\Test\Model\Change;
 use PHPUnit\Framework\TestCase;
 use Sigwin\Ariadne\Model\Change\NamedResourceUpdate;
 use Sigwin\Ariadne\NamedResource;
+use Sigwin\Ariadne\Test\AssertTrait;
 
 /**
  * @internal
@@ -28,16 +29,13 @@ use Sigwin\Ariadne\NamedResource;
  */
 final class NamedResourceUpdateTest extends TestCase
 {
+    use AssertTrait;
+
     public function testCreate(): void
     {
         $resource = $this->createMock(NamedResource::class);
-
         $change = NamedResourceUpdate::fromResource($resource, []);
 
-        static::assertSame($resource, $change->getResource());
-        static::assertSame([], iterator_to_array($change));
-        static::assertCount(0, $change);
-        static::assertTrue($change->isActual());
-        static::assertSame([], $change->getAttributeChanges());
+        self::assertNamedResourceChangeCollectionIsEmpty($resource, $change);
     }
 }

@@ -38,17 +38,6 @@ use Sigwin\Ariadne\ProfileTemplateFactory;
 trait ModelGeneratorTrait
 {
     /**
-     * @param list<mixed> $all
-     * @param list<int>   $expected
-     * @param list<mixed> $actual
-     */
-    protected static function assertArrayInArrayByKey(array $all, array $expected, array $actual): void
-    {
-        $expected = array_values(array_intersect_key($all, array_flip($expected)));
-        static::assertSame($expected, $actual);
-    }
-
-    /**
      * @param list<array{string, array<Repository>}> $list
      *
      * @return NamedResourceCollection<ProfileTemplate>
