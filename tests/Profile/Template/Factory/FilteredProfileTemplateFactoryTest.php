@@ -19,6 +19,7 @@ use Sigwin\Ariadne\Model\Collection\SortedNamedResourceCollection;
 use Sigwin\Ariadne\Model\Config\ProfileTemplateConfig;
 use Sigwin\Ariadne\Model\Repository;
 use Sigwin\Ariadne\Profile\Template\Factory\FilteredProfileTemplateFactory;
+use Sigwin\Ariadne\Test\AssertTrait;
 use Sigwin\Ariadne\Test\ModelGeneratorTrait;
 
 /**
@@ -41,6 +42,7 @@ use Sigwin\Ariadne\Test\ModelGeneratorTrait;
  */
 final class FilteredProfileTemplateFactoryTest extends TestCase
 {
+    use AssertTrait;
     use ModelGeneratorTrait;
 
     /**

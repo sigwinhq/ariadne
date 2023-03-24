@@ -121,10 +121,11 @@ abstract class ProfileTestCase extends TestCase
     abstract protected function createProfileInstance(ProfileConfig $config, ClientInterface $client, ProfileTemplateFactory $factory, CacheItemPoolInterface $cachePool): Profile;
 
     /**
-     * @param null|array<string, bool|string>     $options
-     * @param null|array<string, bool|int|string> $attribute
+     * @param null|array<string, bool|string>      $options
+     * @param null|array<string, bool|int|string>  $attribute
+     * @param null|array{languages?: list<string>} $filter
      */
-    abstract protected function createConfig(?string $url = null, ?array $options = null, ?array $attribute = null): ProfileConfig;
+    abstract protected function createConfig(?string $url = null, ?array $options = null, ?array $attribute = null, ?array $filter = null): ProfileConfig;
 
-    abstract protected function createUrl(?string $baseUrl, string $path): string;
+    abstract protected function createRequest(?string $baseUrl, string $method, string $path): string;
 }

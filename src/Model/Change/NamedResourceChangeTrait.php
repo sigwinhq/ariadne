@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne\Model\Change;
 
-use Sigwin\Ariadne\Model\Collection\NamedResourceChangeCollection;
 use Sigwin\Ariadne\Model\ProfileTemplate;
 use Sigwin\Ariadne\Model\Repository;
 use Sigwin\Ariadne\NamedResource;
@@ -26,7 +25,7 @@ trait NamedResourceChangeTrait
      */
     public static function fromResource(NamedResource $resource, array $changes): self
     {
-        return new self($resource, NamedResourceChangeCollection::fromResource($resource, $changes));
+        return new self($resource, NamedResourceArrayChangeCollection::fromResource($resource, $changes));
     }
 
     public function getResource(): NamedResource

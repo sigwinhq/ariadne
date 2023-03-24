@@ -11,13 +11,12 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sigwin\Ariadne\Model\Collection;
+namespace Sigwin\Ariadne\Model\Change;
 
-use Sigwin\Ariadne\Model\Change\NamedResourceChangeTrait;
 use Sigwin\Ariadne\NamedResource;
 use Sigwin\Ariadne\NamedResourceChange;
 
-final class NamedResourceChangeCollection implements \Sigwin\Ariadne\NamedResourceChangeCollection
+final class NamedResourceArrayChangeCollection implements \Sigwin\Ariadne\NamedResourceChangeCollection
 {
     use NamedResourceChangeTrait;
 

@@ -179,11 +179,6 @@
       <code><![CDATA[$change->isActual() === true]]></code>
     </RedundantIdentityWithTrue>
   </file>
-  <file src="src/Model/Collection/NamedResourceChangeFlattenedCollection.php">
-    <PossiblyUnusedMethod>
-      <code>count</code>
-    </PossiblyUnusedMethod>
-  </file>
   <file src="src/Model/Collection/SortedNamedResourceCollection.php">
     <PossiblyUnusedMethod>
       <code>count</code>
@@ -234,11 +229,14 @@
     <MixedArrayOffset>
       <code>$configs[$idx++]</code>
       <code>$configs[$idx]</code>
+      <code>$items[$idx++]</code>
     </MixedArrayOffset>
     <MixedAssignment>
       <code>$idx</code>
+      <code>$idx</code>
     </MixedAssignment>
     <MixedOperand>
+      <code>$idx</code>
       <code>$idx</code>
     </MixedOperand>
     <PossiblyUnusedMethod>

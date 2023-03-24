@@ -38,17 +38,6 @@ use Sigwin\Ariadne\ProfileTemplateFactory;
 trait ModelGeneratorTrait
 {
     /**
-     * @param list<mixed> $all
-     * @param list<int>   $expected
-     * @param list<mixed> $actual
-     */
-    protected static function assertArrayInArrayByKey(array $all, array $expected, array $actual): void
-    {
-        $expected = array_values(array_intersect_key($all, array_flip($expected)));
-        static::assertSame($expected, $actual);
-    }
-
-    /**
      * @param list<array{string, array<Repository>}> $list
      *
      * @return NamedResourceCollection<ProfileTemplate>
@@ -124,25 +113,31 @@ trait ModelGeneratorTrait
     }
 
     /**
-     * @param array<string, string> $requests
+     * @param list<array{string, string}> $items
      */
-    protected function createHttpClient(array $requests = []): ClientInterface
+    protected function createHttpClient(array $items = []): ClientInterface
     {
+        $idx = 0;
+
         $httpClient = $this->getMockBuilder(ClientInterface::class)->getMock();
+        $httpClient
+            ->expects(self::exactly(\count($items)))
+            ->method('sendRequest')
+            ->willReturnCallback(function (RequestInterface $request) use (&$idx, $items): Response {
+                [$requestSpec, $response] = $items[$idx++];
+                $parts = explode(' ', $requestSpec, 2);
+                if (\count($parts) !== 2) {
+                    throw new \InvalidArgumentException('Invalid request, expected "METHOD PATH"');
+                }
+                [$method, $url] = $parts;
 
-        foreach ($requests as $url => $response) {
-            $httpClient
-                ->expects(static::once())
-                ->method('sendRequest')
-                ->willReturnCallback(function (RequestInterface $request) use ($url, $response): Response {
-                    self::assertSame('GET', $request->getMethod());
-                    self::assertSame($url, $request->getUri()->__toString());
-                    $this->validateRequest($request);
+                self::assertSame($method, $request->getMethod());
+                self::assertSame($url, $request->getUri()->__toString());
+                $this->validateRequest($request);
 
-                    return new Response(200, ['Content-Type' => 'application/json'], $response);
-                })
-            ;
-        }
+                return new Response(200, ['Content-Type' => 'application/json'], $response);
+            })
+        ;
 
         return $httpClient;
     }
