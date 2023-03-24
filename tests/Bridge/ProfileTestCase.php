@@ -87,19 +87,6 @@ abstract class ProfileTestCase extends TestCase
         $this->createProfileInstance($config, $httpClient, $factory, $cachePool);
     }
 
-    public function testWillGetDidYouMeanWhenSettingAttributesWithATypo(): void
-    {
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Attribute "desciption" does not exist. Did you mean "description"?');
-
-        $httpClient = $this->createHttpClient();
-        $factory = $this->createTemplateFactory();
-        $cachePool = $this->createCachePool();
-        $config = $this->createConfig(attribute: ['desciption' => 'desc']);
-
-        $this->createProfileInstance($config, $httpClient, $factory, $cachePool);
-    }
-
     /**
      * @return iterable<string, array{0: null|string}>
      */

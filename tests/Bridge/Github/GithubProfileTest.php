@@ -99,12 +99,15 @@ final class GithubProfileTest extends ProfileTestCase
 
     protected function provideInvalidAttributeValues(): iterable
     {
-        $error = 'Attribute "%1$s" is read-only.';
+        $readOnlyError = 'Attribute "%1$s" is read-only.';
+        $notExistsError = 'Attribute "%1$s" does not exist.';
 
         return [
-            ['open_issues_count', -1, $error],
-            ['stargazers_count', 10000, $error],
-            ['watchers_count', 10000, $error],
+            ['open_issues_count', -1, $readOnlyError],
+            ['stargazers_count', 10000, $readOnlyError],
+            ['watchers_count', 10000, $readOnlyError],
+            ['nah', 'aaa', $notExistsError],
+            ['desciption', 'aaa', 'Attribute "desciption" does not exist. Did you mean "description"?'],
         ];
     }
 
