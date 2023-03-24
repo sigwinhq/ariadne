@@ -38,6 +38,7 @@ use Sigwin\Ariadne\Test\Bridge\ProfileTestCase;
  * @uses \Sigwin\Ariadne\Model\ProfileTemplate
  * @uses \Sigwin\Ariadne\Model\ProfileTemplateTarget
  * @uses \Sigwin\Ariadne\Model\ProfileUser
+ * @uses \Sigwin\Ariadne\Model\RepositoryType
  *
  * @small
  */
@@ -71,6 +72,29 @@ final class GitlabProfileTest extends ProfileTestCase
         $factory = $this->createTemplateFactory();
         $cachePool = $this->createCachePool();
         $config = $this->createConfig($baseUrl);
+        $profile = $this->createProfileInstance($config, $httpClient, $factory, $cachePool);
+
+        static::assertCount(1, $profile->getSummary()->getTemplates());
+    }
+
+    /**
+     * @dataProvider provideUrls
+     */
+    public function testIfAtLeastOneTemplateUsesLanguagesWeNeedToPullRepositoryLanguages(?string $baseUrl): void
+    {
+        $httpClient = $this->createHttpClient([
+            [
+                $this->createRequest($baseUrl, 'GET', '/projects?membership=false&owned=true&per_page=50'),
+                '[{"id":123, "visibility":"public", "path_with_namespace":"foo/bar/bat", "topics":["minotaur"]}]',
+            ],
+            [
+                $this->createRequest($baseUrl, 'GET', '/projects/123/languages'),
+                '[]',
+            ],
+        ]);
+        $factory = $this->createTemplateFactory();
+        $cachePool = $this->createCachePool();
+        $config = $this->createConfig($baseUrl, filter: ['languages' => ['php']]);
         $profile = $this->createProfileInstance($config, $httpClient, $factory, $cachePool);
 
         static::assertCount(1, $profile->getSummary()->getTemplates());
@@ -147,14 +171,14 @@ final class GitlabProfileTest extends ProfileTestCase
         return GitlabProfile::fromConfig($config, $client, $factory, $cachePool);
     }
 
-    protected function createConfig(?string $url = null, ?array $options = null, ?array $attribute = null): ProfileConfig
+    protected function createConfig(?string $url = null, ?array $options = null, ?array $attribute = null, ?array $filter = null): ProfileConfig
     {
         $config = [
             'type' => 'gitlab',
             'name' => 'GL',
             'client' => ['auth' => ['token' => 'ABC', 'type' => 'http_token'], 'options' => $options ?? []],
             'templates' => [
-                ['name' => 'foo', 'filter' => [], 'target' => ['attribute' => $attribute ?? []]],
+                ['name' => 'foo', 'filter' => $filter ?? [], 'target' => ['attribute' => $attribute ?? []]],
             ],
         ];
         if ($url !== null) {

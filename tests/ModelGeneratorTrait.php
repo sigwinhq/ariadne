@@ -117,27 +117,27 @@ trait ModelGeneratorTrait
      */
     protected function createHttpClient(array $items = []): ClientInterface
     {
+        $idx = 0;
+
         $httpClient = $this->getMockBuilder(ClientInterface::class)->getMock();
+        $httpClient
+            ->expects(self::exactly(\count($items)))
+            ->method('sendRequest')
+            ->willReturnCallback(function (RequestInterface $request) use (&$idx, $items): Response {
+                [$requestSpec, $response] = $items[$idx++];
+                $parts = explode(' ', $requestSpec, 2);
+                if (\count($parts) !== 2) {
+                    throw new \InvalidArgumentException('Invalid request, expected "METHOD PATH"');
+                }
+                [$method, $url] = $parts;
 
-        foreach ($items as $item) {
-            [$request, $response] = $item;
-            $parts = explode(' ', $request, 2);
-            if (\count($parts) !== 2) {
-                throw new \InvalidArgumentException('Invalid request, expected "METHOD PATH"');
-            }
-            [$method, $url] = $parts;
-            $httpClient
-                ->expects(static::once())
-                ->method('sendRequest')
-                ->willReturnCallback(function (RequestInterface $request) use ($method, $url, $response): Response {
-                    self::assertSame($method, $request->getMethod());
-                    self::assertSame($url, $request->getUri()->__toString());
-                    $this->validateRequest($request);
+                self::assertSame($method, $request->getMethod());
+                self::assertSame($url, $request->getUri()->__toString());
+                $this->validateRequest($request);
 
-                    return new Response(200, ['Content-Type' => 'application/json'], $response);
-                })
-            ;
-        }
+                return new Response(200, ['Content-Type' => 'application/json'], $response);
+            })
+        ;
 
         return $httpClient;
     }

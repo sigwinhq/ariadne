@@ -121,14 +121,14 @@ final class GithubProfileTest extends ProfileTestCase
         return GithubProfile::fromConfig($config, $client, $factory, $cachePool);
     }
 
-    protected function createConfig(?string $url = null, ?array $options = null, ?array $attribute = null): ProfileConfig
+    protected function createConfig(?string $url = null, ?array $options = null, ?array $attribute = null, ?array $filter = null): ProfileConfig
     {
         $config = [
             'type' => 'github',
             'name' => 'GH',
             'client' => ['auth' => ['token' => 'ABC', 'type' => 'access_token_header'], 'options' => $options ?? []],
             'templates' => [
-                ['name' => 'foo', 'filter' => [], 'target' => ['attribute' => $attribute ?? []]],
+                ['name' => 'foo', 'filter' => $filter ?? [], 'target' => ['attribute' => $attribute ?? []]],
             ],
         ];
         if ($url !== null) {

@@ -229,11 +229,14 @@
     <MixedArrayOffset>
       <code>$configs[$idx++]</code>
       <code>$configs[$idx]</code>
+      <code>$items[$idx++]</code>
     </MixedArrayOffset>
     <MixedAssignment>
       <code>$idx</code>
+      <code>$idx</code>
     </MixedAssignment>
     <MixedOperand>
+      <code>$idx</code>
       <code>$idx</code>
     </MixedOperand>
     <PossiblyUnusedMethod>
