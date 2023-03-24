@@ -47,7 +47,7 @@ final class GitlabProfileTest extends ProfileTestCase
     public function testCanFetchApiUser(?string $baseUrl): void
     {
         $httpClient = $this->createHttpClient([
-            $this->createUrl($baseUrl, '/user') => '{"username": "ariadne"}',
+            [$this->createRequest($baseUrl, 'GET', '/user'), '{"username": "ariadne"}'],
         ]);
         $factory = $this->createTemplateFactory();
         $cachePool = $this->createCachePool();
@@ -64,7 +64,7 @@ final class GitlabProfileTest extends ProfileTestCase
     public function testCanFetchTemplates(?string $baseUrl): void
     {
         $httpClient = $this->createHttpClient([
-            $this->createUrl($baseUrl, '/projects?membership=false&owned=true&per_page=50') => '[]',
+            [$this->createRequest($baseUrl, 'GET', '/projects?membership=false&owned=true&per_page=50'), '[]'],
         ]);
         $factory = $this->createTemplateFactory();
         $cachePool = $this->createCachePool();
@@ -162,8 +162,8 @@ final class GitlabProfileTest extends ProfileTestCase
         return ProfileConfig::fromArray($config);
     }
 
-    protected function createUrl(?string $baseUrl, string $path): string
+    protected function createRequest(?string $baseUrl, string $method, string $path): string
     {
-        return sprintf('%1$s/api/v4%2$s', $baseUrl ?? 'https://gitlab.com', $path);
+        return sprintf('%1$s %2$s/api/v4%3$s', $method, $baseUrl ?? 'https://gitlab.com', $path);
     }
 }

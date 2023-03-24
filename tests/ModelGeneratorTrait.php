@@ -113,18 +113,24 @@ trait ModelGeneratorTrait
     }
 
     /**
-     * @param array<string, string> $requests
+     * @param list<array{string, string}> $items
      */
-    protected function createHttpClient(array $requests = []): ClientInterface
+    protected function createHttpClient(array $items = []): ClientInterface
     {
         $httpClient = $this->getMockBuilder(ClientInterface::class)->getMock();
 
-        foreach ($requests as $url => $response) {
+        foreach ($items as $item) {
+            [$request, $response] = $item;
+            $parts = explode(' ', $request, 2);
+            if (\count($parts) !== 2) {
+                throw new \InvalidArgumentException('Invalid request, expected "METHOD PATH"');
+            }
+            [$method, $url] = $parts;
             $httpClient
                 ->expects(static::once())
                 ->method('sendRequest')
-                ->willReturnCallback(function (RequestInterface $request) use ($url, $response): Response {
-                    self::assertSame('GET', $request->getMethod());
+                ->willReturnCallback(function (RequestInterface $request) use ($method, $url, $response): Response {
+                    self::assertSame($method, $request->getMethod());
                     self::assertSame($url, $request->getUri()->__toString());
                     $this->validateRequest($request);
 

@@ -47,7 +47,7 @@ final class GithubProfileTest extends ProfileTestCase
     public function testCanFetchApiUser(?string $baseUrl): void
     {
         $httpClient = $this->createHttpClient([
-            $this->createUrl($baseUrl, '/user') => '{"login": "ariadne"}',
+            [$this->createRequest($baseUrl, 'GET', '/user'), '{"login": "ariadne"}'],
         ]);
         $factory = $this->createTemplateFactory();
         $cachePool = $this->createCachePool();
@@ -64,7 +64,7 @@ final class GithubProfileTest extends ProfileTestCase
     public function testCanFetchTemplates(?string $baseUrl): void
     {
         $httpClient = $this->createHttpClient([
-            $this->createUrl($baseUrl, '/user/repos?per_page=100') => '[]',
+            [$this->createRequest($baseUrl, 'GET', '/user/repos?per_page=100'), '[]'],
         ]);
         $factory = $this->createTemplateFactory();
         $cachePool = $this->createCachePool();
@@ -138,8 +138,8 @@ final class GithubProfileTest extends ProfileTestCase
         return ProfileConfig::fromArray($config);
     }
 
-    protected function createUrl(?string $baseUrl, string $path): string
+    protected function createRequest(?string $baseUrl, string $method, string $path): string
     {
-        return sprintf('%1$s%2$s%3$s', $baseUrl ?? 'https://api.github.com', $baseUrl === null ? '' : '/api/v3', $path);
+        return sprintf('%1$s %2$s%3$s%4$s', $method, $baseUrl ?? 'https://api.github.com', $baseUrl === null ? '' : '/api/v3', $path);
     }
 }
