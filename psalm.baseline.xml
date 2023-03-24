@@ -221,30 +221,16 @@
       <code>Profile</code>
     </PossiblyUnusedReturnValue>
   </file>
-  <file src="tests/Bridge/Github/GithubProfileTest.php">
-    <LessSpecificReturnType>
-      <code>CacheItemPoolInterface</code>
-      <code>ClientInterface</code>
-      <code>ProfileTemplateFactory</code>
-    </LessSpecificReturnType>
-  </file>
-  <file src="tests/Bridge/Gitlab/GitlabProfileTest.php">
-    <LessSpecificReturnType>
-      <code>CacheItemPoolInterface</code>
-      <code>ClientInterface</code>
-      <code>ProfileTemplateFactory</code>
-    </LessSpecificReturnType>
-  </file>
   <file src="tests/Bridge/Symfony/Console/Style/AriadneStyleTest.php">
     <LessSpecificReturnType>
       <code>Profile</code>
     </LessSpecificReturnType>
   </file>
   <file src="tests/ModelGeneratorTrait.php">
-    <LessSpecificReturnType>
-      <code>Profile</code>
-      <code>ProfileFactory</code>
-    </LessSpecificReturnType>
+    <ArgumentTypeCoercion>
+      <code>$repositories</code>
+      <code>SortedNamedResourceCollection::fromArray($repositories)</code>
+    </ArgumentTypeCoercion>
     <MixedArrayOffset>
       <code>$configs[$idx++]</code>
       <code>$configs[$idx]</code>
@@ -255,6 +241,13 @@
     <MixedOperand>
       <code>$idx</code>
     </MixedOperand>
+    <PossiblyUnusedMethod>
+      <code>createTemplates</code>
+      <code>createTemplates</code>
+      <code>createTemplates</code>
+      <code>createTemplates</code>
+      <code>createTemplates</code>
+    </PossiblyUnusedMethod>
   </file>
   <file src="tests/Profile/Collection/FilteredProfileGeneratorCollectionTest.php">
     <ArgumentTypeCoercion>

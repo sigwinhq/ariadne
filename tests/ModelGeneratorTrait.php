@@ -13,11 +13,17 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne\Test;
 
+use Nyholm\Psr7\Response;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestInterface;
+use Sigwin\Ariadne\Evaluator;
 use Sigwin\Ariadne\Model\Collection\SortedNamedResourceCollection;
 use Sigwin\Ariadne\Model\Config\ProfileConfig;
+use Sigwin\Ariadne\Model\Config\ProfileTemplateTargetConfig;
 use Sigwin\Ariadne\Model\ProfileSummary;
+use Sigwin\Ariadne\Model\ProfileTemplate;
+use Sigwin\Ariadne\Model\ProfileTemplateTarget;
 use Sigwin\Ariadne\Model\ProfileUser;
 use Sigwin\Ariadne\Model\Repository;
 use Sigwin\Ariadne\Model\RepositoryType;
@@ -36,10 +42,52 @@ trait ModelGeneratorTrait
      * @param list<int>   $expected
      * @param list<mixed> $actual
      */
-    private static function assertArrayInArrayByKey(array $all, array $expected, array $actual): void
+    protected static function assertArrayInArrayByKey(array $all, array $expected, array $actual): void
     {
         $expected = array_values(array_intersect_key($all, array_flip($expected)));
         static::assertSame($expected, $actual);
+    }
+
+    /**
+     * @param list<array{string, array<Repository>}> $list
+     *
+     * @return NamedResourceCollection<ProfileTemplate>
+     */
+    protected function createTemplates(array $list = []): NamedResourceCollection
+    {
+        return SortedNamedResourceCollection::fromArray(array_map($this->createTemplate(...), array_column($list, 0), array_column($list, 1)));
+    }
+
+    /**
+     * @param array<Repository> $repositories
+     */
+    protected function createTemplate(string $name, array $repositories = []): ProfileTemplate
+    {
+        return new ProfileTemplate(
+            $name,
+            ProfileTemplateTarget::fromConfig(
+                ProfileTemplateTargetConfig::fromArray(['attribute' => []]),
+                $this->getMockBuilder(Evaluator::class)->getMock(),
+            ),
+            SortedNamedResourceCollection::fromArray($repositories),
+        );
+    }
+
+    protected function createTemplateFactory(): ProfileTemplateFactory
+    {
+        $factory = $this->getMockBuilder(ProfileTemplateFactory::class)->getMock();
+
+        $factory
+            ->method('fromConfig')
+            ->willReturn($this->createTemplate('foo'))
+        ;
+
+        return $factory;
+    }
+
+    protected function createCachePool(): CacheItemPoolInterface
+    {
+        return $this->getMockBuilder(CacheItemPoolInterface::class)->getMock();
     }
 
     /**
@@ -47,12 +95,12 @@ trait ModelGeneratorTrait
      *
      * @return NamedResourceCollection<RepositoryUser>
      */
-    private function createUsers(array $list = []): NamedResourceCollection
+    protected function createUsers(array $list = []): NamedResourceCollection
     {
         return SortedNamedResourceCollection::fromArray(array_map($this->createUser(...), array_column($list, 0), array_column($list, 1)));
     }
 
-    private function createUser(string $name = 'theseus', string $role = 'admin'): RepositoryUser
+    protected function createUser(string $name = 'theseus', string $role = 'admin'): RepositoryUser
     {
         return new RepositoryUser($name, $role);
     }
@@ -61,7 +109,7 @@ trait ModelGeneratorTrait
      * @param list<array{string, string}>|null $users
      * @param null|list<string> $topics
      */
-    private function createRepository(string $path, ?array $users = null, ?string $type = null, ?array $topics = null): Repository
+    protected function createRepository(string $path, ?array $users = null, ?string $type = null, ?array $topics = null): Repository
     {
         return new Repository(
             ['path' => $path],
@@ -76,9 +124,40 @@ trait ModelGeneratorTrait
     }
 
     /**
+     * @param array<string, string> $requests
+     */
+    protected function createHttpClient(array $requests = []): ClientInterface
+    {
+        $httpClient = $this->getMockBuilder(ClientInterface::class)->getMock();
+
+        foreach ($requests as $url => $response) {
+            $httpClient
+                ->expects(static::once())
+                ->method('sendRequest')
+                ->willReturnCallback(function (RequestInterface $request) use ($url, $response): Response {
+                    self::assertSame('GET', $request->getMethod());
+                    self::assertSame($url, $request->getUri()->__toString());
+                    $this->validateRequest($request);
+
+                    return new Response(200, ['Content-Type' => 'application/json'], $response);
+                })
+            ;
+        }
+
+        return $httpClient;
+    }
+
+    /**
+     * @psalm-suppress PossiblyUnusedParam
+     */
+    protected function validateRequest(RequestInterface $request): void
+    {
+    }
+
+    /**
      * @param list<ProfileConfig> $configs
      */
-    private function createProfileFactory(array $configs): ProfileFactory
+    protected function createProfileFactory(array $configs): ProfileFactory
     {
         $idx = 0;
         $mock = $this->createMock(ProfileFactory::class);
@@ -98,7 +177,7 @@ trait ModelGeneratorTrait
         return $mock;
     }
 
-    private function createProfile(string $name = 'foo'): Profile
+    protected function createProfile(string $name = 'foo'): Profile
     {
         return new class($name) implements Profile {
             public function __construct(private readonly string $name)
