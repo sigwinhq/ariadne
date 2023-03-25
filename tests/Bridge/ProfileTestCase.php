@@ -35,7 +35,7 @@ abstract class ProfileTestCase extends TestCase
     protected function setUp(): void
     {
         $this->repositories = [
-            'namespace1/repo1' => $this->createRepository('namespace1/repo1'),
+            'basic repository' => $this->createRepository('namespace1/repo1'),
         ];
     }
 
@@ -45,13 +45,13 @@ abstract class ProfileTestCase extends TestCase
     public function testCanCreateRepository(string $name, ClientInterface $httpClient): void
     {
         $factory = $this->createTemplateFactory();
-        $cachePool = $this->createCachePool();
+        $cachePool = $this->createActiveCachePool();
         $config = $this->createConfig();
         $profile = $this->createProfileInstance($config, $httpClient, $factory, $cachePool);
 
         $fixture = $this->repositories[$name] ?? throw new \InvalidArgumentException(sprintf('Repository "%1$s" not found.', $name));
         foreach ($profile as $repository) {
-            if ($name === $repository->getName()) {
+            if ($fixture->getName() === $repository->getName()) {
                 static::assertSame($fixture->type->value, $repository->type->value);
                 static::assertSame($fixture->visibility->value, $repository->visibility->value);
                 static::assertEmpty($fixture->users->diff($repository->users));

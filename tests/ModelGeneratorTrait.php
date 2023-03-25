@@ -74,6 +74,17 @@ trait ModelGeneratorTrait
         return $factory;
     }
 
+    protected function createActiveCachePool(): CacheItemPoolInterface
+    {
+        $mock = $this->getMockBuilder(CacheItemPoolInterface::class)->getMock();
+        $mock
+            ->expects(self::atLeastOnce())
+            ->method('getItem')
+        ;
+
+        return $mock;
+    }
+
     protected function createCachePool(): CacheItemPoolInterface
     {
         return $this->getMockBuilder(CacheItemPoolInterface::class)->getMock();

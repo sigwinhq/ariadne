@@ -79,16 +79,14 @@ final class GitlabProfileTest extends ProfileTestCase
 
     protected function provideRepositories(): iterable
     {
-        return [
-            [
-                'namespace1/repo1',
-                $this->createHttpClient([
-                    [
-                        $this->createRequest(null, 'GET', '/projects?membership=false&owned=true&per_page=50'),
-                        [(object) ['id' => 12345, 'visibility' => 'public', 'path_with_namespace' => 'namespace1/repo1', 'topics' => []]],
-                    ],
-                ]),
-            ],
+        yield [
+            'basic repository',
+            $this->createHttpClient([
+                [
+                    $this->createRequest(null, 'GET', '/projects?membership=false&owned=true&per_page=50'),
+                    [(object) ['id' => 12345, 'visibility' => 'public', 'path_with_namespace' => 'namespace1/repo1', 'topics' => []]],
+                ],
+            ]),
         ];
     }
 

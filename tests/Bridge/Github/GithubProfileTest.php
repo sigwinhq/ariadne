@@ -79,16 +79,14 @@ final class GithubProfileTest extends ProfileTestCase
 
     protected function provideRepositories(): iterable
     {
-        return [
-            [
-                'namespace1/repo1',
-                $this->createHttpClient([
-                    [
-                        $this->createRequest(null, 'GET', '/user/repos?per_page=100'),
-                        [(object) ['id' => 12345, 'full_name' => 'namespace1/repo1', 'fork' => false, 'private' => false, 'topics' => []]],
-                    ],
-                ]),
-            ],
+        yield [
+            'basic repository',
+            $this->createHttpClient([
+                [
+                    $this->createRequest(null, 'GET', '/user/repos?per_page=100'),
+                    [(object) ['id' => 12345, 'full_name' => 'namespace1/repo1', 'fork' => false, 'private' => false, 'topics' => []]],
+                ],
+            ]),
         ];
     }
 
