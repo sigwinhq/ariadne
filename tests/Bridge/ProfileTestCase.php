@@ -143,7 +143,7 @@ abstract class ProfileTestCase extends TestCase
     public function testCannotSetInvalidAttributes(string $name, int|bool|string $value, string $message): void
     {
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage(sprintf($message, $name));
+        $this->expectExceptionMessageMatches('/^'.preg_quote(sprintf($message, $name), '/').'$/');
 
         $httpClient = $this->createHttpClient();
         $factory = $this->createTemplateFactory();

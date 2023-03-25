@@ -116,27 +116,14 @@ final class GitlabProfile implements Profile
     private function getRepositories(): NamedResourceCollection
     {
         if (! isset($this->repositories)) {
+            $repositories = [];
+
+            $needsUsers = $this->needsUsers();
+            $needsLanguages = $this->needsLanguages();
+
             $pager = new ResultPager($this->client);
             /** @var list<TRepository> $response */
             $response = $pager->fetchAllLazy($this->client->projects(), 'all', ['parameters' => $this->options]);
-
-            $needsLanguages = false;
-            foreach ($this->config->templates as $template) {
-                if (($template->filter['languages'] ?? []) !== []) {
-                    $needsLanguages = true;
-                    break;
-                }
-            }
-
-            $needsUsers = false;
-            foreach ($this->config->templates as $template) {
-                if ($template->target->users !== []) {
-                    $needsUsers = true;
-                    break;
-                }
-            }
-
-            $repositories = [];
             foreach ($response as $repository) {
                 $languages = [];
                 if ($needsLanguages) {
