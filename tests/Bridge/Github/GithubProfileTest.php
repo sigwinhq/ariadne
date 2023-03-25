@@ -36,7 +36,9 @@ use Sigwin\Ariadne\Test\Bridge\ProfileTestCase;
  * @uses \Sigwin\Ariadne\Model\ProfileTemplateTarget
  * @uses \Sigwin\Ariadne\Model\ProfileUser
  * @uses \Sigwin\Ariadne\Model\Repository
- * @uses \Sigwin\Ariadne\Model\RepositoryType
+ *
+ * @covers \Sigwin\Ariadne\Model\RepositoryType
+ *
  * @uses \Sigwin\Ariadne\Model\RepositoryVisibility
  *
  * @internal
@@ -85,6 +87,12 @@ final class GithubProfileTest extends ProfileTestCase
                 [
                     $this->createRequest(null, 'GET', '/user/repos?per_page=100'),
                     [(object) ['id' => $repository->id, 'full_name' => $repository->path, 'fork' => false, 'private' => false, 'topics' => []]],
+                ],
+            ]),
+            self::REPOSITORY_SCENARIO_FORK => $this->createHttpClient([
+                [
+                    $this->createRequest(null, 'GET', '/user/repos?per_page=100'),
+                    [(object) ['id' => $repository->id, 'full_name' => $repository->path, 'fork' => true, 'private' => false, 'topics' => []]],
                 ],
             ]),
             default => throw new \InvalidArgumentException(sprintf('Unknown repository scenario "%1$s".', $name)),

@@ -41,6 +41,7 @@ abstract class ProfileTestCase extends TestCase
     protected function provideRepositories(): iterable
     {
         yield ['name' => self::REPOSITORY_SCENARIO_BASIC, 'repository' => $this->createRepository('namespace1/repo1')];
+        yield ['name' => self::REPOSITORY_SCENARIO_FORK, 'repository' => $this->createRepository('namespace1/repo1', type: 'fork')];
     }
 
     /**
