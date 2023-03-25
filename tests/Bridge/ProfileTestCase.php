@@ -38,6 +38,7 @@ abstract class ProfileTestCase extends TestCase
     protected const REPOSITORY_SCENARIO_FORK = 'forked repository';
     protected const REPOSITORY_SCENARIO_PRIVATE = 'private repository';
     protected const REPOSITORY_SCENARIO_USERS = 'repository with users';
+    protected const REPOSITORY_SCENARIO_TOPICS = 'repository with topics';
 
     /**
      * @return iterable<array-key, array{0: string, 1: Repository, 2?: TConfig}>
@@ -52,6 +53,7 @@ abstract class ProfileTestCase extends TestCase
             $this->createRepository('namespace1/repo1', users: [['theseus', 'admin']]),
             ['user' => ['theseus' => ['username' => 'theseus', 'role' => 'admin']]],
         ];
+        yield [self::REPOSITORY_SCENARIO_TOPICS, $this->createRepository('namespace1/repo1', topics: ['topic1', 'topic2'])];
     }
 
     /**
