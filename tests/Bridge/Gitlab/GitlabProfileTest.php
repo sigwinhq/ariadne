@@ -117,6 +117,16 @@ final class GitlabProfileTest extends ProfileTestCase
                     [(object) ['id' => $repository->id, 'visibility' => 'public', 'path_with_namespace' => $repository->path, 'topics' => ['topic1', 'topic2']]],
                 ],
             ]),
+            self::REPOSITORY_SCENARIO_LANGUAGES => $this->createHttpClient([
+                [
+                    $this->createRequest(null, 'GET', '/projects?membership=false&owned=true&per_page=50'),
+                    [(object) ['id' => $repository->id, 'visibility' => 'public', 'path_with_namespace' => $repository->path, 'topics' => []]],
+                ],
+                [
+                    $this->createRequest(null, 'GET', '/projects/12345/languages'),
+                    ['language1' => 100],
+                ],
+            ]),
             default => throw new \InvalidArgumentException(sprintf('Unknown repository scenario "%1$s".', $name)),
         };
     }

@@ -117,6 +117,12 @@ final class GithubProfileTest extends ProfileTestCase
                     [(object) ['id' => $repository->id, 'full_name' => $repository->path, 'fork' => false, 'private' => false, 'topics' => ['topic1', 'topic2']]],
                 ],
             ]),
+            self::REPOSITORY_SCENARIO_LANGUAGES => $this->createHttpClient([
+                [
+                    $this->createRequest(null, 'GET', '/user/repos?per_page=100'),
+                    [(object) ['id' => $repository->id, 'full_name' => $repository->path, 'fork' => false, 'private' => false, 'topics' => [], 'language' => 'language1']],
+                ],
+            ]),
             default => throw new \InvalidArgumentException(sprintf('Unknown repository scenario "%1$s".', $name)),
         };
     }

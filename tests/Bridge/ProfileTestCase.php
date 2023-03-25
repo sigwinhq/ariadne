@@ -39,6 +39,7 @@ abstract class ProfileTestCase extends TestCase
     protected const REPOSITORY_SCENARIO_PRIVATE = 'private repository';
     protected const REPOSITORY_SCENARIO_USERS = 'repository with users';
     protected const REPOSITORY_SCENARIO_TOPICS = 'repository with topics';
+    protected const REPOSITORY_SCENARIO_LANGUAGES = 'repository with languages';
 
     /**
      * @return iterable<array-key, array{0: string, 1: Repository, 2?: TConfig}>
@@ -54,6 +55,11 @@ abstract class ProfileTestCase extends TestCase
             ['user' => ['theseus' => ['username' => 'theseus', 'role' => 'admin']]],
         ];
         yield [self::REPOSITORY_SCENARIO_TOPICS, $this->createRepository('namespace1/repo1', topics: ['topic1', 'topic2'])];
+        yield [
+            self::REPOSITORY_SCENARIO_LANGUAGES,
+            $this->createRepository('namespace1/repo1', languages: ['language1']),
+            ['filter' => ['languages' => ['language1']]],
+        ];
     }
 
     /**
