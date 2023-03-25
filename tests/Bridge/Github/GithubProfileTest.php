@@ -34,6 +34,9 @@ use Sigwin\Ariadne\Test\Bridge\ProfileTestCase;
  * @uses \Sigwin\Ariadne\Model\ProfileTemplate
  * @uses \Sigwin\Ariadne\Model\ProfileTemplateTarget
  * @uses \Sigwin\Ariadne\Model\ProfileUser
+ * @uses \Sigwin\Ariadne\Model\Repository
+ * @uses \Sigwin\Ariadne\Model\RepositoryType
+ * @uses \Sigwin\Ariadne\Model\RepositoryVisibility
  *
  * @internal
  *
@@ -72,6 +75,21 @@ final class GithubProfileTest extends ProfileTestCase
         $profile = $this->createProfileInstance($config, $httpClient, $factory, $cachePool);
 
         static::assertCount(1, $profile->getSummary()->getTemplates());
+    }
+
+    protected function provideRepositories(): iterable
+    {
+        return [
+            [
+                'namespace1/repo1',
+                $this->createHttpClient([
+                    [
+                        $this->createRequest(null, 'GET', '/user/repos?per_page=100'),
+                        [(object) ['id' => 12345, 'full_name' => 'namespace1/repo1', 'fork' => false, 'private' => false, 'topics' => []]],
+                    ],
+                ]),
+            ],
+        ];
     }
 
     protected function provideValidOptions(): iterable

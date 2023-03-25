@@ -77,27 +77,19 @@ final class GitlabProfileTest extends ProfileTestCase
         static::assertCount(1, $profile->getSummary()->getTemplates());
     }
 
-    /**
-     * @dataProvider provideUrls
-     */
-    public function testIfAtLeastOneTemplateUsesLanguagesWeNeedToPullRepositoryLanguages(?string $baseUrl): void
+    protected function provideRepositories(): iterable
     {
-        $httpClient = $this->createHttpClient([
+        return [
             [
-                $this->createRequest($baseUrl, 'GET', '/projects?membership=false&owned=true&per_page=50'),
-                '[{"id":123, "visibility":"public", "path_with_namespace":"foo/bar/bat", "topics":["minotaur"]}]',
+                'namespace1/repo1',
+                $this->createHttpClient([
+                    [
+                        $this->createRequest(null, 'GET', '/projects?membership=false&owned=true&per_page=50'),
+                        [(object) ['id' => 12345, 'visibility' => 'public', 'path_with_namespace' => 'namespace1/repo1', 'topics' => []]],
+                    ],
+                ]),
             ],
-            [
-                $this->createRequest($baseUrl, 'GET', '/projects/123/languages'),
-                '[]',
-            ],
-        ]);
-        $factory = $this->createTemplateFactory();
-        $cachePool = $this->createCachePool();
-        $config = $this->createConfig($baseUrl, filter: ['languages' => ['php']]);
-        $profile = $this->createProfileInstance($config, $httpClient, $factory, $cachePool);
-
-        static::assertCount(1, $profile->getSummary()->getTemplates());
+        ];
     }
 
     protected function provideValidOptions(): iterable

@@ -18,6 +18,7 @@ use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Sigwin\Ariadne\Model\Config\ProfileConfig;
+use Sigwin\Ariadne\Model\Repository;
 use Sigwin\Ariadne\Profile;
 use Sigwin\Ariadne\ProfileTemplateFactory;
 use Sigwin\Ariadne\Test\ModelGeneratorTrait;
@@ -25,6 +26,46 @@ use Sigwin\Ariadne\Test\ModelGeneratorTrait;
 abstract class ProfileTestCase extends TestCase
 {
     use ModelGeneratorTrait;
+
+    /**
+     * @var array<string, Repository>
+     */
+    private array $repositories;
+
+    protected function setUp(): void
+    {
+        $this->repositories = [
+            'namespace1/repo1' => $this->createRepository('namespace1/repo1'),
+        ];
+    }
+
+    /**
+     * @dataProvider provideRepositories
+     */
+    public function testCanCreateRepository(string $name, ClientInterface $httpClient): void
+    {
+        $factory = $this->createTemplateFactory();
+        $cachePool = $this->createCachePool();
+        $config = $this->createConfig();
+        $profile = $this->createProfileInstance($config, $httpClient, $factory, $cachePool);
+
+        $fixture = $this->repositories[$name] ?? throw new \InvalidArgumentException(sprintf('Repository "%1$s" not found.', $name));
+        foreach ($profile as $repository) {
+            if ($name === $repository->getName()) {
+                static::assertSame($fixture->type->value, $repository->type->value);
+                static::assertSame($fixture->visibility->value, $repository->visibility->value);
+                static::assertEmpty($fixture->users->diff($repository->users));
+                static::assertSame($fixture->id, $repository->id);
+                static::assertSame($fixture->path, $repository->path);
+                static::assertSame($fixture->topics, $repository->topics);
+                static::assertSame($fixture->languages, $repository->languages);
+
+                return;
+            }
+        }
+
+        static::fail(sprintf('Repository "%1$s" not found.', $name));
+    }
 
     /**
      * @dataProvider provideValidOptions
@@ -97,6 +138,11 @@ abstract class ProfileTestCase extends TestCase
     }
 
     abstract protected function validateRequest(RequestInterface $request): void;
+
+    /**
+     * @return iterable<array-key, array{string, ClientInterface}>
+     */
+    abstract protected function provideRepositories(): iterable;
 
     /**
      * @return iterable<array-key, array{string, bool|string}>

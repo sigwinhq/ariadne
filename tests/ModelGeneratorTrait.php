@@ -105,7 +105,7 @@ trait ModelGeneratorTrait
             $type !== null ? RepositoryType::from($type) : RepositoryType::SOURCE,
             RepositoryVisibility::PUBLIC,
             $this->createUsers($users ?? []),
-            time(),
+            12345,
             $path,
             $topics ?? [],
             []
@@ -113,7 +113,7 @@ trait ModelGeneratorTrait
     }
 
     /**
-     * @param list<array{string, string}> $items
+     * @param list<array{string, string|array<object>}> $items
      */
     protected function createHttpClient(array $items = []): ClientInterface
     {
@@ -134,6 +134,10 @@ trait ModelGeneratorTrait
                 self::assertSame($method, $request->getMethod());
                 self::assertSame($url, $request->getUri()->__toString());
                 $this->validateRequest($request);
+
+                if (\is_array($response)) {
+                    $response = json_encode($response, \JSON_THROW_ON_ERROR);
+                }
 
                 return new Response(200, ['Content-Type' => 'application/json'], $response);
             })
