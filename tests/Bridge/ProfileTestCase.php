@@ -26,7 +26,9 @@ use Sigwin\Ariadne\Test\ModelGeneratorTrait;
 /**
  * @psalm-type TOptions = array<string, bool|string>
  * @psalm-type TAttribute = array<string, bool|int|string>
+ * @psalm-type TUser = array<string, array{"username": string, "role": string}>
  * @psalm-type TFilter = array{languages?: list<string>}
+ * @psalm-type TConfig = array{options?: TOptions, attribute?: TAttribute, user?: TUser, filter?: TFilter}
  */
 abstract class ProfileTestCase extends TestCase
 {
@@ -35,30 +37,34 @@ abstract class ProfileTestCase extends TestCase
     protected const REPOSITORY_SCENARIO_BASIC = 'basic repository';
     protected const REPOSITORY_SCENARIO_FORK = 'forked repository';
     protected const REPOSITORY_SCENARIO_PRIVATE = 'private repository';
+    protected const REPOSITORY_SCENARIO_USERS = 'repository with users';
 
     /**
-     * @return iterable<array-key, array{name: string, repository: Repository, options?: TOptions, attribute?: TAttribute, filter?: TFilter}>
+     * @return iterable<array-key, array{0: string, 1: Repository, 2?: TConfig}>
      */
     protected function provideRepositories(): iterable
     {
-        yield ['name' => self::REPOSITORY_SCENARIO_BASIC, 'repository' => $this->createRepository('namespace1/repo1')];
-        yield ['name' => self::REPOSITORY_SCENARIO_FORK, 'repository' => $this->createRepository('namespace1/repo1', type: 'fork')];
-        yield ['name' => self::REPOSITORY_SCENARIO_PRIVATE, 'repository' => $this->createRepository('namespace1/repo1', visibility: 'private')];
+        yield [self::REPOSITORY_SCENARIO_BASIC, $this->createRepository('namespace1/repo1')];
+        yield [self::REPOSITORY_SCENARIO_FORK, $this->createRepository('namespace1/repo1', type: 'fork')];
+        yield [self::REPOSITORY_SCENARIO_PRIVATE, $this->createRepository('namespace1/repo1', visibility: 'private')];
+        yield [
+            self::REPOSITORY_SCENARIO_USERS,
+            $this->createRepository('namespace1/repo1', users: [['theseus', 'admin']]),
+            ['user' => ['theseus' => ['username' => 'theseus', 'role' => 'admin']]],
+        ];
     }
 
     /**
      * @dataProvider provideRepositories
      *
-     * @param null|TOptions   $options
-     * @param null|TAttribute $attribute
-     * @param null|TFilter    $filter
+     * @param TConfig $config
      */
-    public function testCanCreateRepository(string $name, Repository $fixture, ?array $options = null, ?array $attribute = null, ?array $filter = null): void
+    public function testCanCreateRepository(string $name, Repository $fixture, array $config = []): void
     {
         $httpClient = $this->createHttpClientForRepositoryScenario($name, $fixture);
         $factory = $this->createTemplateFactory();
         $cachePool = $this->createActiveCachePool();
-        $config = $this->createConfig(options: $options, attribute: $attribute, filter: $filter);
+        $config = $this->createConfig(options: $config['options'] ?? null, attribute: $config['attribute'] ?? null, user: $config['user'] ?? null, filter: $config['filter'] ?? null);
         $profile = $this->createProfileInstance($config, $httpClient, $factory, $cachePool);
 
         foreach ($profile as $repository) {
@@ -175,9 +181,10 @@ abstract class ProfileTestCase extends TestCase
     /**
      * @param null|TOptions   $options
      * @param null|TAttribute $attribute
+     * @param null|TUser      $user
      * @param null|TFilter    $filter
      */
-    abstract protected function createConfig(?string $url = null, ?array $options = null, ?array $attribute = null, ?array $filter = null): ProfileConfig;
+    abstract protected function createConfig(?string $url = null, ?array $options = null, ?array $attribute = null, ?array $user = null, ?array $filter = null): ProfileConfig;
 
     abstract protected function createRequest(?string $baseUrl, string $method, string $path): string;
 

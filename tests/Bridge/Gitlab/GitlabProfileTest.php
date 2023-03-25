@@ -29,12 +29,14 @@ use Sigwin\Ariadne\Test\Bridge\ProfileTestCase;
  * @covers \Sigwin\Ariadne\Bridge\Gitlab\GitlabProfile
  * @covers \Sigwin\Ariadne\Model\Repository
  * @covers \Sigwin\Ariadne\Model\RepositoryType
+ * @covers \Sigwin\Ariadne\Model\RepositoryUser
  * @covers \Sigwin\Ariadne\Model\RepositoryVisibility
  *
  * @uses \Sigwin\Ariadne\Model\Collection\SortedNamedResourceCollection
  * @uses \Sigwin\Ariadne\Model\Config\ProfileClientConfig
  * @uses \Sigwin\Ariadne\Model\Config\ProfileConfig
  * @uses \Sigwin\Ariadne\Model\Config\ProfileTemplateConfig
+ * @uses \Sigwin\Ariadne\Model\Config\ProfileTemplateRepositoryUserConfig
  * @uses \Sigwin\Ariadne\Model\Config\ProfileTemplateTargetConfig
  * @uses \Sigwin\Ariadne\Model\ProfileSummary
  * @uses \Sigwin\Ariadne\Model\ProfileTemplate
@@ -97,6 +99,16 @@ final class GitlabProfileTest extends ProfileTestCase
                 [
                     $this->createRequest(null, 'GET', '/projects?membership=false&owned=true&per_page=50'),
                     [(object) ['id' => $repository->id, 'visibility' => 'private', 'path_with_namespace' => $repository->path, 'topics' => []]],
+                ],
+            ]),
+            self::REPOSITORY_SCENARIO_USERS => $this->createHttpClient([
+                [
+                    $this->createRequest(null, 'GET', '/projects?membership=false&owned=true&per_page=50'),
+                    [(object) ['id' => $repository->id, 'visibility' => 'public', 'path_with_namespace' => $repository->path, 'topics' => []]],
+                ],
+                [
+                    $this->createRequest(null, 'GET', '/projects/12345/members/all?per_page=50'),
+                    [(object) ['username' => 'theseus', 'access_level' => 50]],
                 ],
             ]),
             default => throw new \InvalidArgumentException(sprintf('Unknown repository scenario "%1$s".', $name)),
@@ -174,14 +186,14 @@ final class GitlabProfileTest extends ProfileTestCase
         return GitlabProfile::fromConfig($config, $client, $factory, $cachePool);
     }
 
-    protected function createConfig(?string $url = null, ?array $options = null, ?array $attribute = null, ?array $filter = null): ProfileConfig
+    protected function createConfig(?string $url = null, ?array $options = null, ?array $attribute = null, ?array $user = null, ?array $filter = null): ProfileConfig
     {
         $config = [
             'type' => 'gitlab',
             'name' => 'GL',
             'client' => ['auth' => ['token' => 'ABC', 'type' => 'http_token'], 'options' => $options ?? []],
             'templates' => [
-                ['name' => 'foo', 'filter' => $filter ?? [], 'target' => ['attribute' => $attribute ?? []]],
+                ['name' => 'foo', 'filter' => $filter ?? [], 'target' => ['attribute' => $attribute ?? [], 'user' => $user ?? []]],
             ],
         ];
         if ($url !== null) {
