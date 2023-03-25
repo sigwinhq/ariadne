@@ -18,6 +18,7 @@ use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Sigwin\Ariadne\Bridge\Gitlab\GitlabProfile;
 use Sigwin\Ariadne\Model\Config\ProfileConfig;
+use Sigwin\Ariadne\Model\Repository;
 use Sigwin\Ariadne\Profile;
 use Sigwin\Ariadne\ProfileTemplateFactory;
 use Sigwin\Ariadne\Test\Bridge\ProfileTestCase;
@@ -26,19 +27,21 @@ use Sigwin\Ariadne\Test\Bridge\ProfileTestCase;
  * @internal
  *
  * @covers \Sigwin\Ariadne\Bridge\Gitlab\GitlabProfile
- * @covers \Sigwin\Ariadne\Model\Change\NamedResourceArrayChangeCollection
  * @covers \Sigwin\Ariadne\Model\Repository
+ * @covers \Sigwin\Ariadne\Model\RepositoryType
+ * @covers \Sigwin\Ariadne\Model\RepositoryUser
+ * @covers \Sigwin\Ariadne\Model\RepositoryVisibility
  *
  * @uses \Sigwin\Ariadne\Model\Collection\SortedNamedResourceCollection
  * @uses \Sigwin\Ariadne\Model\Config\ProfileClientConfig
  * @uses \Sigwin\Ariadne\Model\Config\ProfileConfig
  * @uses \Sigwin\Ariadne\Model\Config\ProfileTemplateConfig
+ * @uses \Sigwin\Ariadne\Model\Config\ProfileTemplateRepositoryUserConfig
  * @uses \Sigwin\Ariadne\Model\Config\ProfileTemplateTargetConfig
  * @uses \Sigwin\Ariadne\Model\ProfileSummary
  * @uses \Sigwin\Ariadne\Model\ProfileTemplate
  * @uses \Sigwin\Ariadne\Model\ProfileTemplateTarget
  * @uses \Sigwin\Ariadne\Model\ProfileUser
- * @uses \Sigwin\Ariadne\Model\RepositoryType
  *
  * @small
  */
@@ -77,27 +80,55 @@ final class GitlabProfileTest extends ProfileTestCase
         static::assertCount(1, $profile->getSummary()->getTemplates());
     }
 
-    /**
-     * @dataProvider provideUrls
-     */
-    public function testIfAtLeastOneTemplateUsesLanguagesWeNeedToPullRepositoryLanguages(?string $baseUrl): void
+    protected function createHttpClientForRepositoryScenario(string $name, Repository $repository): ClientInterface
     {
-        $httpClient = $this->createHttpClient([
-            [
-                $this->createRequest($baseUrl, 'GET', '/projects?membership=false&owned=true&per_page=50'),
-                '[{"id":123, "visibility":"public", "path_with_namespace":"foo/bar/bat", "topics":["minotaur"]}]',
-            ],
-            [
-                $this->createRequest($baseUrl, 'GET', '/projects/123/languages'),
-                '[]',
-            ],
-        ]);
-        $factory = $this->createTemplateFactory();
-        $cachePool = $this->createCachePool();
-        $config = $this->createConfig($baseUrl, filter: ['languages' => ['php']]);
-        $profile = $this->createProfileInstance($config, $httpClient, $factory, $cachePool);
-
-        static::assertCount(1, $profile->getSummary()->getTemplates());
+        return match ($name) {
+            self::REPOSITORY_SCENARIO_BASIC => $this->createHttpClient([
+                [
+                    $this->createRequest(null, 'GET', '/projects?membership=false&owned=true&per_page=50'),
+                    [(object) ['id' => $repository->id, 'visibility' => 'public', 'path_with_namespace' => $repository->path, 'topics' => []]],
+                ],
+            ]),
+            self::REPOSITORY_SCENARIO_FORK => $this->createHttpClient([
+                [
+                    $this->createRequest(null, 'GET', '/projects?membership=false&owned=true&per_page=50'),
+                    [(object) ['id' => $repository->id, 'visibility' => 'public', 'path_with_namespace' => $repository->path, 'topics' => [], 'forked_from_project' => (object) ['id' => 1]]],
+                ],
+            ]),
+            self::REPOSITORY_SCENARIO_PRIVATE => $this->createHttpClient([
+                [
+                    $this->createRequest(null, 'GET', '/projects?membership=false&owned=true&per_page=50'),
+                    [(object) ['id' => $repository->id, 'visibility' => 'private', 'path_with_namespace' => $repository->path, 'topics' => []]],
+                ],
+            ]),
+            self::REPOSITORY_SCENARIO_USERS => $this->createHttpClient([
+                [
+                    $this->createRequest(null, 'GET', '/projects?membership=false&owned=true&per_page=50'),
+                    [(object) ['id' => $repository->id, 'visibility' => 'public', 'path_with_namespace' => $repository->path, 'topics' => []]],
+                ],
+                [
+                    $this->createRequest(null, 'GET', '/projects/12345/members/all?per_page=50'),
+                    [(object) ['username' => 'theseus', 'access_level' => 50]],
+                ],
+            ]),
+            self::REPOSITORY_SCENARIO_TOPICS => $this->createHttpClient([
+                [
+                    $this->createRequest(null, 'GET', '/projects?membership=false&owned=true&per_page=50'),
+                    [(object) ['id' => $repository->id, 'visibility' => 'public', 'path_with_namespace' => $repository->path, 'topics' => ['topic1', 'topic2']]],
+                ],
+            ]),
+            self::REPOSITORY_SCENARIO_LANGUAGES => $this->createHttpClient([
+                [
+                    $this->createRequest(null, 'GET', '/projects?membership=false&owned=true&per_page=50'),
+                    [(object) ['id' => $repository->id, 'visibility' => 'public', 'path_with_namespace' => $repository->path, 'topics' => []]],
+                ],
+                [
+                    $this->createRequest(null, 'GET', '/projects/12345/languages'),
+                    ['language1' => 100],
+                ],
+            ]),
+            default => throw new \InvalidArgumentException(sprintf('Unknown repository scenario "%1$s".', $name)),
+        };
     }
 
     protected function provideValidOptions(): iterable
@@ -171,14 +202,14 @@ final class GitlabProfileTest extends ProfileTestCase
         return GitlabProfile::fromConfig($config, $client, $factory, $cachePool);
     }
 
-    protected function createConfig(?string $url = null, ?array $options = null, ?array $attribute = null, ?array $filter = null): ProfileConfig
+    protected function createConfig(?string $url = null, ?array $options = null, ?array $attribute = null, ?array $user = null, ?array $filter = null): ProfileConfig
     {
         $config = [
             'type' => 'gitlab',
             'name' => 'GL',
             'client' => ['auth' => ['token' => 'ABC', 'type' => 'http_token'], 'options' => $options ?? []],
             'templates' => [
-                ['name' => 'foo', 'filter' => $filter ?? [], 'target' => ['attribute' => $attribute ?? []]],
+                ['name' => 'foo', 'filter' => $filter ?? [], 'target' => ['attribute' => $attribute ?? [], 'user' => $user ?? []]],
             ],
         ];
         if ($url !== null) {

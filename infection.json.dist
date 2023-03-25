@@ -7,8 +7,8 @@
     "logs": {
         "text": "var/phpqa/infection.log"
     },
-    "minMsi": 90,
-    "minCoveredMsi": 90,
+    "minMsi": 94,
+    "minCoveredMsi": 94,
     "mutators": {
         "global-ignore": [
             "Sigwin\\Ariadne\\Bridge\\Symfony\\Console\\Style\\AriadneStyle::__construct",

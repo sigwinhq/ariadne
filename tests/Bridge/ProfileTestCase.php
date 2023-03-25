@@ -18,13 +18,79 @@ use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Sigwin\Ariadne\Model\Config\ProfileConfig;
+use Sigwin\Ariadne\Model\Repository;
 use Sigwin\Ariadne\Profile;
 use Sigwin\Ariadne\ProfileTemplateFactory;
 use Sigwin\Ariadne\Test\ModelGeneratorTrait;
 
+/**
+ * @psalm-type TOptions = array<string, bool|string>
+ * @psalm-type TAttribute = array<string, bool|int|string>
+ * @psalm-type TUser = array<string, array{"username": string, "role": string}>
+ * @psalm-type TFilter = array{languages?: list<string>}
+ * @psalm-type TConfig = array{options?: TOptions, attribute?: TAttribute, user?: TUser, filter?: TFilter}
+ */
 abstract class ProfileTestCase extends TestCase
 {
     use ModelGeneratorTrait;
+
+    protected const REPOSITORY_SCENARIO_BASIC = 'basic repository';
+    protected const REPOSITORY_SCENARIO_FORK = 'forked repository';
+    protected const REPOSITORY_SCENARIO_PRIVATE = 'private repository';
+    protected const REPOSITORY_SCENARIO_USERS = 'repository with users';
+    protected const REPOSITORY_SCENARIO_TOPICS = 'repository with topics';
+    protected const REPOSITORY_SCENARIO_LANGUAGES = 'repository with languages';
+
+    /**
+     * @return iterable<array-key, array{0: string, 1: Repository, 2?: TConfig}>
+     */
+    protected function provideRepositories(): iterable
+    {
+        yield [self::REPOSITORY_SCENARIO_BASIC, $this->createRepository('namespace1/repo1')];
+        yield [self::REPOSITORY_SCENARIO_FORK, $this->createRepository('namespace1/repo1', type: 'fork')];
+        yield [self::REPOSITORY_SCENARIO_PRIVATE, $this->createRepository('namespace1/repo1', visibility: 'private')];
+        yield [
+            self::REPOSITORY_SCENARIO_USERS,
+            $this->createRepository('namespace1/repo1', users: [['theseus', 'admin']]),
+            ['user' => ['theseus' => ['username' => 'theseus', 'role' => 'admin']]],
+        ];
+        yield [self::REPOSITORY_SCENARIO_TOPICS, $this->createRepository('namespace1/repo1', topics: ['topic1', 'topic2'])];
+        yield [
+            self::REPOSITORY_SCENARIO_LANGUAGES,
+            $this->createRepository('namespace1/repo1', languages: ['language1']),
+            ['filter' => ['languages' => ['language1']]],
+        ];
+    }
+
+    /**
+     * @dataProvider provideRepositories
+     *
+     * @param TConfig $config
+     */
+    public function testCanCreateRepository(string $name, Repository $fixture, array $config = []): void
+    {
+        $httpClient = $this->createHttpClientForRepositoryScenario($name, $fixture);
+        $factory = $this->createTemplateFactory();
+        $cachePool = $this->createActiveCachePool();
+        $config = $this->createConfig(options: $config['options'] ?? null, attribute: $config['attribute'] ?? null, user: $config['user'] ?? null, filter: $config['filter'] ?? null);
+        $profile = $this->createProfileInstance($config, $httpClient, $factory, $cachePool);
+
+        foreach ($profile as $repository) {
+            if ($fixture->getName() === $repository->getName()) {
+                static::assertSame($fixture->type->value, $repository->type->value);
+                static::assertSame($fixture->visibility->value, $repository->visibility->value);
+                static::assertEmpty($fixture->users->diff($repository->users));
+                static::assertSame($fixture->id, $repository->id);
+                static::assertSame($fixture->path, $repository->path);
+                static::assertSame($fixture->topics, $repository->topics);
+                static::assertSame($fixture->languages, $repository->languages);
+
+                return;
+            }
+        }
+
+        static::fail(sprintf('Repository for scenario "%1$s" not found in profile.', $name));
+    }
 
     /**
      * @dataProvider provideValidOptions
@@ -121,11 +187,14 @@ abstract class ProfileTestCase extends TestCase
     abstract protected function createProfileInstance(ProfileConfig $config, ClientInterface $client, ProfileTemplateFactory $factory, CacheItemPoolInterface $cachePool): Profile;
 
     /**
-     * @param null|array<string, bool|string>      $options
-     * @param null|array<string, bool|int|string>  $attribute
-     * @param null|array{languages?: list<string>} $filter
+     * @param null|TOptions   $options
+     * @param null|TAttribute $attribute
+     * @param null|TUser      $user
+     * @param null|TFilter    $filter
      */
-    abstract protected function createConfig(?string $url = null, ?array $options = null, ?array $attribute = null, ?array $filter = null): ProfileConfig;
+    abstract protected function createConfig(?string $url = null, ?array $options = null, ?array $attribute = null, ?array $user = null, ?array $filter = null): ProfileConfig;
 
     abstract protected function createRequest(?string $baseUrl, string $method, string $path): string;
+
+    abstract protected function createHttpClientForRepositoryScenario(string $name, Repository $repository): ClientInterface;
 }

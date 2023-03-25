@@ -74,6 +74,17 @@ trait ModelGeneratorTrait
         return $factory;
     }
 
+    protected function createActiveCachePool(): CacheItemPoolInterface
+    {
+        $mock = $this->getMockBuilder(CacheItemPoolInterface::class)->getMock();
+        $mock
+            ->expects(self::atLeastOnce())
+            ->method('getItem')
+        ;
+
+        return $mock;
+    }
+
     protected function createCachePool(): CacheItemPoolInterface
     {
         return $this->getMockBuilder(CacheItemPoolInterface::class)->getMock();
@@ -97,23 +108,24 @@ trait ModelGeneratorTrait
     /**
      * @param list<array{string, string}>|null $users
      * @param null|list<string> $topics
+     * @param null|list<string> $languages
      */
-    protected function createRepository(string $path, ?array $users = null, ?string $type = null, ?array $topics = null): Repository
+    protected function createRepository(string $path, ?string $type = null, ?string $visibility = null, ?array $users = null, ?array $topics = null, ?array $languages = null): Repository
     {
         return new Repository(
             ['path' => $path],
             $type !== null ? RepositoryType::from($type) : RepositoryType::SOURCE,
-            RepositoryVisibility::PUBLIC,
+            $visibility !== null ? RepositoryVisibility::from($visibility) : RepositoryVisibility::PUBLIC,
             $this->createUsers($users ?? []),
-            time(),
+            12345,
             $path,
             $topics ?? [],
-            []
+            $languages ?? []
         );
     }
 
     /**
-     * @param list<array{string, string}> $items
+     * @param list<array{string, string|array<int|object>}> $items
      */
     protected function createHttpClient(array $items = []): ClientInterface
     {
@@ -134,6 +146,10 @@ trait ModelGeneratorTrait
                 self::assertSame($method, $request->getMethod());
                 self::assertSame($url, $request->getUri()->__toString());
                 $this->validateRequest($request);
+
+                if (\is_array($response)) {
+                    $response = json_encode($response, \JSON_THROW_ON_ERROR);
+                }
 
                 return new Response(200, ['Content-Type' => 'application/json'], $response);
             })

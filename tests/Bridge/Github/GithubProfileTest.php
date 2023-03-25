@@ -18,17 +18,23 @@ use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Sigwin\Ariadne\Bridge\Github\GithubProfile;
 use Sigwin\Ariadne\Model\Config\ProfileConfig;
+use Sigwin\Ariadne\Model\Repository;
 use Sigwin\Ariadne\Profile;
 use Sigwin\Ariadne\ProfileTemplateFactory;
 use Sigwin\Ariadne\Test\Bridge\ProfileTestCase;
 
 /**
  * @covers \Sigwin\Ariadne\Bridge\Github\GithubProfile
+ * @covers \Sigwin\Ariadne\Model\Repository
+ * @covers \Sigwin\Ariadne\Model\RepositoryType
+ * @covers \Sigwin\Ariadne\Model\RepositoryUser
+ * @covers \Sigwin\Ariadne\Model\RepositoryVisibility
  *
  * @uses \Sigwin\Ariadne\Model\Collection\SortedNamedResourceCollection
  * @uses \Sigwin\Ariadne\Model\Config\ProfileClientConfig
  * @uses \Sigwin\Ariadne\Model\Config\ProfileConfig
  * @uses \Sigwin\Ariadne\Model\Config\ProfileTemplateConfig
+ * @uses \Sigwin\Ariadne\Model\Config\ProfileTemplateRepositoryUserConfig
  * @uses \Sigwin\Ariadne\Model\Config\ProfileTemplateTargetConfig
  * @uses \Sigwin\Ariadne\Model\ProfileSummary
  * @uses \Sigwin\Ariadne\Model\ProfileTemplate
@@ -72,6 +78,53 @@ final class GithubProfileTest extends ProfileTestCase
         $profile = $this->createProfileInstance($config, $httpClient, $factory, $cachePool);
 
         static::assertCount(1, $profile->getSummary()->getTemplates());
+    }
+
+    protected function createHttpClientForRepositoryScenario(string $name, Repository $repository): ClientInterface
+    {
+        return match ($name) {
+            self::REPOSITORY_SCENARIO_BASIC => $this->createHttpClient([
+                [
+                    $this->createRequest(null, 'GET', '/user/repos?per_page=100'),
+                    [(object) ['id' => $repository->id, 'full_name' => $repository->path, 'fork' => false, 'private' => false, 'topics' => []]],
+                ],
+            ]),
+            self::REPOSITORY_SCENARIO_FORK => $this->createHttpClient([
+                [
+                    $this->createRequest(null, 'GET', '/user/repos?per_page=100'),
+                    [(object) ['id' => $repository->id, 'full_name' => $repository->path, 'fork' => true, 'private' => false, 'topics' => []]],
+                ],
+            ]),
+            self::REPOSITORY_SCENARIO_PRIVATE => $this->createHttpClient([
+                [
+                    $this->createRequest(null, 'GET', '/user/repos?per_page=100'),
+                    [(object) ['id' => $repository->id, 'full_name' => $repository->path, 'fork' => false, 'private' => true, 'topics' => []]],
+                ],
+            ]),
+            self::REPOSITORY_SCENARIO_USERS => $this->createHttpClient([
+                [
+                    $this->createRequest(null, 'GET', '/user/repos?per_page=100'),
+                    [(object) ['id' => $repository->id, 'full_name' => $repository->path, 'fork' => false, 'private' => false, 'topics' => []]],
+                ],
+                [
+                    $this->createRequest(null, 'GET', '/repos/namespace1/repo1/collaborators?per_page=100'),
+                    [(object) ['login' => 'theseus', 'role_name' => 'admin']],
+                ],
+            ]),
+            self::REPOSITORY_SCENARIO_TOPICS => $this->createHttpClient([
+                [
+                    $this->createRequest(null, 'GET', '/user/repos?per_page=100'),
+                    [(object) ['id' => $repository->id, 'full_name' => $repository->path, 'fork' => false, 'private' => false, 'topics' => ['topic1', 'topic2']]],
+                ],
+            ]),
+            self::REPOSITORY_SCENARIO_LANGUAGES => $this->createHttpClient([
+                [
+                    $this->createRequest(null, 'GET', '/user/repos?per_page=100'),
+                    [(object) ['id' => $repository->id, 'full_name' => $repository->path, 'fork' => false, 'private' => false, 'topics' => [], 'language' => 'language1']],
+                ],
+            ]),
+            default => throw new \InvalidArgumentException(sprintf('Unknown repository scenario "%1$s".', $name)),
+        };
     }
 
     protected function provideValidOptions(): iterable
@@ -121,14 +174,14 @@ final class GithubProfileTest extends ProfileTestCase
         return GithubProfile::fromConfig($config, $client, $factory, $cachePool);
     }
 
-    protected function createConfig(?string $url = null, ?array $options = null, ?array $attribute = null, ?array $filter = null): ProfileConfig
+    protected function createConfig(?string $url = null, ?array $options = null, ?array $attribute = null, ?array $user = null, ?array $filter = null): ProfileConfig
     {
         $config = [
             'type' => 'github',
             'name' => 'GH',
             'client' => ['auth' => ['token' => 'ABC', 'type' => 'access_token_header'], 'options' => $options ?? []],
             'templates' => [
-                ['name' => 'foo', 'filter' => $filter ?? [], 'target' => ['attribute' => $attribute ?? []]],
+                ['name' => 'foo', 'filter' => $filter ?? [], 'target' => ['attribute' => $attribute ?? [], 'user' => $user ?? []]],
             ],
         ];
         if ($url !== null) {

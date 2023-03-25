@@ -199,12 +199,6 @@
     <LessSpecificReturnType>
       <code>?array</code>
     </LessSpecificReturnType>
-    <PossiblyUnusedProperty>
-      <code>$languages</code>
-      <code>$topics</code>
-      <code>$type</code>
-      <code>$visibility</code>
-    </PossiblyUnusedProperty>
   </file>
   <file src="src/Profile/Collection/FilteredProfileGeneratorCollection.php">
     <PossiblyUnusedMethod>
