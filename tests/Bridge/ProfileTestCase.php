@@ -23,27 +23,39 @@ use Sigwin\Ariadne\Profile;
 use Sigwin\Ariadne\ProfileTemplateFactory;
 use Sigwin\Ariadne\Test\ModelGeneratorTrait;
 
+/**
+ * @psalm-type TOptions = array<string, bool|string>
+ * @psalm-type TAttribute = array<string, bool|int|string>
+ * @psalm-type TFilter = array{languages?: list<string>}
+ */
 abstract class ProfileTestCase extends TestCase
 {
     use ModelGeneratorTrait;
 
+    protected const REPOSITORY_SCENARIO_BASIC = 'basic repository';
+    protected const REPOSITORY_SCENARIO_FORK = 'forked repository';
+
     /**
-     * @return iterable<array-key, array{string, Repository}>
+     * @return iterable<array-key, array{name: string, repository: Repository, options?: TOptions, attribute?: TAttribute, filter?: TFilter}>
      */
     protected function provideRepositories(): iterable
     {
-        yield ['basic repository', $this->createRepository('namespace1/repo1')];
+        yield ['name' => self::REPOSITORY_SCENARIO_BASIC, 'repository' => $this->createRepository('namespace1/repo1')];
     }
 
     /**
      * @dataProvider provideRepositories
+     *
+     * @param null|TOptions   $options
+     * @param null|TAttribute $attribute
+     * @param null|TFilter    $filter
      */
-    public function testCanCreateRepository(string $name, Repository $fixture): void
+    public function testCanCreateRepository(string $name, Repository $fixture, ?array $options = null, ?array $attribute = null, ?array $filter = null): void
     {
         $httpClient = $this->createHttpClientForRepositoryScenario($name, $fixture);
         $factory = $this->createTemplateFactory();
         $cachePool = $this->createActiveCachePool();
-        $config = $this->createConfig();
+        $config = $this->createConfig(options: $options, attribute: $attribute, filter: $filter);
         $profile = $this->createProfileInstance($config, $httpClient, $factory, $cachePool);
 
         foreach ($profile as $repository) {
@@ -158,9 +170,9 @@ abstract class ProfileTestCase extends TestCase
     abstract protected function createProfileInstance(ProfileConfig $config, ClientInterface $client, ProfileTemplateFactory $factory, CacheItemPoolInterface $cachePool): Profile;
 
     /**
-     * @param null|array<string, bool|string>      $options
-     * @param null|array<string, bool|int|string>  $attribute
-     * @param null|array{languages?: list<string>} $filter
+     * @param null|TOptions   $options
+     * @param null|TAttribute $attribute
+     * @param null|TFilter    $filter
      */
     abstract protected function createConfig(?string $url = null, ?array $options = null, ?array $attribute = null, ?array $filter = null): ProfileConfig;
 

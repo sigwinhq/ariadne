@@ -81,7 +81,7 @@ final class GithubProfileTest extends ProfileTestCase
     protected function createHttpClientForRepositoryScenario(string $name, Repository $repository): ClientInterface
     {
         return match ($name) {
-            'basic repository' => $this->createHttpClient([
+            self::REPOSITORY_SCENARIO_BASIC => $this->createHttpClient([
                 [
                     $this->createRequest(null, 'GET', '/user/repos?per_page=100'),
                     [(object) ['id' => $repository->id, 'full_name' => $repository->path, 'fork' => false, 'private' => false, 'topics' => []]],

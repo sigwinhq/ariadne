@@ -81,7 +81,7 @@ final class GitlabProfileTest extends ProfileTestCase
     protected function createHttpClientForRepositoryScenario(string $name, Repository $repository): ClientInterface
     {
         return match ($name) {
-            'basic repository' => $this->createHttpClient([
+            self::REPOSITORY_SCENARIO_BASIC => $this->createHttpClient([
                 [
                     $this->createRequest(null, 'GET', '/projects?membership=false&owned=true&per_page=50'),
                     [(object) ['id' => $repository->id, 'visibility' => 'public', 'path_with_namespace' => $repository->path, 'topics' => []]],
