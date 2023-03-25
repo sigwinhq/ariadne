@@ -121,4 +121,25 @@ trait ProfileTrait
 
         return $alternatives;
     }
+
+    private function needsLanguages(): bool
+    {
+        foreach ($this->config->templates as $template) {
+            if (($template->filter['languages'] ?? []) !== []) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private function needsUsers(): bool
+    {
+        foreach ($this->config->templates as $template) {
+            if ($template->target->users !== []) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

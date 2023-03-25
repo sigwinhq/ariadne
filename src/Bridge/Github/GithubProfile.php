@@ -93,7 +93,7 @@ final class GithubProfile implements Profile
 
     public function apply(NamedResourceChangeCollection $plan): void
     {
-        $parts = explode('/', $plan->getResource()->getName(), 2);
+        $parts = explode('/', $plan->getResource()->getName());
         if (\count($parts) !== 2) {
             throw new \InvalidArgumentException('Invalid repository name');
         }
@@ -109,23 +109,15 @@ final class GithubProfile implements Profile
     {
         if (! isset($this->repositories)) {
             $repositories = [];
+            $needsUsers = $this->needsUsers();
 
             $pager = new ResultPager($this->client);
-
-            $needsUsers = false;
-            foreach ($this->config->templates as $template) {
-                if ($template->target->users !== []) {
-                    $needsUsers = true;
-                    break;
-                }
-            }
-
             /** @var list<TRepository> $response */
             $response = $pager->fetchAll($this->client->user(), 'myRepositories');
             foreach ($response as $repository) {
                 $users = [];
                 if ($needsUsers) {
-                    $parts = explode('/', $repository['full_name'], 2);
+                    $parts = explode('/', $repository['full_name']);
                     if (\count($parts) !== 2) {
                         throw new \InvalidArgumentException('Invalid repository name');
                     }
