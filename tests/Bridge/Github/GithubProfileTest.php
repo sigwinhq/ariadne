@@ -161,6 +161,7 @@ final class GithubProfileTest extends ProfileTestCase
             ['watchers_count', 10000, $readOnlyError],
             ['nah', 'aaa', $notExistsError],
             ['desciption', 'aaa', 'Attribute "desciption" does not exist. Did you mean "description"?'],
+            ['has_pragects', true, 'Attribute "has_pragects" does not exist. Did you mean "has_pages", "has_projects"?'],
         ];
     }
 

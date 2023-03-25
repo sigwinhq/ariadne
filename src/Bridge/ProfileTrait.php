@@ -129,6 +129,7 @@ trait ProfileTrait
                 return true;
             }
         }
+
         return false;
     }
 
