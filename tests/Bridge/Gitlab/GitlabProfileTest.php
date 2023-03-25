@@ -27,8 +27,9 @@ use Sigwin\Ariadne\Test\Bridge\ProfileTestCase;
  * @internal
  *
  * @covers \Sigwin\Ariadne\Bridge\Gitlab\GitlabProfile
- * @covers \Sigwin\Ariadne\Model\Change\NamedResourceArrayChangeCollection
  * @covers \Sigwin\Ariadne\Model\Repository
+ * @covers \Sigwin\Ariadne\Model\RepositoryType
+ * @covers \Sigwin\Ariadne\Model\RepositoryVisibility
  *
  * @uses \Sigwin\Ariadne\Model\Collection\SortedNamedResourceCollection
  * @uses \Sigwin\Ariadne\Model\Config\ProfileClientConfig
@@ -39,8 +40,6 @@ use Sigwin\Ariadne\Test\Bridge\ProfileTestCase;
  * @uses \Sigwin\Ariadne\Model\ProfileTemplate
  * @uses \Sigwin\Ariadne\Model\ProfileTemplateTarget
  * @uses \Sigwin\Ariadne\Model\ProfileUser
- *
- * @covers \Sigwin\Ariadne\Model\RepositoryType
  *
  * @small
  */
@@ -92,6 +91,12 @@ final class GitlabProfileTest extends ProfileTestCase
                 [
                     $this->createRequest(null, 'GET', '/projects?membership=false&owned=true&per_page=50'),
                     [(object) ['id' => $repository->id, 'visibility' => 'public', 'path_with_namespace' => $repository->path, 'topics' => [], 'forked_from_project' => (object) ['id' => 1]]],
+                ],
+            ]),
+            self::REPOSITORY_SCENARIO_PRIVATE => $this->createHttpClient([
+                [
+                    $this->createRequest(null, 'GET', '/projects?membership=false&owned=true&per_page=50'),
+                    [(object) ['id' => $repository->id, 'visibility' => 'private', 'path_with_namespace' => $repository->path, 'topics' => []]],
                 ],
             ]),
             default => throw new \InvalidArgumentException(sprintf('Unknown repository scenario "%1$s".', $name)),

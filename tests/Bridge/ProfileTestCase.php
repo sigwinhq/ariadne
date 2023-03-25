@@ -34,6 +34,7 @@ abstract class ProfileTestCase extends TestCase
 
     protected const REPOSITORY_SCENARIO_BASIC = 'basic repository';
     protected const REPOSITORY_SCENARIO_FORK = 'forked repository';
+    protected const REPOSITORY_SCENARIO_PRIVATE = 'private repository';
 
     /**
      * @return iterable<array-key, array{name: string, repository: Repository, options?: TOptions, attribute?: TAttribute, filter?: TFilter}>
@@ -42,6 +43,7 @@ abstract class ProfileTestCase extends TestCase
     {
         yield ['name' => self::REPOSITORY_SCENARIO_BASIC, 'repository' => $this->createRepository('namespace1/repo1')];
         yield ['name' => self::REPOSITORY_SCENARIO_FORK, 'repository' => $this->createRepository('namespace1/repo1', type: 'fork')];
+        yield ['name' => self::REPOSITORY_SCENARIO_PRIVATE, 'repository' => $this->createRepository('namespace1/repo1', visibility: 'private')];
     }
 
     /**

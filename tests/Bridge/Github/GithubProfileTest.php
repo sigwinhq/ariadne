@@ -25,6 +25,9 @@ use Sigwin\Ariadne\Test\Bridge\ProfileTestCase;
 
 /**
  * @covers \Sigwin\Ariadne\Bridge\Github\GithubProfile
+ * @covers \Sigwin\Ariadne\Model\Repository
+ * @covers \Sigwin\Ariadne\Model\RepositoryType
+ * @covers \Sigwin\Ariadne\Model\RepositoryVisibility
  *
  * @uses \Sigwin\Ariadne\Model\Collection\SortedNamedResourceCollection
  * @uses \Sigwin\Ariadne\Model\Config\ProfileClientConfig
@@ -35,11 +38,6 @@ use Sigwin\Ariadne\Test\Bridge\ProfileTestCase;
  * @uses \Sigwin\Ariadne\Model\ProfileTemplate
  * @uses \Sigwin\Ariadne\Model\ProfileTemplateTarget
  * @uses \Sigwin\Ariadne\Model\ProfileUser
- * @uses \Sigwin\Ariadne\Model\Repository
- *
- * @covers \Sigwin\Ariadne\Model\RepositoryType
- *
- * @uses \Sigwin\Ariadne\Model\RepositoryVisibility
  *
  * @internal
  *
@@ -93,6 +91,12 @@ final class GithubProfileTest extends ProfileTestCase
                 [
                     $this->createRequest(null, 'GET', '/user/repos?per_page=100'),
                     [(object) ['id' => $repository->id, 'full_name' => $repository->path, 'fork' => true, 'private' => false, 'topics' => []]],
+                ],
+            ]),
+            self::REPOSITORY_SCENARIO_PRIVATE => $this->createHttpClient([
+                [
+                    $this->createRequest(null, 'GET', '/user/repos?per_page=100'),
+                    [(object) ['id' => $repository->id, 'full_name' => $repository->path, 'fork' => false, 'private' => true, 'topics' => []]],
                 ],
             ]),
             default => throw new \InvalidArgumentException(sprintf('Unknown repository scenario "%1$s".', $name)),
