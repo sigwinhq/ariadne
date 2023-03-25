@@ -18,6 +18,7 @@ use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Sigwin\Ariadne\Bridge\Github\GithubProfile;
 use Sigwin\Ariadne\Model\Config\ProfileConfig;
+use Sigwin\Ariadne\Model\Repository;
 use Sigwin\Ariadne\Profile;
 use Sigwin\Ariadne\ProfileTemplateFactory;
 use Sigwin\Ariadne\Test\Bridge\ProfileTestCase;
@@ -77,17 +78,17 @@ final class GithubProfileTest extends ProfileTestCase
         static::assertCount(1, $profile->getSummary()->getTemplates());
     }
 
-    protected function provideRepositories(): iterable
+    protected function createHttpClientForRepositoryScenario(string $name, Repository $repository): ClientInterface
     {
-        yield [
-            'basic repository',
-            $this->createHttpClient([
+        return match ($name) {
+            'basic repository' => $this->createHttpClient([
                 [
                     $this->createRequest(null, 'GET', '/user/repos?per_page=100'),
-                    [(object) ['id' => 12345, 'full_name' => 'namespace1/repo1', 'fork' => false, 'private' => false, 'topics' => []]],
+                    [(object) ['id' => $repository->id, 'full_name' => $repository->path, 'fork' => false, 'private' => false, 'topics' => []]],
                 ],
             ]),
-        ];
+            default => throw new \InvalidArgumentException(sprintf('Unknown repository scenario "%1$s".', $name)),
+        };
     }
 
     protected function provideValidOptions(): iterable

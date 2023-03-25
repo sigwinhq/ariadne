@@ -28,28 +28,24 @@ abstract class ProfileTestCase extends TestCase
     use ModelGeneratorTrait;
 
     /**
-     * @var array<string, Repository>
+     * @return iterable<array-key, array{string, Repository}>
      */
-    private array $repositories;
-
-    protected function setUp(): void
+    protected function provideRepositories(): iterable
     {
-        $this->repositories = [
-            'basic repository' => $this->createRepository('namespace1/repo1'),
-        ];
+        yield ['basic repository', $this->createRepository('namespace1/repo1')];
     }
 
     /**
      * @dataProvider provideRepositories
      */
-    public function testCanCreateRepository(string $name, ClientInterface $httpClient): void
+    public function testCanCreateRepository(string $name, Repository $fixture): void
     {
+        $httpClient = $this->createHttpClientForRepositoryScenario($name, $fixture);
         $factory = $this->createTemplateFactory();
         $cachePool = $this->createActiveCachePool();
         $config = $this->createConfig();
         $profile = $this->createProfileInstance($config, $httpClient, $factory, $cachePool);
 
-        $fixture = $this->repositories[$name] ?? throw new \InvalidArgumentException(sprintf('Repository "%1$s" not found.', $name));
         foreach ($profile as $repository) {
             if ($fixture->getName() === $repository->getName()) {
                 static::assertSame($fixture->type->value, $repository->type->value);
@@ -64,7 +60,7 @@ abstract class ProfileTestCase extends TestCase
             }
         }
 
-        static::fail(sprintf('Repository "%1$s" not found.', $name));
+        static::fail(sprintf('Repository for scenario "%1$s" not found in profile.', $name));
     }
 
     /**
@@ -140,11 +136,6 @@ abstract class ProfileTestCase extends TestCase
     abstract protected function validateRequest(RequestInterface $request): void;
 
     /**
-     * @return iterable<array-key, array{string, ClientInterface}>
-     */
-    abstract protected function provideRepositories(): iterable;
-
-    /**
      * @return iterable<array-key, array{string, bool|string}>
      */
     abstract protected function provideValidOptions(): iterable;
@@ -174,4 +165,6 @@ abstract class ProfileTestCase extends TestCase
     abstract protected function createConfig(?string $url = null, ?array $options = null, ?array $attribute = null, ?array $filter = null): ProfileConfig;
 
     abstract protected function createRequest(?string $baseUrl, string $method, string $path): string;
+
+    abstract protected function createHttpClientForRepositoryScenario(string $name, Repository $repository): ClientInterface;
 }

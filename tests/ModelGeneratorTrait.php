@@ -108,18 +108,19 @@ trait ModelGeneratorTrait
     /**
      * @param list<array{string, string}>|null $users
      * @param null|list<string> $topics
+     * @param null|list<string> $languages
      */
-    protected function createRepository(string $path, ?array $users = null, ?string $type = null, ?array $topics = null): Repository
+    protected function createRepository(string $path, ?string $type = null, ?string $visibility = null, ?array $users = null, ?array $topics = null, ?array $languages = null): Repository
     {
         return new Repository(
             ['path' => $path],
             $type !== null ? RepositoryType::from($type) : RepositoryType::SOURCE,
-            RepositoryVisibility::PUBLIC,
+            $visibility !== null ? RepositoryVisibility::from($visibility) : RepositoryVisibility::PUBLIC,
             $this->createUsers($users ?? []),
             12345,
             $path,
             $topics ?? [],
-            []
+            $languages ?? []
         );
     }
 
