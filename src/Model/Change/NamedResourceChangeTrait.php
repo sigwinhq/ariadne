@@ -70,19 +70,13 @@ trait NamedResourceChangeTrait
                     // unfortunate corner case: treat template and repository as the same resource since they both apply to the repository
                     continue;
                 }
-                $changes = array_replace($changes, $change->getAttributeChanges());
+                $changes = array_merge($changes, $change->getAttributeChanges());
             }
 
             if ($change instanceof NamedResourceAttributeUpdate === false) {
                 continue;
             }
             $changes[$resource->getName()] = $change;
-        }
-
-        foreach ($changes as $name => $change) {
-            if ($change->isActual() === true) {
-                unset($changes[$name]);
-            }
         }
 
         return array_values($changes);

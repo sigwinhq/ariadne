@@ -106,9 +106,21 @@ abstract class ProfileTestCase extends TestCase
         static::assertSame($fixture->getName(), $plan->getResource()->getName());
 
         $actual = [];
+
+        // deduplicate
         foreach ($plan->getAttributeChanges() as $change) {
-            $actual[$change->getResource()->getName()] = $change->expected;
+            $actual[$change->getResource()->getName()] = $change;
         }
+
+        // only use the
+        foreach ($actual as $name => $change) {
+            if ($change->isActual()) {
+                unset($actual[$name]);
+            } else {
+                $actual[$name] = $change->expected;
+            }
+        }
+
         static::assertSame($expected, $actual);
     }
 

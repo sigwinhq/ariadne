@@ -82,7 +82,7 @@ trait ModelGeneratorTrait
             ->method('fromConfig')
             ->willReturnCallback(function (ProfileTemplateConfig $config) use (&$idx, $attributes, $repositories): ProfileTemplate {
                 $template = $this->createTemplate($config->name, $attributes[$idx] ?? [], $repositories[$idx] ?? []);
-                $idx++;
+                ++$idx;
 
                 return $template;
             })

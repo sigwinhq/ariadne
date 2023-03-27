@@ -152,19 +152,15 @@ final class GitlabProfileTest extends ProfileTestCase
         $expected = ['description' => 'AAA'];
         yield [self::REPOSITORY_SCENARIO_BASIC, $repository, $expected, $config];
 
-        // single template with a multiple targets to change, multiple of them to actually change
-        $config = ['attribute' => ['description' => 'AAA', 'wiki_enabled' => false]];
-        $expected = ['description' => 'AAA', 'wiki_enabled' => false];
-        yield [self::REPOSITORY_SCENARIO_BASIC, $repository, $expected, $config];
-
-        // multiple templates with a single target to change
+        // multiple templates, one does a change and then the next one undoes the change
         $config = [
             'templates' => [
-                ['name' => 'set descriptions', 'target' => ['attribute' => ['description' => 'AAA']]],
-                ['name' => 'enable wikis', 'target' => ['attribute' => ['wiki_enabled' => true]]],
+                ['name' => 'disable wikis', 'target' => ['attribute' => ['description' => 'AAA', 'wiki_enabled' => false]]],
+                ['name' => 'disable packages', 'target' => ['attribute' => ['description' => 'AAA', 'packages_enabled' => false]]],
+                ['name' => 'enable stuff back as it was', 'target' => ['attribute' => ['wiki_enabled' => true, 'packages_enabled' => true]]],
             ],
         ];
-        $expected = ['description' => 'AAA', 'wiki_enabled' => false];
+        $expected = ['description' => 'AAA'];
         yield [self::REPOSITORY_SCENARIO_BASIC, $repository, $expected, $config];
     }
 
