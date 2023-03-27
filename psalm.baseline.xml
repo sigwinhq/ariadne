@@ -32,6 +32,14 @@
       <code>ApplyCommand</code>
     </UnusedClass>
   </file>
+  <file src="src/Bridge/Symfony/Command/CommandTrait.php">
+    <LessSpecificReturnType>
+      <code>array</code>
+      <code>array</code>
+      <code><![CDATA[array<NamedResourceChangeCollection>]]></code>
+      <code><![CDATA[array<string>]]></code>
+    </LessSpecificReturnType>
+  </file>
   <file src="src/Bridge/Symfony/Command/DiffCommand.php">
     <UnusedClass>
       <code>DiffCommand</code>
@@ -216,12 +224,15 @@
       <code>$configs[$idx++]</code>
       <code>$configs[$idx]</code>
       <code>$items[$idx++]</code>
+      <code>$repositories[$idx++]</code>
     </MixedArrayOffset>
     <MixedAssignment>
       <code>$idx</code>
       <code>$idx</code>
+      <code>$idx</code>
     </MixedAssignment>
     <MixedOperand>
+      <code>$idx</code>
       <code>$idx</code>
       <code>$idx</code>
     </MixedOperand>

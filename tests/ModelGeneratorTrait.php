@@ -20,6 +20,7 @@ use Psr\Http\Message\RequestInterface;
 use Sigwin\Ariadne\Evaluator;
 use Sigwin\Ariadne\Model\Collection\SortedNamedResourceCollection;
 use Sigwin\Ariadne\Model\Config\ProfileConfig;
+use Sigwin\Ariadne\Model\Config\ProfileTemplateConfig;
 use Sigwin\Ariadne\Model\Config\ProfileTemplateTargetConfig;
 use Sigwin\Ariadne\Model\ProfileSummary;
 use Sigwin\Ariadne\Model\ProfileTemplate;
@@ -70,15 +71,18 @@ trait ModelGeneratorTrait
 
     /**
      * @param array<string, bool|int|string> $attribute
-     * @param array<Repository>              $repositories
+     * @param list<list{Repository}>        $repositories
      */
     protected function createTemplateFactory(array $attribute = [], array $repositories = []): ProfileTemplateFactory
     {
         $factory = $this->getMockBuilder(ProfileTemplateFactory::class)->getMock();
 
+        $idx = 0;
         $factory
             ->method('fromConfig')
-            ->willReturn($this->createTemplate('foo', attribute: $attribute, repositories: $repositories))
+            ->willReturnCallback(function (ProfileTemplateConfig $config) use (&$idx, $attribute, $repositories): ProfileTemplate {
+                return $this->createTemplate($config->name, $attribute, $repositories[$idx++] ?? []);
+            })
         ;
 
         return $factory;

@@ -228,7 +228,7 @@ abstract class ProfileTestCase extends TestCase
     private function createProfileForRepositoryScenario(string $name, Repository $fixture, array $config): Profile
     {
         $httpClient = $this->createHttpClientForRepositoryScenario($name, $fixture);
-        $factory = $this->createTemplateFactory(attribute: $config['attribute'] ?? [], repositories: [$fixture]);
+        $factory = $this->createTemplateFactory(attribute: $config['attribute'] ?? [], repositories: [[$fixture]]);
         $cachePool = $this->createActiveCachePool();
         $config = $this->createConfig(options: $config['options'] ?? null, attribute: $config['attribute'] ?? null, user: $config['user'] ?? null, filter: $config['filter'] ?? null);
 
