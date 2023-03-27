@@ -143,6 +143,22 @@ final class GithubProfileTest extends ProfileTestCase
         $config = ['attribute' => ['description' => 'AAA']];
         $expected = ['description' => 'AAA'];
         yield [self::REPOSITORY_SCENARIO_BASIC, $repository, $config, $expected];
+
+        // single template with a multiple targets to change, one of them to actually change
+        $config = ['attribute' => ['description' => 'AAA', 'has_wiki' => true]];
+        $expected = ['description' => 'AAA'];
+        yield [self::REPOSITORY_SCENARIO_BASIC, $repository, $config, $expected];
+
+        // multiple templates, one does a change and then the next one undoes the change
+        $config = [
+            'templates' => [
+                ['name' => 'disable wikis', 'target' => ['attribute' => ['description' => 'AAA', 'has_wiki' => false]], 'filter' => []],
+                ['name' => 'disable discussions', 'target' => ['attribute' => ['description' => 'AAA', 'has_discussions' => false]], 'filter' => []],
+                ['name' => 'enable stuff back as it was', 'target' => ['attribute' => ['has_wiki' => true, 'has_discussions' => true]], 'filter' => []],
+            ],
+        ];
+        $expected = ['description' => 'AAA'];
+        yield [self::REPOSITORY_SCENARIO_BASIC, $repository, $config, $expected];
     }
 
     protected function provideValidOptions(): iterable
@@ -159,12 +175,12 @@ final class GithubProfileTest extends ProfileTestCase
     {
         return [
             ['description', 'desc'],
-            ['has_discussions', false],
-            ['has_downloads', false],
+            ['has_discussions', true],
+            ['has_downloads', true],
             ['has_issues', true],
-            ['has_pages', false],
-            ['has_projects', false],
-            ['has_wiki', false],
+            ['has_pages', true],
+            ['has_projects', true],
+            ['has_wiki', true],
         ];
     }
 
