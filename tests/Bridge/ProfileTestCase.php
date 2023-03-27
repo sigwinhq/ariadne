@@ -63,14 +63,6 @@ abstract class ProfileTestCase extends TestCase
     }
 
     /**
-     * @return iterable<array-key, array{0: string, 1: Repository, 2: array<string, bool|int|string>, 3?: TConfig}>
-     */
-    protected function provideRepositoriesAttributeChange(): iterable
-    {
-        yield [self::REPOSITORY_SCENARIO_BASIC, $this->createRepository('namespace1/repo1'), ['description' => 'aaa'], ['attribute' => ['description' => 'aaa']]];
-    }
-
-    /**
      * @dataProvider provideRepositories
      *
      * @param TConfig $config
@@ -210,6 +202,11 @@ abstract class ProfileTestCase extends TestCase
      * @return iterable<array-key, array{string, int|bool|string, string}>
      */
     abstract protected function provideInvalidAttributeValues(): iterable;
+
+    /**
+     * @return iterable<array-key, array{0: string, 1: Repository, 2: array<string, bool|int|string>, 3?: TConfig}>
+     */
+    abstract protected function provideRepositoriesAttributeChange(): iterable;
 
     abstract protected function createProfileInstance(ProfileConfig $config, ClientInterface $client, ProfileTemplateFactory $factory, CacheItemPoolInterface $cachePool): Profile;
 

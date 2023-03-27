@@ -134,6 +134,11 @@ final class GitlabProfileTest extends ProfileTestCase
         };
     }
 
+    protected function provideRepositoriesAttributeChange(): iterable
+    {
+        yield [self::REPOSITORY_SCENARIO_BASIC, $this->createRepository('namespace1/repo1', response: ['description' => 'ABC']), ['description' => 'aaa'], ['attribute' => ['description' => 'aaa']]];
+    }
+
     protected function provideValidOptions(): iterable
     {
         return [
