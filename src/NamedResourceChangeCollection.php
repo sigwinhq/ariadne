@@ -26,7 +26,7 @@ interface NamedResourceChangeCollection extends \Countable, \IteratorAggregate, 
     public static function fromResource(NamedResource $resource, array $changes): self;
 
     /**
-     * @return array<string, NamedResourceAttributeUpdate>
+     * @return array<NamedResourceAttributeUpdate>
      */
     public function getAttributeChanges(): array;
 }

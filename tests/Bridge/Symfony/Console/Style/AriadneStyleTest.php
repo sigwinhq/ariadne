@@ -127,8 +127,8 @@ final class AriadneStyleTest extends TestCase
                 $repo2NS1,
             ]),
             SortedNamedResourceCollection::fromArray([
-                $this->createTemplate('tpl1', [$repo1NS2]),
-                $this->createTemplate('tpl2', [$repo1NS1, $repo2NS1]),
+                $this->createTemplate('tpl1', repositories: [$repo1NS2]),
+                $this->createTemplate('tpl2', repositories: [$repo1NS1, $repo2NS1]),
                 $this->createTemplate('tpl3'),
             ]),
         );

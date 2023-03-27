@@ -58,7 +58,7 @@ trait NamedResourceChangeTrait
     }
 
     /**
-     * @return array<string, NamedResourceAttributeUpdate>
+     * @return array<NamedResourceAttributeUpdate>
      */
     public function getAttributeChanges(): array
     {
@@ -66,11 +66,11 @@ trait NamedResourceChangeTrait
         foreach ($this->changes as $change) {
             $resource = $change->getResource();
             if ($change instanceof \Sigwin\Ariadne\NamedResourceChangeCollection) {
-                if ($this->resource !== $resource || ! ($this->resource instanceof Repository && $resource instanceof ProfileTemplate)) {
+                if ($this->resource !== $resource && ! ($this->resource instanceof Repository && $resource instanceof ProfileTemplate)) {
                     // unfortunate corner case: treat template and repository as the same resource since they both apply to the repository
                     continue;
                 }
-                $changes = array_replace($changes, $change->getAttributeChanges());
+                $changes = array_merge($changes, $change->getAttributeChanges());
             }
 
             if ($change instanceof NamedResourceAttributeUpdate === false) {
@@ -79,12 +79,6 @@ trait NamedResourceChangeTrait
             $changes[$resource->getName()] = $change;
         }
 
-        foreach ($changes as $name => $change) {
-            if ($change->isActual() === true) {
-                unset($changes[$name]);
-            }
-        }
-
-        return $changes;
+        return array_values($changes);
     }
 }

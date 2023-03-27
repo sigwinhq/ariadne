@@ -28,7 +28,8 @@ use Sigwin\Ariadne\Test\ModelGeneratorTrait;
  * @psalm-type TAttribute = array<string, bool|int|string>
  * @psalm-type TUser = array<string, array{"username": string, "role": string}>
  * @psalm-type TFilter = array{languages?: list<string>}
- * @psalm-type TConfig = array{options?: TOptions, attribute?: TAttribute, user?: TUser, filter?: TFilter}
+ * @psalm-type TTemplate = array{name: string, filter: TFilter, target: array{attribute: TAttribute}}
+ * @psalm-type TConfig = array{templates?: list<TTemplate>, options?: TOptions, attribute?: TAttribute, user?: TUser, filter?: TFilter}
  */
 abstract class ProfileTestCase extends TestCase
 {
@@ -69,11 +70,7 @@ abstract class ProfileTestCase extends TestCase
      */
     public function testCanCreateRepository(string $name, Repository $fixture, array $config = []): void
     {
-        $httpClient = $this->createHttpClientForRepositoryScenario($name, $fixture);
-        $factory = $this->createTemplateFactory();
-        $cachePool = $this->createActiveCachePool();
-        $config = $this->createConfig(options: $config['options'] ?? null, attribute: $config['attribute'] ?? null, user: $config['user'] ?? null, filter: $config['filter'] ?? null);
-        $profile = $this->createProfileInstance($config, $httpClient, $factory, $cachePool);
+        $profile = $this->createProfileForRepositoryScenario($name, $fixture, $config);
 
         foreach ($profile as $repository) {
             if ($fixture->getName() === $repository->getName()) {
@@ -90,6 +87,47 @@ abstract class ProfileTestCase extends TestCase
         }
 
         static::fail(sprintf('Repository for scenario "%1$s" not found in profile.', $name));
+    }
+
+    /**
+     * @group plan
+     *
+     * @dataProvider provideRepositoriesAttributeChange
+     *
+     * @param array<string, bool|int|string> $expected
+     * @param TConfig                        $config
+     */
+    public function testCanCreatePlanAttributeChanges(string $name, Repository $fixture, array $config, array $expected): void
+    {
+        $profile = $this->createProfileForRepositoryScenario($name, $fixture, $config);
+        $plan = $profile->plan($fixture);
+
+        static::assertSame($fixture->getName(), $plan->getResource()->getName());
+        static::assertSame(\count($expected) === 0, $plan->isActual());
+
+        $planAttributeChanges = $plan->getAttributeChanges();
+        static::assertTrue(array_is_list($planAttributeChanges), 'Changes must be a list.');
+
+        // deduplicate
+        $changes = [];
+        foreach ($planAttributeChanges as $change) {
+            $changes[$change->getResource()->getName()] = $change;
+        }
+
+        // filter out changes which are already actual
+        foreach ($changes as $changeName => $change) {
+            if ($change->isActual()) {
+                unset($changes[$changeName]);
+            }
+        }
+
+        // replace the change object with the target value
+        $actual = [];
+        foreach ($changes as $changeName => $change) {
+            $actual[$changeName] = $change->expected;
+        }
+
+        static::assertSame($expected, $actual);
     }
 
     /**
@@ -184,17 +222,42 @@ abstract class ProfileTestCase extends TestCase
      */
     abstract protected function provideInvalidAttributeValues(): iterable;
 
+    /**
+     * @return iterable<array-key, array{0: string, 1: Repository, 2: TConfig, 3: array<string, bool|int|string>}>
+     */
+    abstract protected function provideRepositoriesAttributeChange(): iterable;
+
     abstract protected function createProfileInstance(ProfileConfig $config, ClientInterface $client, ProfileTemplateFactory $factory, CacheItemPoolInterface $cachePool): Profile;
 
     /**
-     * @param null|TOptions   $options
-     * @param null|TAttribute $attribute
-     * @param null|TUser      $user
-     * @param null|TFilter    $filter
+     * @param null|list<TTemplate> $templates
+     * @param null|TOptions        $options
+     * @param null|TAttribute      $attribute
+     * @param null|TUser           $user
+     * @param null|TFilter         $filter
      */
-    abstract protected function createConfig(?string $url = null, ?array $options = null, ?array $attribute = null, ?array $user = null, ?array $filter = null): ProfileConfig;
+    abstract protected function createConfig(?string $url = null, ?array $templates = null, ?array $options = null, ?array $attribute = null, ?array $user = null, ?array $filter = null): ProfileConfig;
 
     abstract protected function createRequest(?string $baseUrl, string $method, string $path): string;
 
     abstract protected function createHttpClientForRepositoryScenario(string $name, Repository $repository): ClientInterface;
+
+    /**
+     * @param TConfig $config
+     */
+    private function createProfileForRepositoryScenario(string $name, Repository $fixture, array $config): Profile
+    {
+        $profileConfig = $this->createConfig(templates: $config['templates'] ?? null, options: $config['options'] ?? null, attribute: $config['attribute'] ?? null, user: $config['user'] ?? null, filter: $config['filter'] ?? null);
+        $attributes = [];
+        foreach ($profileConfig->templates as $template) {
+            $attributes[] = $template->target->attribute;
+        }
+        $repositories = array_fill(0, \count($profileConfig->templates), [$fixture]);
+
+        $httpClient = $this->createHttpClientForRepositoryScenario($name, $fixture);
+        $factory = $this->createTemplateFactory(attributes: $attributes, repositories: $repositories);
+        $cachePool = $this->createActiveCachePool();
+
+        return $this->createProfileInstance($profileConfig, $httpClient, $factory, $cachePool);
+    }
 }

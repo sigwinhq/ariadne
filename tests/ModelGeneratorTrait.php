@@ -20,6 +20,7 @@ use Psr\Http\Message\RequestInterface;
 use Sigwin\Ariadne\Evaluator;
 use Sigwin\Ariadne\Model\Collection\SortedNamedResourceCollection;
 use Sigwin\Ariadne\Model\Config\ProfileConfig;
+use Sigwin\Ariadne\Model\Config\ProfileTemplateConfig;
 use Sigwin\Ariadne\Model\Config\ProfileTemplateTargetConfig;
 use Sigwin\Ariadne\Model\ProfileSummary;
 use Sigwin\Ariadne\Model\ProfileTemplate;
@@ -44,31 +45,47 @@ trait ModelGeneratorTrait
      */
     protected function createTemplates(array $list = []): NamedResourceCollection
     {
-        return SortedNamedResourceCollection::fromArray(array_map($this->createTemplate(...), array_column($list, 0), array_column($list, 1)));
+        return SortedNamedResourceCollection::fromArray(array_map($this->createTemplate(...), array_column($list, 0), [], array_column($list, 1)));
     }
 
     /**
-     * @param array<Repository> $repositories
+     * @param array<string, bool|int|string> $attribute
+     * @param array<Repository>              $repositories
      */
-    protected function createTemplate(string $name, array $repositories = []): ProfileTemplate
+    protected function createTemplate(string $name, array $attribute = [], array $repositories = []): ProfileTemplate
     {
+        $evaluator = $this->getMockBuilder(Evaluator::class)->getMock();
+        $evaluator
+            ->method('evaluate')
+            ->willReturnCallback(static function (bool|int|string $expression, array $context) {
+                return $context[$expression] ?? $expression;
+            })
+        ;
+
         return new ProfileTemplate(
             $name,
-            ProfileTemplateTarget::fromConfig(
-                ProfileTemplateTargetConfig::fromArray(['attribute' => []]),
-                $this->getMockBuilder(Evaluator::class)->getMock(),
-            ),
+            ProfileTemplateTarget::fromConfig(ProfileTemplateTargetConfig::fromArray(['attribute' => $attribute]), $evaluator),
             SortedNamedResourceCollection::fromArray($repositories),
         );
     }
 
-    protected function createTemplateFactory(): ProfileTemplateFactory
+    /**
+     * @param list<array<string, bool|int|string>> $attributes
+     * @param list<list{Repository}>        $repositories
+     */
+    protected function createTemplateFactory(array $attributes = [], array $repositories = []): ProfileTemplateFactory
     {
         $factory = $this->getMockBuilder(ProfileTemplateFactory::class)->getMock();
 
+        $idx = 0;
         $factory
             ->method('fromConfig')
-            ->willReturn($this->createTemplate('foo'))
+            ->willReturnCallback(function (ProfileTemplateConfig $config) use (&$idx, $attributes, $repositories): ProfileTemplate {
+                $template = $this->createTemplate($config->name, $attributes[$idx] ?? [], $repositories[$idx] ?? []);
+                ++$idx;
+
+                return $template;
+            })
         ;
 
         return $factory;
@@ -106,14 +123,15 @@ trait ModelGeneratorTrait
     }
 
     /**
+     * @param array<string, null|array<string, int|string>|array<string>|bool|int|string> $response
      * @param list<array{string, string}>|null $users
      * @param null|list<string> $topics
      * @param null|list<string> $languages
      */
-    protected function createRepository(string $path, ?string $type = null, ?string $visibility = null, ?array $users = null, ?array $topics = null, ?array $languages = null): Repository
+    protected function createRepository(string $path, array $response = [], ?string $type = null, ?string $visibility = null, ?array $users = null, ?array $topics = null, ?array $languages = null): Repository
     {
         return new Repository(
-            ['path' => $path],
+            array_replace($response, ['id' => 12345, 'path' => $path]),
             $type !== null ? RepositoryType::from($type) : RepositoryType::SOURCE,
             $visibility !== null ? RepositoryVisibility::from($visibility) : RepositoryVisibility::PUBLIC,
             $this->createUsers($users ?? []),

@@ -32,6 +32,9 @@ use Sigwin\Ariadne\Test\Bridge\ProfileTestCase;
  * @covers \Sigwin\Ariadne\Model\RepositoryUser
  * @covers \Sigwin\Ariadne\Model\RepositoryVisibility
  *
+ * @uses \Sigwin\Ariadne\Model\Attribute
+ * @uses \Sigwin\Ariadne\Model\Change\NamedResourceArrayChangeCollection
+ * @uses \Sigwin\Ariadne\Model\Change\NamedResourceAttributeUpdate
  * @uses \Sigwin\Ariadne\Model\Collection\SortedNamedResourceCollection
  * @uses \Sigwin\Ariadne\Model\Config\ProfileClientConfig
  * @uses \Sigwin\Ariadne\Model\Config\ProfileConfig
@@ -44,6 +47,8 @@ use Sigwin\Ariadne\Test\Bridge\ProfileTestCase;
  * @uses \Sigwin\Ariadne\Model\ProfileUser
  *
  * @small
+ *
+ * @psalm-import-type TTemplate from ProfileTestCase
  */
 final class GitlabProfileTest extends ProfileTestCase
 {
@@ -131,6 +136,36 @@ final class GitlabProfileTest extends ProfileTestCase
         };
     }
 
+    protected function provideRepositoriesAttributeChange(): iterable
+    {
+        $response = [];
+        foreach ($this->provideValidAttributeValues() as $attribute) {
+            $response[$attribute[0]] = $attribute[1];
+        }
+        $repository = $this->createRepository('namespace1/repo1', response: $response);
+
+        // single template with a single target to change
+        $config = ['attribute' => ['description' => 'AAA']];
+        $expected = ['description' => 'AAA'];
+        yield [self::REPOSITORY_SCENARIO_BASIC, $repository, $config, $expected];
+
+        // single template with a multiple targets to change, one of them to actually change
+        $config = ['attribute' => ['description' => 'AAA', 'wiki_enabled' => true]];
+        $expected = ['description' => 'AAA'];
+        yield [self::REPOSITORY_SCENARIO_BASIC, $repository, $config, $expected];
+
+        // multiple templates, one does a change and then the next one undoes the change
+        $config = [
+            'templates' => [
+                ['name' => 'disable wikis', 'target' => ['attribute' => ['description' => 'AAA', 'wiki_enabled' => false]], 'filter' => []],
+                ['name' => 'disable packages', 'target' => ['attribute' => ['description' => 'AAA', 'packages_enabled' => false]], 'filter' => []],
+                ['name' => 'enable stuff back as it was', 'target' => ['attribute' => ['wiki_enabled' => true, 'packages_enabled' => true]], 'filter' => []],
+            ],
+        ];
+        $expected = ['description' => 'AAA'];
+        yield [self::REPOSITORY_SCENARIO_BASIC, $repository, $config, $expected];
+    }
+
     protected function provideValidOptions(): iterable
     {
         return [
@@ -202,15 +237,25 @@ final class GitlabProfileTest extends ProfileTestCase
         return GitlabProfile::fromConfig($config, $client, $factory, $cachePool);
     }
 
-    protected function createConfig(?string $url = null, ?array $options = null, ?array $attribute = null, ?array $user = null, ?array $filter = null): ProfileConfig
+    protected function createConfig(?string $url = null, ?array $templates = null, ?array $options = null, ?array $attribute = null, ?array $user = null, ?array $filter = null): ProfileConfig
     {
+        $spec = ['name' => 'foo', 'filter' => $filter ?? [], 'target' => ['attribute' => $attribute ?? [], 'user' => $user ?? []]];
+        if ($templates !== null) {
+            $specs = [];
+            foreach ($templates as $template) {
+                $specs[] = array_replace_recursive($spec, $template);
+            }
+            /** @var list<TTemplate> $templates */
+            $templates = $specs;
+        } else {
+            $templates = [$spec];
+        }
+
         $config = [
             'type' => 'gitlab',
             'name' => 'GL',
             'client' => ['auth' => ['token' => 'ABC', 'type' => 'http_token'], 'options' => $options ?? []],
-            'templates' => [
-                ['name' => 'foo', 'filter' => $filter ?? [], 'target' => ['attribute' => $attribute ?? [], 'user' => $user ?? []]],
-            ],
+            'templates' => $templates,
         ];
         if ($url !== null) {
             $config['client']['url'] = $url;

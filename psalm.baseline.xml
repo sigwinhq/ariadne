@@ -175,9 +175,6 @@
       <code>count</code>
       <code>count</code>
     </PossiblyUnusedMethod>
-    <RedundantIdentityWithTrue>
-      <code><![CDATA[$change->isActual() === true]]></code>
-    </RedundantIdentityWithTrue>
   </file>
   <file src="src/Model/Collection/SortedNamedResourceCollection.php">
     <PossiblyUnusedMethod>
@@ -221,15 +218,19 @@
       <code>SortedNamedResourceCollection::fromArray($repositories)</code>
     </ArgumentTypeCoercion>
     <MixedArrayOffset>
+      <code>$attributes[$idx]</code>
       <code>$configs[$idx++]</code>
       <code>$configs[$idx]</code>
       <code>$items[$idx++]</code>
+      <code>$repositories[$idx]</code>
     </MixedArrayOffset>
     <MixedAssignment>
       <code>$idx</code>
       <code>$idx</code>
+      <code>$idx</code>
     </MixedAssignment>
     <MixedOperand>
+      <code>$idx</code>
       <code>$idx</code>
       <code>$idx</code>
     </MixedOperand>
