@@ -62,6 +62,11 @@ abstract class ProfileTestCase extends TestCase
         ];
     }
 
+    protected function provideRepositoriesAttributeChange(): iterable
+    {
+        yield [self::REPOSITORY_SCENARIO_BASIC, $this->createRepository('namespace1/repo1'), ['description' => 'aaa'], ['attribute' => ['description' => 'aaa']]];
+    }
+
     /**
      * @dataProvider provideRepositories
      *
@@ -69,11 +74,7 @@ abstract class ProfileTestCase extends TestCase
      */
     public function testCanCreateRepository(string $name, Repository $fixture, array $config = []): void
     {
-        $httpClient = $this->createHttpClientForRepositoryScenario($name, $fixture);
-        $factory = $this->createTemplateFactory();
-        $cachePool = $this->createActiveCachePool();
-        $config = $this->createConfig(options: $config['options'] ?? null, attribute: $config['attribute'] ?? null, user: $config['user'] ?? null, filter: $config['filter'] ?? null);
-        $profile = $this->createProfileInstance($config, $httpClient, $factory, $cachePool);
+        $profile = $this->createProfileForRepositoryScenario($name, $fixture, $config);
 
         foreach ($profile as $repository) {
             if ($fixture->getName() === $repository->getName()) {
@@ -90,6 +91,23 @@ abstract class ProfileTestCase extends TestCase
         }
 
         static::fail(sprintf('Repository for scenario "%1$s" not found in profile.', $name));
+    }
+
+    /**
+     * @group plan
+     *
+     * @dataProvider provideRepositoriesAttributeChange
+     *
+     * @param TConfig $config
+     */
+    public function testCanCreatePlanAttributeChanges(string $name, Repository $fixture, array $changes, array $config = []): void
+    {
+        $profile = $this->createProfileForRepositoryScenario($name, $fixture, $config);
+
+        $plan = $profile->plan($fixture);
+
+        static::assertSame($fixture->getName(), $plan->getResource()->getName());
+        static::assertSame($changes, $plan->getAttributeChanges());
     }
 
     /**
@@ -197,4 +215,17 @@ abstract class ProfileTestCase extends TestCase
     abstract protected function createRequest(?string $baseUrl, string $method, string $path): string;
 
     abstract protected function createHttpClientForRepositoryScenario(string $name, Repository $repository): ClientInterface;
+
+    /**
+     * @param TConfig $config
+     */
+    private function createProfileForRepositoryScenario(string $name, Repository $fixture, array $config): Profile
+    {
+        $httpClient = $this->createHttpClientForRepositoryScenario($name, $fixture);
+        $factory = $this->createTemplateFactory(attribute: $config['attribute'] ?? [], repositories: [$fixture]);
+        $cachePool = $this->createActiveCachePool();
+        $config = $this->createConfig(options: $config['options'] ?? null, attribute: $config['attribute'] ?? null, user: $config['user'] ?? null, filter: $config['filter'] ?? null);
+
+        return $this->createProfileInstance($config, $httpClient, $factory, $cachePool);
+    }
 }

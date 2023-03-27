@@ -34,6 +34,7 @@ use Sigwin\Ariadne\NamedResourceCollection;
 use Sigwin\Ariadne\Profile;
 use Sigwin\Ariadne\ProfileFactory;
 use Sigwin\Ariadne\ProfileTemplateFactory;
+use function PHPUnit\Framework\at;
 
 trait ModelGeneratorTrait
 {
@@ -50,25 +51,32 @@ trait ModelGeneratorTrait
     /**
      * @param array<Repository> $repositories
      */
-    protected function createTemplate(string $name, array $repositories = []): ProfileTemplate
+    protected function createTemplate(string $name, array $attribute = [], array $repositories = []): ProfileTemplate
     {
+        $evaluator = $this->getMockBuilder(Evaluator::class)->getMock();
+        $evaluator
+            ->method('evaluate')
+            ->willReturnCallback(function (string $expression, array $context) {
+                return $context[$expression] ?? $expression;
+            });
+
         return new ProfileTemplate(
             $name,
-            ProfileTemplateTarget::fromConfig(
-                ProfileTemplateTargetConfig::fromArray(['attribute' => []]),
-                $this->getMockBuilder(Evaluator::class)->getMock(),
-            ),
+            ProfileTemplateTarget::fromConfig(ProfileTemplateTargetConfig::fromArray(['attribute' => $attribute]), $evaluator),
             SortedNamedResourceCollection::fromArray($repositories),
         );
     }
 
-    protected function createTemplateFactory(): ProfileTemplateFactory
+    /**
+     * @param array<Repository> $repositories
+     */
+    protected function createTemplateFactory(array $attribute = [], array $repositories = []): ProfileTemplateFactory
     {
         $factory = $this->getMockBuilder(ProfileTemplateFactory::class)->getMock();
 
         $factory
             ->method('fromConfig')
-            ->willReturn($this->createTemplate('foo'))
+            ->willReturn($this->createTemplate('foo', attribute: $attribute, repositories: $repositories))
         ;
 
         return $factory;
@@ -113,7 +121,7 @@ trait ModelGeneratorTrait
     protected function createRepository(string $path, ?string $type = null, ?string $visibility = null, ?array $users = null, ?array $topics = null, ?array $languages = null): Repository
     {
         return new Repository(
-            ['path' => $path],
+            ['path' => $path, 'description' => 'ABC'],
             $type !== null ? RepositoryType::from($type) : RepositoryType::SOURCE,
             $visibility !== null ? RepositoryVisibility::from($visibility) : RepositoryVisibility::PUBLIC,
             $this->createUsers($users ?? []),
