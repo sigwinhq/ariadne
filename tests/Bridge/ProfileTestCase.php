@@ -104,10 +104,12 @@ abstract class ProfileTestCase extends TestCase
 
         static::assertSame($fixture->getName(), $plan->getResource()->getName());
 
-        $changes = [];
+        $planAttributeChanges = $plan->getAttributeChanges();
+        self::assertTrue(array_is_list($planAttributeChanges), 'Changes must be a list.');
 
         // deduplicate
-        foreach ($plan->getAttributeChanges() as $change) {
+        $changes = [];
+        foreach ($planAttributeChanges as $change) {
             $changes[$change->getResource()->getName()] = $change;
         }
 
@@ -118,9 +120,8 @@ abstract class ProfileTestCase extends TestCase
             }
         }
 
-        $actual = [];
-
         // replace the change object with the target value
+        $actual = [];
         foreach ($changes as $changeName => $change) {
             $actual[$changeName] = $change->expected;
         }

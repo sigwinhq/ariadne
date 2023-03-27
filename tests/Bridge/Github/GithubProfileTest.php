@@ -138,9 +138,11 @@ final class GithubProfileTest extends ProfileTestCase
         foreach ($this->provideValidAttributeValues() as $attribute) {
             $response[$attribute[0]] = $attribute[1];
         }
-        $change = ['description' => 'aaa'];
+        $repository = $this->createRepository('namespace1/repo1', response: $response);
 
-        yield [self::REPOSITORY_SCENARIO_BASIC, $this->createRepository('namespace1/repo1', response: $response), ['attribute' => $change], $change];
+        $config = ['attribute' => ['description' => 'AAA']];
+        $expected = ['description' => 'AAA'];
+        yield [self::REPOSITORY_SCENARIO_BASIC, $repository, $config, $expected];
     }
 
     protected function provideValidOptions(): iterable
