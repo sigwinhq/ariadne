@@ -28,7 +28,8 @@ use Sigwin\Ariadne\Test\ModelGeneratorTrait;
  * @psalm-type TAttribute = array<string, bool|int|string>
  * @psalm-type TUser = array<string, array{"username": string, "role": string}>
  * @psalm-type TFilter = array{languages?: list<string>}
- * @psalm-type TConfig = array{options?: TOptions, attribute?: TAttribute, user?: TUser, filter?: TFilter}
+ * @psalm-type TTemplate = array{name: string, filter: TFilter, target: array{attribute: TAttribute}}
+ * @psalm-type TConfig = array{templates?: list<TTemplate>, options?: TOptions, attribute?: TAttribute, user?: TUser, filter?: TFilter}
  */
 abstract class ProfileTestCase extends TestCase
 {
@@ -211,12 +212,13 @@ abstract class ProfileTestCase extends TestCase
     abstract protected function createProfileInstance(ProfileConfig $config, ClientInterface $client, ProfileTemplateFactory $factory, CacheItemPoolInterface $cachePool): Profile;
 
     /**
-     * @param null|TOptions   $options
-     * @param null|TAttribute $attribute
-     * @param null|TUser      $user
-     * @param null|TFilter    $filter
+     * @param null|list<TTemplate> $templates
+     * @param null|TOptions        $options
+     * @param null|TAttribute      $attribute
+     * @param null|TUser           $user
+     * @param null|TFilter         $filter
      */
-    abstract protected function createConfig(?string $url = null, ?array $options = null, ?array $attribute = null, ?array $user = null, ?array $filter = null): ProfileConfig;
+    abstract protected function createConfig(?string $url = null, ?array $templates = null, ?array $options = null, ?array $attribute = null, ?array $user = null, ?array $filter = null): ProfileConfig;
 
     abstract protected function createRequest(?string $baseUrl, string $method, string $path): string;
 
