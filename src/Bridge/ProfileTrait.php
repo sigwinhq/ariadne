@@ -49,16 +49,24 @@ trait ProfileTrait
 
     public function plan(Repository $repository): NamedResourceChangeCollection
     {
-        $changes = [];
+        $changesets = [];
         foreach ($this->getTemplates() as $template) {
             if ($template->contains($repository) === false) {
                 continue;
             }
 
-            $changes[] = $repository->createChangeForTemplate($template);
+            $changesets[] = $repository->createChangeForTemplate($template);
         }
 
-        return \Sigwin\Ariadne\Model\Change\NamedResourceArrayChangeCollection::fromResource($repository, $changes);
+        // flatten changes into a linear list
+        $changes = [];
+        foreach ($changesets as $changeset) {
+            foreach ($changeset as $change) {
+                $changes[$change->getResource()->getName()] = $change;
+            }
+        }
+
+        return \Sigwin\Ariadne\Model\Change\NamedResourceArrayChangeCollection::fromResource($repository, array_values($changes));
     }
 
     /**

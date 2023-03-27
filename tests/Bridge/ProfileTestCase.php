@@ -105,26 +105,20 @@ abstract class ProfileTestCase extends TestCase
         static::assertSame($fixture->getName(), $plan->getResource()->getName());
         static::assertSame(\count($expected) === 0, $plan->isActual());
 
-        $planAttributeChanges = $plan->getAttributeChanges();
-        static::assertTrue(array_is_list($planAttributeChanges), 'Changes must be a list.');
-
-        // deduplicate
-        $changes = [];
-        foreach ($planAttributeChanges as $change) {
-            $changes[$change->getResource()->getName()] = $change;
-        }
+        $changes = $plan->getAttributeChanges();
+        static::assertTrue(array_is_list($changes), 'Changes must be a list.');
 
         // filter out changes which are already actual
-        foreach ($changes as $changeName => $change) {
+        foreach ($changes as $idx => $change) {
             if ($change->isActual()) {
-                unset($changes[$changeName]);
+                unset($changes[$idx]);
             }
         }
 
         // replace the change object with the target value
         $actual = [];
-        foreach ($changes as $changeName => $change) {
-            $actual[$changeName] = $change->expected;
+        foreach ($changes as $change) {
+            $actual[$change->getResource()->getName()] = $change->expected;
         }
 
         static::assertSame($expected, $actual);
