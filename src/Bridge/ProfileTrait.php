@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne\Bridge;
 
-use Sigwin\Ariadne\Model\Collection\SortedNamedResourceCollection;
+use Sigwin\Ariadne\Model\Collection\UnsortedNamedResourceCollection;
 use Sigwin\Ariadne\Model\Config\ProfileTemplateConfig;
 use Sigwin\Ariadne\Model\ProfileSummary;
 use Sigwin\Ariadne\Model\ProfileTemplate;
@@ -87,7 +87,7 @@ trait ProfileTrait
             $templates[] = $this->templateFactory->fromConfig($config, $this->getRepositories());
         }
 
-        return SortedNamedResourceCollection::fromArray($templates);
+        return UnsortedNamedResourceCollection::fromArray($templates);
     }
 
     /**

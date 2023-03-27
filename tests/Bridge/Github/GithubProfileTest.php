@@ -34,6 +34,7 @@ use Sigwin\Ariadne\Test\Bridge\ProfileTestCase;
  * @uses \Sigwin\Ariadne\Model\Change\NamedResourceArrayChangeCollection
  * @uses \Sigwin\Ariadne\Model\Change\NamedResourceAttributeUpdate
  * @uses \Sigwin\Ariadne\Model\Collection\SortedNamedResourceCollection
+ * @uses \Sigwin\Ariadne\Model\Collection\UnsortedNamedResourceCollection
  * @uses \Sigwin\Ariadne\Model\Config\ProfileClientConfig
  * @uses \Sigwin\Ariadne\Model\Config\ProfileConfig
  * @uses \Sigwin\Ariadne\Model\Config\ProfileTemplateConfig
@@ -158,6 +159,16 @@ final class GithubProfileTest extends ProfileTestCase
             ],
         ];
         $expected = ['description' => 'AAA'];
+        yield [self::REPOSITORY_SCENARIO_BASIC, $repository, $config, $expected];
+
+        // multiple templates, will not sort templates by name
+        $config = [
+            'templates' => [
+                ['name' => 'ZZZZZ', 'target' => ['attribute' => ['has_wiki' => false]], 'filter' => []],
+                ['name' => 'AAAAA', 'target' => ['attribute' => ['has_wiki' => true]], 'filter' => []],
+            ],
+        ];
+        $expected = [];
         yield [self::REPOSITORY_SCENARIO_BASIC, $repository, $config, $expected];
     }
 

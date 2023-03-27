@@ -176,8 +176,23 @@
       <code>count</code>
     </PossiblyUnusedMethod>
   </file>
-  <file src="src/Model/Collection/SortedNamedResourceCollection.php">
+  <file src="src/Model/Collection/NamedResourceCollectionTrait.php">
+    <ImplementedReturnTypeMismatch>
+      <code>NamedResource</code>
+      <code>NamedResource</code>
+      <code>\Sigwin\Ariadne\NamedResourceCollection</code>
+      <code>\Sigwin\Ariadne\NamedResourceCollection</code>
+      <code>\Sigwin\Ariadne\NamedResourceCollection</code>
+      <code>\Sigwin\Ariadne\NamedResourceCollection</code>
+      <code>\Sigwin\Ariadne\NamedResourceCollection</code>
+      <code>\Sigwin\Ariadne\NamedResourceCollection</code>
+    </ImplementedReturnTypeMismatch>
+    <LessSpecificImplementedReturnType>
+      <code>\Traversable</code>
+      <code>\Traversable</code>
+    </LessSpecificImplementedReturnType>
     <PossiblyUnusedMethod>
+      <code>count</code>
       <code>count</code>
     </PossiblyUnusedMethod>
   </file>
