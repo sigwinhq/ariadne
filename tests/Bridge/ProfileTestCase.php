@@ -97,7 +97,7 @@ abstract class ProfileTestCase extends TestCase
      * @param array<string, bool|int|string> $expected
      * @param TConfig                        $config
      */
-    public function testCanCreatePlanAttributeChanges(string $name, Repository $fixture, array $expected, array $config = []): void
+    public function testCanCreatePlanAttributeChanges(string $name, Repository $fixture, array $config, array $expected): void
     {
         $profile = $this->createProfileForRepositoryScenario($name, $fixture, $config);
 
@@ -217,7 +217,7 @@ abstract class ProfileTestCase extends TestCase
     abstract protected function provideInvalidAttributeValues(): iterable;
 
     /**
-     * @return iterable<array-key, array{0: string, 1: Repository, 2: array<string, bool|int|string>, 3?: TConfig}>
+     * @return iterable<array-key, array{0: string, 1: Repository, 2: TConfig, 3: array<string, bool|int|string>}>
      */
     abstract protected function provideRepositoriesAttributeChange(): iterable;
 

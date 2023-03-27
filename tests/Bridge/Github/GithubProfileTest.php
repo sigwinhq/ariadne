@@ -138,7 +138,7 @@ final class GithubProfileTest extends ProfileTestCase
         }
         $change = ['description' => 'aaa'];
 
-        yield [self::REPOSITORY_SCENARIO_BASIC, $this->createRepository('namespace1/repo1', response: $response), $change, ['attribute' => $change]];
+        yield [self::REPOSITORY_SCENARIO_BASIC, $this->createRepository('namespace1/repo1', response: $response), ['attribute' => $change], $change];
     }
 
     protected function provideValidOptions(): iterable

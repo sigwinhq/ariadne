@@ -145,12 +145,12 @@ final class GitlabProfileTest extends ProfileTestCase
         // single template with a single target to change
         $config = ['attribute' => ['description' => 'AAA']];
         $expected = ['description' => 'AAA'];
-        yield [self::REPOSITORY_SCENARIO_BASIC, $repository, $expected, $config];
+        yield [self::REPOSITORY_SCENARIO_BASIC, $repository, $config, $expected];
 
         // single template with a multiple targets to change, one of them to actually change
         $config = ['attribute' => ['description' => 'AAA', 'wiki_enabled' => true]];
         $expected = ['description' => 'AAA'];
-        yield [self::REPOSITORY_SCENARIO_BASIC, $repository, $expected, $config];
+        yield [self::REPOSITORY_SCENARIO_BASIC, $repository, $config, $expected];
 
         // multiple templates, one does a change and then the next one undoes the change
         $config = [
@@ -161,7 +161,7 @@ final class GitlabProfileTest extends ProfileTestCase
             ],
         ];
         $expected = ['description' => 'AAA'];
-        yield [self::REPOSITORY_SCENARIO_BASIC, $repository, $expected, $config];
+        yield [self::REPOSITORY_SCENARIO_BASIC, $repository, $config, $expected];
     }
 
     protected function provideValidOptions(): iterable
