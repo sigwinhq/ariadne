@@ -101,18 +101,22 @@ abstract class ProfileTestCase extends TestCase
      *
      * @dataProvider provideRepositoriesAttributeChange
      *
-     * @param array<string, bool|int|string> $changes
+     * @param array<string, bool|int|string> $expected
      * @param TConfig                        $config
      */
-    public function testCanCreatePlanAttributeChanges(string $name, Repository $fixture, array $changes, array $config = []): void
+    public function testCanCreatePlanAttributeChanges(string $name, Repository $fixture, array $expected, array $config = []): void
     {
         $profile = $this->createProfileForRepositoryScenario($name, $fixture, $config);
 
         $plan = $profile->plan($fixture);
 
         static::assertSame($fixture->getName(), $plan->getResource()->getName());
-        static::assertNotEmpty($changes);
-        static::assertEmpty($plan->getAttributeChanges());
+
+        $actual = [];
+        foreach ($plan->getAttributeChanges() as $change) {
+            $actual[$change->getResource()->getName()] = $change->expected;
+        }
+        static::assertSame($expected, $actual);
     }
 
     /**

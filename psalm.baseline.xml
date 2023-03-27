@@ -32,14 +32,6 @@
       <code>ApplyCommand</code>
     </UnusedClass>
   </file>
-  <file src="src/Bridge/Symfony/Command/CommandTrait.php">
-    <LessSpecificReturnType>
-      <code>array</code>
-      <code>array</code>
-      <code><![CDATA[array<NamedResourceChangeCollection>]]></code>
-      <code><![CDATA[array<string>]]></code>
-    </LessSpecificReturnType>
-  </file>
   <file src="src/Bridge/Symfony/Command/DiffCommand.php">
     <UnusedClass>
       <code>DiffCommand</code>
