@@ -32,6 +32,9 @@ use Sigwin\Ariadne\Test\Bridge\ProfileTestCase;
  * @covers \Sigwin\Ariadne\Model\RepositoryUser
  * @covers \Sigwin\Ariadne\Model\RepositoryVisibility
  *
+ * @uses \Sigwin\Ariadne\Model\Attribute
+ * @uses \Sigwin\Ariadne\Model\Change\NamedResourceArrayChangeCollection
+ * @uses \Sigwin\Ariadne\Model\Change\NamedResourceAttributeUpdate
  * @uses \Sigwin\Ariadne\Model\Collection\SortedNamedResourceCollection
  * @uses \Sigwin\Ariadne\Model\Config\ProfileClientConfig
  * @uses \Sigwin\Ariadne\Model\Config\ProfileConfig

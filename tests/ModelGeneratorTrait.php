@@ -34,7 +34,6 @@ use Sigwin\Ariadne\NamedResourceCollection;
 use Sigwin\Ariadne\Profile;
 use Sigwin\Ariadne\ProfileFactory;
 use Sigwin\Ariadne\ProfileTemplateFactory;
-use function PHPUnit\Framework\at;
 
 trait ModelGeneratorTrait
 {
@@ -45,20 +44,22 @@ trait ModelGeneratorTrait
      */
     protected function createTemplates(array $list = []): NamedResourceCollection
     {
-        return SortedNamedResourceCollection::fromArray(array_map($this->createTemplate(...), array_column($list, 0), array_column($list, 1)));
+        return SortedNamedResourceCollection::fromArray(array_map($this->createTemplate(...), array_column($list, 0), [], array_column($list, 1)));
     }
 
     /**
-     * @param array<Repository> $repositories
+     * @param array<string, bool|int|string> $attribute
+     * @param array<Repository>              $repositories
      */
     protected function createTemplate(string $name, array $attribute = [], array $repositories = []): ProfileTemplate
     {
         $evaluator = $this->getMockBuilder(Evaluator::class)->getMock();
         $evaluator
             ->method('evaluate')
-            ->willReturnCallback(function (string $expression, array $context) {
+            ->willReturnCallback(static function (string $expression, array $context) {
                 return $context[$expression] ?? $expression;
-            });
+            })
+        ;
 
         return new ProfileTemplate(
             $name,
@@ -68,7 +69,8 @@ trait ModelGeneratorTrait
     }
 
     /**
-     * @param array<Repository> $repositories
+     * @param array<string, bool|int|string> $attribute
+     * @param array<Repository>              $repositories
      */
     protected function createTemplateFactory(array $attribute = [], array $repositories = []): ProfileTemplateFactory
     {
