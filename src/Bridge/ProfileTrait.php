@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne\Bridge;
 
-use Sigwin\Ariadne\Model\Collection\SortedNamedResourceCollection;
+use Sigwin\Ariadne\Model\Collection\UnsortedNamedResourceCollection;
 use Sigwin\Ariadne\Model\Config\ProfileTemplateConfig;
 use Sigwin\Ariadne\Model\ProfileSummary;
 use Sigwin\Ariadne\Model\ProfileTemplate;
@@ -49,16 +49,24 @@ trait ProfileTrait
 
     public function plan(Repository $repository): NamedResourceChangeCollection
     {
-        $changes = [];
+        $changesets = [];
         foreach ($this->getTemplates() as $template) {
             if ($template->contains($repository) === false) {
                 continue;
             }
 
-            $changes[] = $repository->createChangeForTemplate($template);
+            $changesets[] = $repository->createChangeForTemplate($template);
         }
 
-        return \Sigwin\Ariadne\Model\Change\NamedResourceArrayChangeCollection::fromResource($repository, $changes);
+        // flatten changes into a linear list
+        $changes = [];
+        foreach ($changesets as $changeset) {
+            foreach ($changeset as $change) {
+                $changes[$change->getResource()->getName()] = $change;
+            }
+        }
+
+        return \Sigwin\Ariadne\Model\Change\NamedResourceArrayChangeCollection::fromResource($repository, array_values($changes));
     }
 
     /**
@@ -79,7 +87,7 @@ trait ProfileTrait
             $templates[] = $this->templateFactory->fromConfig($config, $this->getRepositories());
         }
 
-        return SortedNamedResourceCollection::fromArray($templates);
+        return UnsortedNamedResourceCollection::fromArray($templates);
     }
 
     /**

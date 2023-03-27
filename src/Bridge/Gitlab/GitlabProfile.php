@@ -164,7 +164,11 @@ final class GitlabProfile implements Profile
         /** @var Repository $repository */
         $repository = $plan->getResource();
 
-        $this->client->projects()->update($repository->id, $plan->getAttributeChanges());
+        $attributes = [];
+        foreach ($plan->getAttributeChanges() as $change) {
+            $attributes[$change->getResource()->getName()] = $change->expected;
+        }
+        $this->client->projects()->update($repository->id, $attributes);
     }
 
     /**

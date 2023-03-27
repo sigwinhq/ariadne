@@ -20,11 +20,9 @@ use Sigwin\Ariadne\NamedResource;
  *
  * @implements \Sigwin\Ariadne\NamedResourceCollection<T>
  */
-final class SortedNamedResourceCollection implements \Sigwin\Ariadne\NamedResourceCollection
+final class UnsortedNamedResourceCollection implements \Sigwin\Ariadne\NamedResourceCollection
 {
-    /**
-     * @use NamedResourceCollectionTrait<T>
-     */
+    /** @use NamedResourceCollectionTrait<T> */
     use NamedResourceCollectionTrait;
 
     /**
@@ -36,8 +34,6 @@ final class SortedNamedResourceCollection implements \Sigwin\Ariadne\NamedResour
         foreach ($resources as $resource) {
             $items[$resource->getName()] = $resource;
         }
-        ksort($items);
-
         $this->items = $items;
     }
 }

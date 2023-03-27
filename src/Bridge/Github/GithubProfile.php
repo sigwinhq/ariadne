@@ -99,7 +99,11 @@ final class GithubProfile implements Profile
         }
         [$username, $repository] = $parts;
 
-        $this->client->repositories()->update($username, $repository, $plan->getAttributeChanges());
+        $attributes = [];
+        foreach ($plan->getAttributeChanges() as $change) {
+            $attributes[$change->getResource()->getName()] = $change->expected;
+        }
+        $this->client->repositories()->update($username, $repository, $attributes);
     }
 
     /**
