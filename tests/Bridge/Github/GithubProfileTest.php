@@ -191,13 +191,20 @@ final class GithubProfileTest extends ProfileTestCase
 
     protected function createConfig(?string $url = null, ?array $templates = null, ?array $options = null, ?array $attribute = null, ?array $user = null, ?array $filter = null): ProfileConfig
     {
+        $spec = ['name' => 'foo', 'filter' => $filter ?? [], 'target' => ['attribute' => $attribute ?? [], 'user' => $user ?? []]];
+        if ($templates !== null) {
+            foreach ($templates as $i => $template) {
+                $templates[$i] = array_replace_recursive($spec, $template);
+            }
+        } else {
+            $templates = [$spec];
+        }
+
         $config = [
             'type' => 'github',
             'name' => 'GH',
             'client' => ['auth' => ['token' => 'ABC', 'type' => 'access_token_header'], 'options' => $options ?? []],
-            'templates' => $templates ?? [
-                ['name' => 'foo', 'filter' => $filter ?? [], 'target' => ['attribute' => $attribute ?? [], 'user' => $user ?? []]],
-            ],
+            'templates' => $templates,
         ];
         if ($url !== null) {
             $config['client']['url'] = $url;

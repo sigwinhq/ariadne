@@ -229,11 +229,17 @@ abstract class ProfileTestCase extends TestCase
      */
     private function createProfileForRepositoryScenario(string $name, Repository $fixture, array $config): Profile
     {
-        $httpClient = $this->createHttpClientForRepositoryScenario($name, $fixture);
-        $factory = $this->createTemplateFactory(attribute: $config['attribute'] ?? [], repositories: [[$fixture]]);
-        $cachePool = $this->createActiveCachePool();
-        $config = $this->createConfig(options: $config['options'] ?? null, attribute: $config['attribute'] ?? null, user: $config['user'] ?? null, filter: $config['filter'] ?? null);
+        $profileConfig = $this->createConfig(templates: $config['templates'] ?? null, options: $config['options'] ?? null, attribute: $config['attribute'] ?? null, user: $config['user'] ?? null, filter: $config['filter'] ?? null);
+        $attributes = [];
+        foreach ($profileConfig->templates as $template) {
+            $attributes[] = $template->target->attribute;
+        }
+        $repositories = array_fill(0, \count($profileConfig->templates), [$fixture]);
 
-        return $this->createProfileInstance($config, $httpClient, $factory, $cachePool);
+        $httpClient = $this->createHttpClientForRepositoryScenario($name, $fixture);
+        $factory = $this->createTemplateFactory(attributes: $attributes, repositories: $repositories);
+        $cachePool = $this->createActiveCachePool();
+
+        return $this->createProfileInstance($profileConfig, $httpClient, $factory, $cachePool);
     }
 }

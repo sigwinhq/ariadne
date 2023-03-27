@@ -57,7 +57,7 @@ trait ModelGeneratorTrait
         $evaluator = $this->getMockBuilder(Evaluator::class)->getMock();
         $evaluator
             ->method('evaluate')
-            ->willReturnCallback(static function (string $expression, array $context) {
+            ->willReturnCallback(static function (bool|int|string $expression, array $context) {
                 return $context[$expression] ?? $expression;
             })
         ;
@@ -70,18 +70,21 @@ trait ModelGeneratorTrait
     }
 
     /**
-     * @param array<string, bool|int|string> $attribute
+     * @param list<array<string, bool|int|string>> $attribute
      * @param list<list{Repository}>        $repositories
      */
-    protected function createTemplateFactory(array $attribute = [], array $repositories = []): ProfileTemplateFactory
+    protected function createTemplateFactory(array $attributes = [], array $repositories = []): ProfileTemplateFactory
     {
         $factory = $this->getMockBuilder(ProfileTemplateFactory::class)->getMock();
 
         $idx = 0;
         $factory
             ->method('fromConfig')
-            ->willReturnCallback(function (ProfileTemplateConfig $config) use (&$idx, $attribute, $repositories): ProfileTemplate {
-                return $this->createTemplate($config->name, $attribute, $repositories[$idx++] ?? []);
+            ->willReturnCallback(function (ProfileTemplateConfig $config) use (&$idx, $attributes, $repositories): ProfileTemplate {
+                $template = $this->createTemplate($config->name, $attributes[$idx] ?? [], $repositories[$idx] ?? []);
+                $idx++;
+
+                return $template;
             })
         ;
 
