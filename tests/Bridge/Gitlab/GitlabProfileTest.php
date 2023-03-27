@@ -47,6 +47,8 @@ use Sigwin\Ariadne\Test\Bridge\ProfileTestCase;
  * @uses \Sigwin\Ariadne\Model\ProfileUser
  *
  * @small
+ *
+ * @psalm-import-type TTemplate from ProfileTestCase
  */
 final class GitlabProfileTest extends ProfileTestCase
 {
@@ -155,9 +157,9 @@ final class GitlabProfileTest extends ProfileTestCase
         // multiple templates, one does a change and then the next one undoes the change
         $config = [
             'templates' => [
-                ['name' => 'disable wikis', 'target' => ['attribute' => ['description' => 'AAA', 'wiki_enabled' => false]]],
-                ['name' => 'disable packages', 'target' => ['attribute' => ['description' => 'AAA', 'packages_enabled' => false]]],
-                ['name' => 'enable stuff back as it was', 'target' => ['attribute' => ['wiki_enabled' => true, 'packages_enabled' => true]]],
+                ['name' => 'disable wikis', 'target' => ['attribute' => ['description' => 'AAA', 'wiki_enabled' => false]], 'filter' => []],
+                ['name' => 'disable packages', 'target' => ['attribute' => ['description' => 'AAA', 'packages_enabled' => false]], 'filter' => []],
+                ['name' => 'enable stuff back as it was', 'target' => ['attribute' => ['wiki_enabled' => true, 'packages_enabled' => true]], 'filter' => []],
             ],
         ];
         $expected = ['description' => 'AAA'];
@@ -239,9 +241,12 @@ final class GitlabProfileTest extends ProfileTestCase
     {
         $spec = ['name' => 'foo', 'filter' => $filter ?? [], 'target' => ['attribute' => $attribute ?? [], 'user' => $user ?? []]];
         if ($templates !== null) {
-            foreach ($templates as $i => $template) {
-                $templates[$i] = array_replace_recursive($spec, $template);
+            $specs = [];
+            foreach ($templates as $template) {
+                $specs[] = array_replace_recursive($spec, $template);
             }
+            /** @var list<TTemplate> $templates */
+            $templates = $specs;
         } else {
             $templates = [$spec];
         }

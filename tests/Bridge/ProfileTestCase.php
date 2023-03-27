@@ -100,25 +100,29 @@ abstract class ProfileTestCase extends TestCase
     public function testCanCreatePlanAttributeChanges(string $name, Repository $fixture, array $config, array $expected): void
     {
         $profile = $this->createProfileForRepositoryScenario($name, $fixture, $config);
-
         $plan = $profile->plan($fixture);
 
         static::assertSame($fixture->getName(), $plan->getResource()->getName());
 
-        $actual = [];
+        $changes = [];
 
         // deduplicate
         foreach ($plan->getAttributeChanges() as $change) {
-            $actual[$change->getResource()->getName()] = $change;
+            $changes[$change->getResource()->getName()] = $change;
         }
 
-        // only use the
-        foreach ($actual as $name => $change) {
+        // filter out changes which are already actual
+        foreach ($changes as $changeName => $change) {
             if ($change->isActual()) {
-                unset($actual[$name]);
-            } else {
-                $actual[$name] = $change->expected;
+                unset($changes[$changeName]);
             }
+        }
+
+        $actual = [];
+
+        // replace the change object with the target value
+        foreach ($changes as $changeName => $change) {
+            $actual[$changeName] = $change->expected;
         }
 
         static::assertSame($expected, $actual);

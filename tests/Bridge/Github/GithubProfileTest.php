@@ -47,6 +47,8 @@ use Sigwin\Ariadne\Test\Bridge\ProfileTestCase;
  * @internal
  *
  * @small
+ *
+ * @psalm-import-type TTemplate from ProfileTestCase
  */
 final class GithubProfileTest extends ProfileTestCase
 {
@@ -193,9 +195,12 @@ final class GithubProfileTest extends ProfileTestCase
     {
         $spec = ['name' => 'foo', 'filter' => $filter ?? [], 'target' => ['attribute' => $attribute ?? [], 'user' => $user ?? []]];
         if ($templates !== null) {
-            foreach ($templates as $i => $template) {
-                $templates[$i] = array_replace_recursive($spec, $template);
+            $specs = [];
+            foreach ($templates as $template) {
+                $specs[] = array_replace_recursive($spec, $template);
             }
+            /** @var list<TTemplate> $templates */
+            $templates = $specs;
         } else {
             $templates = [$spec];
         }

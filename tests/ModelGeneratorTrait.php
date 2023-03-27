@@ -70,7 +70,7 @@ trait ModelGeneratorTrait
     }
 
     /**
-     * @param list<array<string, bool|int|string>> $attribute
+     * @param list<array<string, bool|int|string>> $attributes
      * @param list<list{Repository}>        $repositories
      */
     protected function createTemplateFactory(array $attributes = [], array $repositories = []): ProfileTemplateFactory
