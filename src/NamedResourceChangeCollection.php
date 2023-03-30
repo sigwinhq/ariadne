@@ -24,6 +24,8 @@ interface NamedResourceChangeCollection extends \Countable, \IteratorAggregate, 
     /**
      * @param TResource      $resource
      * @param list<TChanges> $changes
+     *
+     * @return self<TResource, TChanges>
      */
     public static function fromResource(NamedResource $resource, array $changes): self;
 
