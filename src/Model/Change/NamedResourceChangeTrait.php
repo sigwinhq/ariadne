@@ -18,23 +18,32 @@ use Sigwin\Ariadne\Model\Repository;
 use Sigwin\Ariadne\NamedResource;
 use Sigwin\Ariadne\NamedResourceChange;
 
+/**
+ * @template TResource of NamedResource
+ * @template TChanges of NamedResourceChange
+ */
 trait NamedResourceChangeTrait
 {
     /**
-     * @param array<NamedResourceChange> $changes
+     * @param array<TChanges> $changes
+     *
+     * @return self<TResource, TChanges>
      */
     public static function fromResource(NamedResource $resource, array $changes): self
     {
         return new self($resource, NamedResourceArrayChangeCollection::fromResource($resource, $changes));
     }
 
+    /**
+     * @return TResource
+     */
     public function getResource(): NamedResource
     {
         return $this->resource;
     }
 
     /**
-     * @return \Traversable<NamedResourceChange>
+     * @return \Traversable<TChanges>
      */
     public function getIterator(): \Traversable
     {
@@ -57,6 +66,9 @@ trait NamedResourceChangeTrait
         return true;
     }
 
+    /**
+     * @return self<TResource, TChanges>
+     */
     public function filter(string $type): self
     {
         $changes = [];
