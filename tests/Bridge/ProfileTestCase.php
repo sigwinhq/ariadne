@@ -17,6 +17,7 @@ use PHPUnit\Framework\TestCase;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
+use Sigwin\Ariadne\Model\Change\NamedResourceAttributeUpdate;
 use Sigwin\Ariadne\Model\Config\ProfileConfig;
 use Sigwin\Ariadne\Model\Repository;
 use Sigwin\Ariadne\Profile;
@@ -105,7 +106,7 @@ abstract class ProfileTestCase extends TestCase
         static::assertSame($fixture->getName(), $plan->getResource()->getName());
         static::assertSame(\count($expected) === 0, $plan->isActual());
 
-        $changes = $plan->getAttributeChanges();
+        $changes = iterator_to_array($plan->filter(NamedResourceAttributeUpdate::class));
         static::assertTrue(array_is_list($changes), 'Changes must be a list.');
 
         // filter out changes which are already actual

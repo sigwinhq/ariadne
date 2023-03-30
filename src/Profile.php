@@ -48,7 +48,13 @@ interface Profile extends \IteratorAggregate
      */
     public function getMatchingTemplates(Repository $repository): NamedResourceCollection;
 
+    /**
+     * @return NamedResourceChangeCollection<Repository, NamedResourceChange>
+     */
     public function plan(Repository $repository): NamedResourceChangeCollection;
 
+    /**
+     * @param NamedResourceChangeCollection<Repository, NamedResourceChange> $plan
+     */
     public function apply(NamedResourceChangeCollection $plan): void;
 }

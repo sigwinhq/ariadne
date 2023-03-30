@@ -13,20 +13,24 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne;
 
-use Sigwin\Ariadne\Model\Change\NamedResourceAttributeUpdate;
-
 /**
- * @extends \IteratorAggregate<NamedResourceChange>
+ * @template TResource of NamedResource
+ * @template TChanges of NamedResourceChange
+ *
+ * @extends \IteratorAggregate<TChanges>
  */
 interface NamedResourceChangeCollection extends \Countable, \IteratorAggregate, NamedResourceChange
 {
     /**
-     * @param array<NamedResourceChange> $changes
+     * @param TResource      $resource
+     * @param list<TChanges> $changes
      */
     public static function fromResource(NamedResource $resource, array $changes): self;
 
     /**
-     * @return array<NamedResourceAttributeUpdate>
+     * @param class-string<TChanges> $type
+     *
+     * @return self<TResource, TChanges>
      */
-    public function getAttributeChanges(): array;
+    public function filter(string $type): self;
 }

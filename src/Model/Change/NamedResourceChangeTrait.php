@@ -57,10 +57,7 @@ trait NamedResourceChangeTrait
         return true;
     }
 
-    /**
-     * @return array<NamedResourceAttributeUpdate>
-     */
-    public function getAttributeChanges(): array
+    public function filter(string $type): self
     {
         $changes = [];
         foreach ($this->changes as $change) {
@@ -70,15 +67,14 @@ trait NamedResourceChangeTrait
                     // unfortunate corner case: treat template and repository as the same resource since they both apply to the repository
                     continue;
                 }
-                $changes = array_merge($changes, $change->getAttributeChanges());
+                $changes = array_merge($changes, iterator_to_array($change->filter($type)));
             }
 
-            if ($change instanceof NamedResourceAttributeUpdate === false) {
-                continue;
+            if ($change instanceof NamedResourceAttributeUpdate) {
+                $changes[$resource->getName()] = $change;
             }
-            $changes[$resource->getName()] = $change;
         }
 
-        return array_values($changes);
+        return self::fromResource($this->resource, array_values($changes));
     }
 }

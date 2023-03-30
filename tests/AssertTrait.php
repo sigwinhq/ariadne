@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne\Test;
 
+use Sigwin\Ariadne\Model\Change\NamedResourceAttributeUpdate;
 use Sigwin\Ariadne\NamedResource;
 use Sigwin\Ariadne\NamedResourceChangeCollection;
 
@@ -35,6 +36,6 @@ trait AssertTrait
         static::assertSame([], iterator_to_array($change));
         static::assertCount(0, $change);
         static::assertTrue($change->isActual());
-        static::assertSame([], $change->getAttributeChanges());
+        static::assertSame([], iterator_to_array($change->filter(NamedResourceAttributeUpdate::class)));
     }
 }
