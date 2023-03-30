@@ -15,6 +15,7 @@ namespace Sigwin\Ariadne\Test;
 
 use Sigwin\Ariadne\Model\Change\NamedResourceAttributeUpdate;
 use Sigwin\Ariadne\NamedResource;
+use Sigwin\Ariadne\NamedResourceChange;
 use Sigwin\Ariadne\NamedResourceChangeCollection;
 
 trait AssertTrait
@@ -30,6 +31,9 @@ trait AssertTrait
         static::assertSame($expected, $actual);
     }
 
+    /**
+     * @param NamedResourceChangeCollection<NamedResource, NamedResourceChange> $change
+     */
     protected static function assertNamedResourceChangeCollectionIsEmpty(NamedResource $resource, NamedResourceChangeCollection $change): void
     {
         static::assertSame($resource, $change->getResource());
