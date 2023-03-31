@@ -20,15 +20,18 @@ use Sigwin\Ariadne\NamedResourceChange;
 
 /**
  * @template TResource of NamedResource
- * @template TChanges of NamedResourceChange
+ * @template TChange of NamedResourceChange
  */
 trait NamedResourceChangeTrait
 {
     /**
-     * @param TResource       $resource
-     * @param array<TChanges> $changes
+     * @template STResource of NamedResource
+     * @template STChange of NamedResourceChange
      *
-     * @return self<TResource, TChanges>
+     * @param STResource      $resource
+     * @param array<STChange> $changes
+     *
+     * @return self<STResource, STChange>
      */
     public static function fromResource(NamedResource $resource, array $changes): self
     {
@@ -44,7 +47,7 @@ trait NamedResourceChangeTrait
     }
 
     /**
-     * @return \Traversable<TChanges>
+     * @return \Traversable<TChange>
      */
     public function getIterator(): \Traversable
     {
@@ -68,7 +71,7 @@ trait NamedResourceChangeTrait
     }
 
     /**
-     * @return self<TResource, TChanges>
+     * @return self<TResource, TChange>
      */
     public function filter(string $type): self
     {

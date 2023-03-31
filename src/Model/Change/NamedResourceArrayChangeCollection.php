@@ -19,19 +19,20 @@ use Sigwin\Ariadne\NamedResourceChangeCollection;
 
 /**
  * @template TResource of NamedResource
- * @template TChanges of NamedResourceChange
+ * @template TChange of NamedResourceChange
  *
- * @implements NamedResourceChangeCollection<TResource, TChanges>
+ * @implements NamedResourceChangeCollection<TResource, TChange>
  */
 final class NamedResourceArrayChangeCollection implements NamedResourceChangeCollection
 {
     /**
-     * @use NamedResourceChangeTrait<TResource, TChanges>
+     * @use NamedResourceChangeTrait<TResource, TChange>
      */
     use NamedResourceChangeTrait;
 
     /**
-     * @param list<TChanges> $changes
+     * @param TResource     $resource
+     * @param list<TChange> $changes
      */
     private function __construct(private readonly NamedResource $resource, private readonly array $changes)
     {

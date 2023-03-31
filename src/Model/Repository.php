@@ -103,6 +103,8 @@ final class Repository implements NamedResource
     /**
      * @template T of NamedResource
      *
+     * @param-out array<\Sigwin\Ariadne\NamedResourceChange> $changes
+     *
      * @param array<\Sigwin\Ariadne\NamedResourceChange> $changes
      * @param NamedResourceCollection<T>                 $expected
      * @param NamedResourceCollection<T>                 $actual

@@ -36,7 +36,6 @@
     <LessSpecificReturnType>
       <code>array</code>
       <code>array</code>
-      <code><![CDATA[array<NamedResourceChangeCollection>]]></code>
       <code><![CDATA[array<string>]]></code>
     </LessSpecificReturnType>
   </file>
