@@ -105,6 +105,9 @@ final class AriadneStyle extends SymfonyStyle
         }
     }
 
+    /**
+     * @param NamedResourceChangeCollection<\Sigwin\Ariadne\NamedResource, NamedResourceChange> $change
+     */
     public function diff(NamedResourceChangeCollection $change): void
     {
         $this->diffCollection($change);

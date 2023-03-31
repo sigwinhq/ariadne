@@ -25,6 +25,7 @@ use Sigwin\Ariadne\NamedResourceChange;
 trait NamedResourceChangeTrait
 {
     /**
+     * @param TResource       $resource
      * @param array<TChanges> $changes
      *
      * @return self<TResource, TChanges>

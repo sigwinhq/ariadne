@@ -25,6 +25,9 @@ use Sigwin\Ariadne\NamedResourceChangeCollection;
  */
 final class NamedResourceUpdate implements NamedResourceChangeCollection
 {
+    /**
+     * @use NamedResourceChangeTrait<TResource, TChanges>
+     */
     use NamedResourceChangeTrait;
 
     /**

@@ -53,7 +53,7 @@ trait CommandTrait
     }
 
     /**
-     * @return array<NamedResourceChangeCollection>
+     * @return list<NamedResourceChangeCollection<\Sigwin\Ariadne\Model\Repository, \Sigwin\Ariadne\NamedResourceChange>>
      */
     private function renderPlans(Profile $profile, AriadneStyle $style): array
     {

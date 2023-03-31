@@ -15,24 +15,27 @@ namespace Sigwin\Ariadne;
 
 /**
  * @template TResource of NamedResource
- * @template TChanges of NamedResourceChange
+ * @template TChange of NamedResourceChange
  *
- * @extends \IteratorAggregate<TChanges>
+ * @extends \IteratorAggregate<TChange>
  */
 interface NamedResourceChangeCollection extends \Countable, \IteratorAggregate, NamedResourceChange
 {
     /**
-     * @param TResource      $resource
-     * @param list<TChanges> $changes
+     * @template STResource of NamedResource
+     * @template STChange of NamedResourceChange
      *
-     * @return self<TResource, TChanges>
+     * @param STResource     $resource
+     * @param list<STChange> $changes
+     *
+     * @return self<STResource, STChange>
      */
     public static function fromResource(NamedResource $resource, array $changes): self;
 
     /**
-     * @param class-string<TChanges> $type
+     * @param class-string<TChange> $type
      *
-     * @return self<TResource, TChanges>
+     * @return self<TResource, TChange>
      */
     public function filter(string $type): self;
 }
