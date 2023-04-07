@@ -18,23 +18,36 @@ use Sigwin\Ariadne\Model\Repository;
 use Sigwin\Ariadne\NamedResource;
 use Sigwin\Ariadne\NamedResourceChange;
 
+/**
+ * @template TResource of NamedResource
+ * @template TChange of NamedResourceChange
+ */
 trait NamedResourceChangeTrait
 {
     /**
-     * @param array<NamedResourceChange> $changes
+     * @template STResource of NamedResource
+     * @template STChange of NamedResourceChange
+     *
+     * @param STResource      $resource
+     * @param array<STChange> $changes
+     *
+     * @return self<STResource, STChange>
      */
     public static function fromResource(NamedResource $resource, array $changes): self
     {
         return new self($resource, NamedResourceArrayChangeCollection::fromResource($resource, $changes));
     }
 
+    /**
+     * @return TResource
+     */
     public function getResource(): NamedResource
     {
         return $this->resource;
     }
 
     /**
-     * @return \Traversable<NamedResourceChange>
+     * @return \Traversable<TChange>
      */
     public function getIterator(): \Traversable
     {
@@ -58,9 +71,11 @@ trait NamedResourceChangeTrait
     }
 
     /**
-     * @return array<NamedResourceAttributeUpdate>
+     * @param class-string<TChange> $type
+     *
+     * @return self<TResource, TChange>
      */
-    public function getAttributeChanges(): array
+    public function filter(string $type): self
     {
         $changes = [];
         foreach ($this->changes as $change) {
@@ -70,15 +85,14 @@ trait NamedResourceChangeTrait
                     // unfortunate corner case: treat template and repository as the same resource since they both apply to the repository
                     continue;
                 }
-                $changes = array_merge($changes, $change->getAttributeChanges());
+                $changes = array_merge($changes, iterator_to_array($change->filter($type)));
             }
 
-            if ($change instanceof NamedResourceAttributeUpdate === false) {
-                continue;
+            if ($change instanceof NamedResourceAttributeUpdate) {
+                $changes[$resource->getName()] = $change;
             }
-            $changes[$resource->getName()] = $change;
         }
 
-        return array_values($changes);
+        return self::fromResource($this->resource, array_values($changes));
     }
 }

@@ -19,6 +19,7 @@ use Sigwin\Ariadne\Model\Change\NamedResourceCreate;
 use Sigwin\Ariadne\Model\Change\NamedResourceDelete;
 use Sigwin\Ariadne\Model\Change\NamedResourceUpdate;
 use Sigwin\Ariadne\NamedResource;
+use Sigwin\Ariadne\NamedResourceChange;
 use Sigwin\Ariadne\NamedResourceChangeCollection;
 use Sigwin\Ariadne\NamedResourceCollection;
 
@@ -42,6 +43,9 @@ final class Repository implements NamedResource
     ) {
     }
 
+    /**
+     * @return NamedResourceChangeCollection<ProfileTemplate, NamedResourceChange>
+     */
     public function createChangeForTemplate(ProfileTemplate $template): NamedResourceChangeCollection
     {
         $changes = [];
@@ -98,6 +102,8 @@ final class Repository implements NamedResource
 
     /**
      * @template T of NamedResource
+     *
+     * @param-out array<\Sigwin\Ariadne\NamedResourceChange> $changes
      *
      * @param array<\Sigwin\Ariadne\NamedResourceChange> $changes
      * @param NamedResourceCollection<T>                 $expected

@@ -4,6 +4,12 @@
     <LessSpecificReturnType>
       <code><![CDATA[array<string, array{access: RepositoryAttributeAccess}>]]></code>
     </LessSpecificReturnType>
+    <MixedAssignment>
+      <code><![CDATA[$attributes[$change->getResource()->getName()]]]></code>
+    </MixedAssignment>
+    <NoInterfaceProperties>
+      <code><![CDATA[$change->expected]]></code>
+    </NoInterfaceProperties>
     <PropertyNotSetInConstructor>
       <code>GithubProfile</code>
     </PropertyNotSetInConstructor>
@@ -15,6 +21,12 @@
     <LessSpecificReturnType>
       <code><![CDATA[array<string, array{access: RepositoryAttributeAccess}>]]></code>
     </LessSpecificReturnType>
+    <MixedAssignment>
+      <code><![CDATA[$attributes[$change->getResource()->getName()]]]></code>
+    </MixedAssignment>
+    <NoInterfaceProperties>
+      <code><![CDATA[$change->expected]]></code>
+    </NoInterfaceProperties>
     <PropertyNotSetInConstructor>
       <code>GitlabProfile</code>
     </PropertyNotSetInConstructor>
@@ -23,6 +35,9 @@
     </RedundantPropertyInitializationCheck>
   </file>
   <file src="src/Bridge/ProfileTrait.php">
+    <LessSpecificImplementedReturnType>
+      <code>NamedResourceChangeCollection</code>
+    </LessSpecificImplementedReturnType>
     <LessSpecificReturnType>
       <code><![CDATA[array<string>]]></code>
     </LessSpecificReturnType>
@@ -33,10 +48,12 @@
     </UnusedClass>
   </file>
   <file src="src/Bridge/Symfony/Command/CommandTrait.php">
+    <InvalidArgument>
+      <code>$plan</code>
+    </InvalidArgument>
     <LessSpecificReturnType>
       <code>array</code>
       <code>array</code>
-      <code><![CDATA[array<NamedResourceChangeCollection>]]></code>
       <code><![CDATA[array<string>]]></code>
     </LessSpecificReturnType>
   </file>
@@ -169,6 +186,14 @@
     </UnusedClass>
   </file>
   <file src="src/Model/Change/NamedResourceChangeTrait.php">
+    <ArgumentTypeCoercion>
+      <code>$changes</code>
+    </ArgumentTypeCoercion>
+    <MixedReturnTypeCoercion>
+      <code><![CDATA[self<STResource, STChange>]]></code>
+      <code><![CDATA[self<STResource, STChange>]]></code>
+      <code><![CDATA[self<STResource, STChange>]]></code>
+    </MixedReturnTypeCoercion>
     <PossiblyUnusedMethod>
       <code>count</code>
       <code>count</code>
@@ -208,6 +233,9 @@
     </UnusedParam>
   </file>
   <file src="src/Model/Repository.php">
+    <ArgumentTypeCoercion>
+      <code>$changes</code>
+    </ArgumentTypeCoercion>
     <LessSpecificReturnType>
       <code>?array</code>
     </LessSpecificReturnType>
@@ -221,6 +249,14 @@
     <PossiblyUnusedReturnValue>
       <code>Profile</code>
     </PossiblyUnusedReturnValue>
+  </file>
+  <file src="tests/Bridge/ProfileTestCase.php">
+    <MixedAssignment>
+      <code><![CDATA[$actual[$change->getResource()->getName()]]]></code>
+    </MixedAssignment>
+    <NoInterfaceProperties>
+      <code><![CDATA[$change->expected]]></code>
+    </NoInterfaceProperties>
   </file>
   <file src="tests/Bridge/Symfony/Console/Style/AriadneStyleTest.php">
     <LessSpecificReturnType>

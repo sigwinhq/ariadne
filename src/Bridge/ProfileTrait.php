@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne\Bridge;
 
+use Sigwin\Ariadne\Model\Change\NamedResourceArrayChangeCollection;
 use Sigwin\Ariadne\Model\Collection\UnsortedNamedResourceCollection;
 use Sigwin\Ariadne\Model\Config\ProfileTemplateConfig;
 use Sigwin\Ariadne\Model\ProfileSummary;
@@ -66,7 +67,7 @@ trait ProfileTrait
             }
         }
 
-        return \Sigwin\Ariadne\Model\Change\NamedResourceArrayChangeCollection::fromResource($repository, array_values($changes));
+        return NamedResourceArrayChangeCollection::fromResource($repository, array_values($changes));
     }
 
     /**
@@ -106,7 +107,8 @@ trait ProfileTrait
                     }
 
                     throw new \InvalidArgumentException($message);
-                } elseif ($attributes[$attribute]['access'] !== RepositoryAttributeAccess::READ_WRITE) {
+                }
+                if ($attributes[$attribute]['access'] !== RepositoryAttributeAccess::READ_WRITE) {
                     throw new \InvalidArgumentException(sprintf('Attribute "%1$s" is read-only.', $attribute));
                 }
             }

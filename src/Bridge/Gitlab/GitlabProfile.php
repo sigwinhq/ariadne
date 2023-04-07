@@ -19,6 +19,7 @@ use Gitlab\ResultPager;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Client\ClientInterface;
 use Sigwin\Ariadne\Bridge\ProfileTrait;
+use Sigwin\Ariadne\Model\Change\NamedResourceAttributeUpdate;
 use Sigwin\Ariadne\Model\Collection\SortedNamedResourceCollection;
 use Sigwin\Ariadne\Model\Config\ProfileConfig;
 use Sigwin\Ariadne\Model\ProfileUser;
@@ -165,7 +166,7 @@ final class GitlabProfile implements Profile
         $repository = $plan->getResource();
 
         $attributes = [];
-        foreach ($plan->getAttributeChanges() as $change) {
+        foreach ($plan->filter(NamedResourceAttributeUpdate::class) as $change) {
             $attributes[$change->getResource()->getName()] = $change->expected;
         }
         $this->client->projects()->update($repository->id, $attributes);

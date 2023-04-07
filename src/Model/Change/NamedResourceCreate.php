@@ -14,12 +14,26 @@ declare(strict_types=1);
 namespace Sigwin\Ariadne\Model\Change;
 
 use Sigwin\Ariadne\NamedResource;
+use Sigwin\Ariadne\NamedResourceChange;
 use Sigwin\Ariadne\NamedResourceChangeCollection;
 
+/**
+ * @template TResource of NamedResource
+ * @template TChanges of NamedResourceChange
+ *
+ * @implements NamedResourceChangeCollection<TResource, TChanges>
+ */
 final class NamedResourceCreate implements NamedResourceChangeCollection
 {
+    /**
+     * @use NamedResourceChangeTrait<TResource, TChanges>
+     */
     use NamedResourceChangeTrait;
 
+    /**
+     * @param TResource                                                     $resource
+     * @param NamedResourceChangeCollection<TResource, NamedResourceChange> $changes
+     */
     private function __construct(private readonly NamedResource $resource, private readonly NamedResourceChangeCollection $changes)
     {
     }

@@ -15,20 +15,37 @@ namespace Sigwin\Ariadne\Model\Change;
 
 use Sigwin\Ariadne\NamedResource;
 use Sigwin\Ariadne\NamedResourceChange;
+use Sigwin\Ariadne\NamedResourceChangeCollection;
 
-final class NamedResourceArrayChangeCollection implements \Sigwin\Ariadne\NamedResourceChangeCollection
+/**
+ * @template TResource of NamedResource
+ * @template TChange of NamedResourceChange
+ *
+ * @implements NamedResourceChangeCollection<TResource, TChange>
+ */
+final class NamedResourceArrayChangeCollection implements NamedResourceChangeCollection
 {
+    /**
+     * @use NamedResourceChangeTrait<TResource, TChange>
+     */
     use NamedResourceChangeTrait;
 
     /**
-     * @param array<NamedResourceChange> $changes
+     * @param TResource     $resource
+     * @param list<TChange> $changes
      */
     private function __construct(private readonly NamedResource $resource, private readonly array $changes)
     {
     }
 
     /**
-     * @param array<NamedResourceChange> $changes
+     * @template STResource of NamedResource
+     * @template STChange of NamedResourceChange
+     *
+     * @param STResource     $resource
+     * @param list<STChange> $changes
+     *
+     * @return self<STResource, STChange>
      */
     public static function fromResource(NamedResource $resource, array $changes): self
     {
