@@ -32,7 +32,10 @@ trait AssertTrait
     }
 
     /**
-     * @param NamedResourceChangeCollection<NamedResource, NamedResourceChange> $change
+     * @template TResource of NamedResource
+     * @template TChange of NamedResourceChange
+     *
+     * @param NamedResourceChangeCollection<TResource, TChange> $change
      */
     protected static function assertNamedResourceChangeCollectionIsEmpty(NamedResource $resource, NamedResourceChangeCollection $change): void
     {

@@ -1,0 +1,106 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Access to an undefined property Sigwin\\\\Ariadne\\\\NamedResourceChange\\:\\:\\$expected\\.$#"
+			count: 1
+			path: src/Bridge/Github/GithubProfile.php
+
+		-
+			message: "#^Access to an undefined property Sigwin\\\\Ariadne\\\\NamedResourceChange\\:\\:\\$expected\\.$#"
+			count: 1
+			path: src/Bridge/Gitlab/GitlabProfile.php
+
+		-
+			message: "#^Parameter \\#1 \\$change of method Sigwin\\\\Ariadne\\\\Bridge\\\\Symfony\\\\Console\\\\Style\\\\AriadneStyle\\:\\:diff\\(\\) expects Sigwin\\\\Ariadne\\\\NamedResourceChangeCollection\\<Sigwin\\\\Ariadne\\\\NamedResource, Sigwin\\\\Ariadne\\\\NamedResourceChange\\>, Sigwin\\\\Ariadne\\\\NamedResourceChangeCollection\\<Sigwin\\\\Ariadne\\\\Model\\\\Repository, Sigwin\\\\Ariadne\\\\NamedResourceChange\\> given\\.$#"
+			count: 1
+			path: src/Bridge/Symfony/Command/ApplyCommand.php
+
+		-
+			message: "#^Parameter \\#1 \\$change of method Sigwin\\\\Ariadne\\\\Bridge\\\\Symfony\\\\Console\\\\Style\\\\AriadneStyle\\:\\:diff\\(\\) expects Sigwin\\\\Ariadne\\\\NamedResourceChangeCollection\\<Sigwin\\\\Ariadne\\\\NamedResource, Sigwin\\\\Ariadne\\\\NamedResourceChange\\>, Sigwin\\\\Ariadne\\\\NamedResourceChangeCollection\\<Sigwin\\\\Ariadne\\\\Model\\\\Repository, Sigwin\\\\Ariadne\\\\NamedResourceChange\\> given\\.$#"
+			count: 1
+			path: src/Bridge/Symfony/Command/DiffCommand.php
+
+		-
+			message: "#^Parameter \\#1 \\$change of method Sigwin\\\\Ariadne\\\\Bridge\\\\Symfony\\\\Console\\\\Style\\\\AriadneStyle\\:\\:diff\\(\\) expects Sigwin\\\\Ariadne\\\\NamedResourceChangeCollection\\<Sigwin\\\\Ariadne\\\\NamedResource, Sigwin\\\\Ariadne\\\\NamedResourceChange\\>, Sigwin\\\\Ariadne\\\\NamedResourceChangeCollection\\<Sigwin\\\\Ariadne\\\\Model\\\\Repository, Sigwin\\\\Ariadne\\\\NamedResourceChange\\> given\\.$#"
+			count: 1
+			path: src/Bridge/Symfony/Command/SummaryCommand.php
+
+		-
+			message: "#^Parameter \\#1 \\$change of method Sigwin\\\\Ariadne\\\\Bridge\\\\Symfony\\\\Console\\\\Style\\\\AriadneStyle\\:\\:diffChange\\(\\) expects Sigwin\\\\Ariadne\\\\NamedResourceChange, mixed given\\.$#"
+			count: 1
+			path: src/Bridge/Symfony/Console/Style/AriadneStyle.php
+
+		-
+			message: "#^Method Sigwin\\\\Ariadne\\\\Model\\\\Change\\\\NamedResourceArrayChangeCollection\\:\\:filter\\(\\) should return Sigwin\\\\Ariadne\\\\Model\\\\Change\\\\NamedResourceArrayChangeCollection\\<TResource of Sigwin\\\\Ariadne\\\\NamedResource, TChange of Sigwin\\\\Ariadne\\\\NamedResourceChange\\> but returns Sigwin\\\\Ariadne\\\\Model\\\\Change\\\\NamedResourceArrayChangeCollection\\<TResource of Sigwin\\\\Ariadne\\\\NamedResource, Sigwin\\\\Ariadne\\\\NamedResourceChange\\>\\.$#"
+			count: 1
+			path: src/Model/Change/NamedResourceArrayChangeCollection.php
+
+		-
+			message: "#^Method Sigwin\\\\Ariadne\\\\Model\\\\Change\\\\NamedResourceCreate\\:\\:filter\\(\\) should return Sigwin\\\\Ariadne\\\\Model\\\\Change\\\\NamedResourceCreate\\<TResource of Sigwin\\\\Ariadne\\\\NamedResource, TChanges of Sigwin\\\\Ariadne\\\\NamedResourceChange\\> but returns Sigwin\\\\Ariadne\\\\Model\\\\Change\\\\NamedResourceCreate\\<TResource of Sigwin\\\\Ariadne\\\\NamedResource, Sigwin\\\\Ariadne\\\\NamedResourceChange\\>\\.$#"
+			count: 1
+			path: src/Model/Change/NamedResourceCreate.php
+
+		-
+			message: "#^Method Sigwin\\\\Ariadne\\\\Model\\\\Change\\\\NamedResourceCreate\\:\\:fromResource\\(\\) should return Sigwin\\\\Ariadne\\\\Model\\\\Change\\\\NamedResourceCreate\\<STResource of Sigwin\\\\Ariadne\\\\NamedResource, STChange of Sigwin\\\\Ariadne\\\\NamedResourceChange\\> but returns Sigwin\\\\Ariadne\\\\Model\\\\Change\\\\NamedResourceCreate\\<STResource of Sigwin\\\\Ariadne\\\\NamedResource, Sigwin\\\\Ariadne\\\\NamedResourceChange\\>\\.$#"
+			count: 1
+			path: src/Model/Change/NamedResourceCreate.php
+
+		-
+			message: "#^Method Sigwin\\\\Ariadne\\\\Model\\\\Change\\\\NamedResourceCreate\\:\\:getIterator\\(\\) should return Traversable\\<mixed, TChanges of Sigwin\\\\Ariadne\\\\NamedResourceChange\\> but returns Sigwin\\\\Ariadne\\\\NamedResourceChangeCollection\\<TResource of Sigwin\\\\Ariadne\\\\NamedResource, Sigwin\\\\Ariadne\\\\NamedResourceChange\\>\\.$#"
+			count: 1
+			path: src/Model/Change/NamedResourceCreate.php
+
+		-
+			message: "#^Method Sigwin\\\\Ariadne\\\\Model\\\\Change\\\\NamedResourceDelete\\:\\:filter\\(\\) should return Sigwin\\\\Ariadne\\\\Model\\\\Change\\\\NamedResourceDelete\\<TResource of Sigwin\\\\Ariadne\\\\NamedResource, TChanges of Sigwin\\\\Ariadne\\\\NamedResourceChange\\> but returns Sigwin\\\\Ariadne\\\\Model\\\\Change\\\\NamedResourceDelete\\<TResource of Sigwin\\\\Ariadne\\\\NamedResource, Sigwin\\\\Ariadne\\\\NamedResourceChange\\>\\.$#"
+			count: 1
+			path: src/Model/Change/NamedResourceDelete.php
+
+		-
+			message: "#^Method Sigwin\\\\Ariadne\\\\Model\\\\Change\\\\NamedResourceDelete\\:\\:fromResource\\(\\) should return Sigwin\\\\Ariadne\\\\Model\\\\Change\\\\NamedResourceDelete\\<STResource of Sigwin\\\\Ariadne\\\\NamedResource, STChange of Sigwin\\\\Ariadne\\\\NamedResourceChange\\> but returns Sigwin\\\\Ariadne\\\\Model\\\\Change\\\\NamedResourceDelete\\<STResource of Sigwin\\\\Ariadne\\\\NamedResource, Sigwin\\\\Ariadne\\\\NamedResourceChange\\>\\.$#"
+			count: 1
+			path: src/Model/Change/NamedResourceDelete.php
+
+		-
+			message: "#^Method Sigwin\\\\Ariadne\\\\Model\\\\Change\\\\NamedResourceDelete\\:\\:getIterator\\(\\) should return Traversable\\<mixed, TChanges of Sigwin\\\\Ariadne\\\\NamedResourceChange\\> but returns Sigwin\\\\Ariadne\\\\NamedResourceChangeCollection\\<TResource of Sigwin\\\\Ariadne\\\\NamedResource, Sigwin\\\\Ariadne\\\\NamedResourceChange\\>\\.$#"
+			count: 1
+			path: src/Model/Change/NamedResourceDelete.php
+
+		-
+			message: "#^Method Sigwin\\\\Ariadne\\\\Model\\\\Change\\\\NamedResourceUpdate\\:\\:filter\\(\\) should return Sigwin\\\\Ariadne\\\\Model\\\\Change\\\\NamedResourceUpdate\\<TResource of Sigwin\\\\Ariadne\\\\NamedResource, TChanges of Sigwin\\\\Ariadne\\\\NamedResourceChange\\> but returns Sigwin\\\\Ariadne\\\\Model\\\\Change\\\\NamedResourceUpdate\\<TResource of Sigwin\\\\Ariadne\\\\NamedResource, Sigwin\\\\Ariadne\\\\NamedResourceChange\\>\\.$#"
+			count: 1
+			path: src/Model/Change/NamedResourceUpdate.php
+
+		-
+			message: "#^Method Sigwin\\\\Ariadne\\\\Model\\\\Change\\\\NamedResourceUpdate\\:\\:fromResource\\(\\) should return Sigwin\\\\Ariadne\\\\Model\\\\Change\\\\NamedResourceUpdate\\<STResource of Sigwin\\\\Ariadne\\\\NamedResource, STChange of Sigwin\\\\Ariadne\\\\NamedResourceChange\\> but returns Sigwin\\\\Ariadne\\\\Model\\\\Change\\\\NamedResourceUpdate\\<STResource of Sigwin\\\\Ariadne\\\\NamedResource, Sigwin\\\\Ariadne\\\\NamedResourceChange\\>\\.$#"
+			count: 1
+			path: src/Model/Change/NamedResourceUpdate.php
+
+		-
+			message: "#^Method Sigwin\\\\Ariadne\\\\Model\\\\Change\\\\NamedResourceUpdate\\:\\:getIterator\\(\\) should return Traversable\\<mixed, TChanges of Sigwin\\\\Ariadne\\\\NamedResourceChange\\> but returns Sigwin\\\\Ariadne\\\\NamedResourceChangeCollection\\<TResource of Sigwin\\\\Ariadne\\\\NamedResource, Sigwin\\\\Ariadne\\\\NamedResourceChange\\>\\.$#"
+			count: 1
+			path: src/Model/Change/NamedResourceUpdate.php
+
+		-
+			message: "#^Access to an undefined property Sigwin\\\\Ariadne\\\\NamedResourceChange\\:\\:\\$expected\\.$#"
+			count: 1
+			path: tests/Bridge/ProfileTestCase.php
+
+		-
+			message: "#^Parameter \\#1 \\$type of method Sigwin\\\\Ariadne\\\\NamedResourceChangeCollection\\<TResource of Sigwin\\\\Ariadne\\\\NamedResource,TChange of Sigwin\\\\Ariadne\\\\NamedResourceChange\\>\\:\\:filter\\(\\) expects class\\-string\\<TChange of Sigwin\\\\Ariadne\\\\NamedResourceChange\\>, string given\\.$#"
+			count: 1
+			path: tests/Model/Change/NamedResourceCreateTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$type of method Sigwin\\\\Ariadne\\\\NamedResourceChangeCollection\\<TResource of Sigwin\\\\Ariadne\\\\NamedResource,TChange of Sigwin\\\\Ariadne\\\\NamedResourceChange\\>\\:\\:filter\\(\\) expects class\\-string\\<TChange of Sigwin\\\\Ariadne\\\\NamedResourceChange\\>, string given\\.$#"
+			count: 1
+			path: tests/Model/Change/NamedResourceDeleteTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$type of method Sigwin\\\\Ariadne\\\\NamedResourceChangeCollection\\<TResource of Sigwin\\\\Ariadne\\\\NamedResource,TChange of Sigwin\\\\Ariadne\\\\NamedResourceChange\\>\\:\\:filter\\(\\) expects class\\-string\\<TChange of Sigwin\\\\Ariadne\\\\NamedResourceChange\\>, string given\\.$#"
+			count: 1
+			path: tests/Model/Change/NamedResourceUpdateTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$type of method Sigwin\\\\Ariadne\\\\NamedResourceChangeCollection\\<TResource of Sigwin\\\\Ariadne\\\\NamedResource,TChange of Sigwin\\\\Ariadne\\\\NamedResourceChange\\>\\:\\:filter\\(\\) expects class\\-string\\<TChange of Sigwin\\\\Ariadne\\\\NamedResourceChange\\>, string given\\.$#"
+			count: 1
+			path: tests/Profile/Template/Factory/FilteredProfileTemplateFactoryTest.php

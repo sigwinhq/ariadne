@@ -71,6 +71,8 @@ trait NamedResourceChangeTrait
     }
 
     /**
+     * @param class-string<TChange> $type
+     *
      * @return self<TResource, TChange>
      */
     public function filter(string $type): self
