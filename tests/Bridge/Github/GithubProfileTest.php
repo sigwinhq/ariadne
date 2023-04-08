@@ -19,6 +19,8 @@ use Psr\Http\Message\RequestInterface;
 use Sigwin\Ariadne\Bridge\Github\GithubProfile;
 use Sigwin\Ariadne\Model\Attribute;
 use Sigwin\Ariadne\Model\Change\NamedResourceAttributeUpdate;
+use Sigwin\Ariadne\Model\Change\NamedResourceCreate;
+use Sigwin\Ariadne\Model\Change\NamedResourceDelete;
 use Sigwin\Ariadne\Model\Change\NamedResourceUpdate;
 use Sigwin\Ariadne\Model\Config\ProfileConfig;
 use Sigwin\Ariadne\Model\Repository;
@@ -176,11 +178,37 @@ final class GithubProfileTest extends ProfileTestCase
     {
         $repository = $this->createRepositoryFromValidAttributes(users: [['theseus', 'guest']]);
 
-        // single template with a single target to change
+        // single template with a single target to update
         $config = ['user' => ['theseus' => ['username' => 'theseus', 'role' => 'admin']]];
         $expected = [
             NamedResourceUpdate::fromResource(new RepositoryUser('theseus', 'admin'), [
                 new NamedResourceAttributeUpdate(new Attribute('role'), 'guest', 'admin'),
+            ]),
+        ];
+        yield [self::REPOSITORY_SCENARIO_USERS, $repository, $config, $expected];
+
+        // already up to date
+        $config = ['user' => ['theseus' => ['username' => 'theseus', 'role' => 'guest']]];
+        $expected = [];
+        yield [self::REPOSITORY_SCENARIO_USERS, $repository, $config, $expected];
+
+        // add a user
+        $config = ['user' => ['ariadne' => ['username' => 'ariadne', 'role' => 'admin'], 'theseus' => ['username' => 'theseus', 'role' => 'guest']]];
+        $expected = [
+            NamedResourceCreate::fromResource(new RepositoryUser('ariadne', 'admin'), [
+                new NamedResourceAttributeUpdate(new Attribute('role'), null, 'admin'),
+            ]),
+        ];
+        yield [self::REPOSITORY_SCENARIO_USERS, $repository, $config, $expected];
+
+        // add a user, delete a user
+        $config = ['user' => ['ariadne' => ['username' => 'ariadne', 'role' => 'admin']]];
+        $expected = [
+            NamedResourceCreate::fromResource(new RepositoryUser('ariadne', 'admin'), [
+                new NamedResourceAttributeUpdate(new Attribute('role'), null, 'admin'),
+            ]),
+            NamedResourceDelete::fromResource(new RepositoryUser('theseus', 'guest'), [
+                new NamedResourceAttributeUpdate(new Attribute('role'), 'guest', null),
             ]),
         ];
         yield [self::REPOSITORY_SCENARIO_USERS, $repository, $config, $expected];
