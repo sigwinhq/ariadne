@@ -52,7 +52,7 @@ trait ModelGeneratorTrait
      * @param array<string, bool|int|string> $attribute
      * @param array<Repository>              $repositories
      */
-    protected function createTemplate(string $name, array $attribute = [], array $repositories = []): ProfileTemplate
+    protected function createTemplate(string $name, array $attribute = [], array $repositories = [], ?ProfileTemplateTargetConfig $target = null): ProfileTemplate
     {
         $evaluator = $this->getMockBuilder(Evaluator::class)->getMock();
         $evaluator
@@ -64,7 +64,7 @@ trait ModelGeneratorTrait
 
         return new ProfileTemplate(
             $name,
-            ProfileTemplateTarget::fromConfig(ProfileTemplateTargetConfig::fromArray(['attribute' => $attribute]), $evaluator),
+            ProfileTemplateTarget::fromConfig($target ?? ProfileTemplateTargetConfig::fromArray(['attribute' => $attribute]), $evaluator),
             SortedNamedResourceCollection::fromArray($repositories),
         );
     }
@@ -80,7 +80,7 @@ trait ModelGeneratorTrait
         $factory
             ->method('fromConfig')
             ->willReturnCallback(function (ProfileTemplateConfig $config) use (&$idx, $repositories): ProfileTemplate {
-                $template = $this->createTemplate($config->name, $config->target->attribute, $repositories[$idx] ?? []);
+                $template = $this->createTemplate($config->name, target: $config->target, repositories: $repositories[$idx] ?? []);
                 ++$idx;
 
                 return $template;
