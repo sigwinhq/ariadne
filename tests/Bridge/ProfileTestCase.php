@@ -18,8 +18,12 @@ use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Sigwin\Ariadne\Model\Change\NamedResourceAttributeUpdate;
+use Sigwin\Ariadne\Model\Change\NamedResourceCreate;
+use Sigwin\Ariadne\Model\Change\NamedResourceDelete;
+use Sigwin\Ariadne\Model\Change\NamedResourceUpdate;
 use Sigwin\Ariadne\Model\Config\ProfileConfig;
 use Sigwin\Ariadne\Model\Repository;
+use Sigwin\Ariadne\Model\RepositoryUser;
 use Sigwin\Ariadne\Profile;
 use Sigwin\Ariadne\ProfileTemplateFactory;
 use Sigwin\Ariadne\Test\ModelGeneratorTrait;
@@ -39,7 +43,8 @@ abstract class ProfileTestCase extends TestCase
     protected const REPOSITORY_SCENARIO_BASIC = 'basic repository';
     protected const REPOSITORY_SCENARIO_FORK = 'forked repository';
     protected const REPOSITORY_SCENARIO_PRIVATE = 'private repository';
-    protected const REPOSITORY_SCENARIO_USERS = 'repository with users';
+    protected const REPOSITORY_SCENARIO_USER = 'repository with a single user';
+    protected const REPOSITORY_SCENARIO_USERS = 'repository with multiple users';
     protected const REPOSITORY_SCENARIO_TOPICS = 'repository with topics';
     protected const REPOSITORY_SCENARIO_LANGUAGES = 'repository with languages';
 
@@ -52,7 +57,7 @@ abstract class ProfileTestCase extends TestCase
         yield [self::REPOSITORY_SCENARIO_FORK, $this->createRepository('namespace1/repo1', type: 'fork')];
         yield [self::REPOSITORY_SCENARIO_PRIVATE, $this->createRepository('namespace1/repo1', visibility: 'private')];
         yield [
-            self::REPOSITORY_SCENARIO_USERS,
+            self::REPOSITORY_SCENARIO_USER,
             $this->createRepository('namespace1/repo1', users: [['theseus', 'admin']]),
             ['user' => ['theseus' => ['username' => 'theseus', 'role' => 'admin']]],
         ];
@@ -126,6 +131,28 @@ abstract class ProfileTestCase extends TestCase
     }
 
     /**
+     * @group plan
+     * @group user
+     *
+     * @dataProvider provideRepositoriesUserChange
+     *
+     * @param array<string, bool|int|string> $expected
+     * @param TConfig                        $config
+     */
+    public function testCanPlanUserChanges(string $name, Repository $repository, array $config, array $expected): void
+    {
+        $profile = $this->createProfileForRepositoryScenario($name, $repository, $config);
+        $plan = $profile->plan($repository);
+
+        static::assertSame($repository->getName(), $plan->getResource()->getName());
+        static::assertSame(\count($expected) === 0, $plan->isActual());
+
+        $actual = iterator_to_array($plan);
+
+        static::assertEqualsIgnoringCase($expected, $actual);
+    }
+
+    /**
      * @dataProvider provideValidOptions
      */
     public function testCanSetValidOptions(string $name, bool|string $value): void
@@ -195,6 +222,19 @@ abstract class ProfileTestCase extends TestCase
         yield 'custom' => ['https://example.com'];
     }
 
+    /**
+     * @param list<array{string, string}>|null $users
+     */
+    protected function createRepositoryFromValidAttributes(?array $users = null): Repository
+    {
+        $response = [];
+        foreach ($this->provideValidAttributeValues() as $attribute) {
+            $response[$attribute[0]] = $attribute[1];
+        }
+
+        return $this->createRepository('namespace1/repo1', response: $response, users: $users);
+    }
+
     abstract protected function validateRequest(RequestInterface $request): void;
 
     /**
@@ -222,6 +262,16 @@ abstract class ProfileTestCase extends TestCase
      */
     abstract protected function provideRepositoriesAttributeChange(): iterable;
 
+    /**
+     * @return iterable<array-key, array{
+     *     string,
+     *     Repository,
+     *     TConfig,
+     *     list<NamedResourceCreate<RepositoryUser, NamedResourceAttributeUpdate>|NamedResourceUpdate<RepositoryUser, NamedResourceAttributeUpdate>|NamedResourceDelete<RepositoryUser, NamedResourceAttributeUpdate>>
+     * }>
+     */
+    abstract protected function provideRepositoriesUserChange(): iterable;
+
     abstract protected function createProfileInstance(ProfileConfig $config, ClientInterface $client, ProfileTemplateFactory $factory, CacheItemPoolInterface $cachePool): Profile;
 
     /**
@@ -243,14 +293,10 @@ abstract class ProfileTestCase extends TestCase
     private function createProfileForRepositoryScenario(string $name, Repository $fixture, array $config): Profile
     {
         $profileConfig = $this->createConfig(templates: $config['templates'] ?? null, options: $config['options'] ?? null, attribute: $config['attribute'] ?? null, user: $config['user'] ?? null, filter: $config['filter'] ?? null);
-        $attributes = [];
-        foreach ($profileConfig->templates as $template) {
-            $attributes[] = $template->target->attribute;
-        }
         $repositories = array_fill(0, \count($profileConfig->templates), [$fixture]);
 
         $httpClient = $this->createHttpClientForRepositoryScenario($name, $fixture);
-        $factory = $this->createTemplateFactory(attributes: $attributes, repositories: $repositories);
+        $factory = $this->createTemplateFactory(repositories: $repositories);
         $cachePool = $this->createActiveCachePool();
 
         return $this->createProfileInstance($profileConfig, $httpClient, $factory, $cachePool);

@@ -52,7 +52,7 @@ trait ModelGeneratorTrait
      * @param array<string, bool|int|string> $attribute
      * @param array<Repository>              $repositories
      */
-    protected function createTemplate(string $name, array $attribute = [], array $repositories = []): ProfileTemplate
+    protected function createTemplate(string $name, array $attribute = [], array $repositories = [], ?ProfileTemplateTargetConfig $target = null): ProfileTemplate
     {
         $evaluator = $this->getMockBuilder(Evaluator::class)->getMock();
         $evaluator
@@ -64,24 +64,23 @@ trait ModelGeneratorTrait
 
         return new ProfileTemplate(
             $name,
-            ProfileTemplateTarget::fromConfig(ProfileTemplateTargetConfig::fromArray(['attribute' => $attribute]), $evaluator),
+            ProfileTemplateTarget::fromConfig($target ?? ProfileTemplateTargetConfig::fromArray(['attribute' => $attribute]), $evaluator),
             SortedNamedResourceCollection::fromArray($repositories),
         );
     }
 
     /**
-     * @param list<array<string, bool|int|string>> $attributes
-     * @param list<list{Repository}>        $repositories
+     * @param list<list{Repository}> $repositories
      */
-    protected function createTemplateFactory(array $attributes = [], array $repositories = []): ProfileTemplateFactory
+    protected function createTemplateFactory(array $repositories = []): ProfileTemplateFactory
     {
         $factory = $this->getMockBuilder(ProfileTemplateFactory::class)->getMock();
 
         $idx = 0;
         $factory
             ->method('fromConfig')
-            ->willReturnCallback(function (ProfileTemplateConfig $config) use (&$idx, $attributes, $repositories): ProfileTemplate {
-                $template = $this->createTemplate($config->name, $attributes[$idx] ?? [], $repositories[$idx] ?? []);
+            ->willReturnCallback(function (ProfileTemplateConfig $config) use (&$idx, $repositories): ProfileTemplate {
+                $template = $this->createTemplate($config->name, target: $config->target, repositories: $repositories[$idx] ?? []);
                 ++$idx;
 
                 return $template;

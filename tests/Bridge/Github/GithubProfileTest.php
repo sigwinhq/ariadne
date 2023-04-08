@@ -17,8 +17,14 @@ use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Sigwin\Ariadne\Bridge\Github\GithubProfile;
+use Sigwin\Ariadne\Model\Attribute;
+use Sigwin\Ariadne\Model\Change\NamedResourceAttributeUpdate;
+use Sigwin\Ariadne\Model\Change\NamedResourceCreate;
+use Sigwin\Ariadne\Model\Change\NamedResourceDelete;
+use Sigwin\Ariadne\Model\Change\NamedResourceUpdate;
 use Sigwin\Ariadne\Model\Config\ProfileConfig;
 use Sigwin\Ariadne\Model\Repository;
+use Sigwin\Ariadne\Model\RepositoryUser;
 use Sigwin\Ariadne\Profile;
 use Sigwin\Ariadne\ProfileTemplateFactory;
 use Sigwin\Ariadne\Test\Bridge\ProfileTestCase;
@@ -107,7 +113,7 @@ final class GithubProfileTest extends ProfileTestCase
                     [(object) ['id' => $repository->id, 'full_name' => $repository->path, 'fork' => false, 'private' => true, 'topics' => []]],
                 ],
             ]),
-            self::REPOSITORY_SCENARIO_USERS => $this->createHttpClient([
+            self::REPOSITORY_SCENARIO_USER => $this->createHttpClient([
                 [
                     $this->createRequest(null, 'GET', '/user/repos?per_page=100'),
                     [(object) ['id' => $repository->id, 'full_name' => $repository->path, 'fork' => false, 'private' => false, 'topics' => []]],
@@ -115,6 +121,16 @@ final class GithubProfileTest extends ProfileTestCase
                 [
                     $this->createRequest(null, 'GET', '/repos/namespace1/repo1/collaborators?per_page=100'),
                     [(object) ['login' => 'theseus', 'role_name' => 'admin']],
+                ],
+            ]),
+            self::REPOSITORY_SCENARIO_USERS => $this->createHttpClient([
+                [
+                    $this->createRequest(null, 'GET', '/user/repos?per_page=100'),
+                    [(object) ['id' => $repository->id, 'full_name' => $repository->path, 'fork' => false, 'private' => false, 'topics' => []]],
+                ],
+                [
+                    $this->createRequest(null, 'GET', '/repos/namespace1/repo1/collaborators?per_page=100'),
+                    [(object) ['login' => 'theseus', 'role_name' => 'admin'], (object) ['login' => 'ariadne', 'role_name' => 'admin']],
                 ],
             ]),
             self::REPOSITORY_SCENARIO_TOPICS => $this->createHttpClient([
@@ -135,11 +151,7 @@ final class GithubProfileTest extends ProfileTestCase
 
     protected function provideRepositoriesAttributeChange(): iterable
     {
-        $response = [];
-        foreach ($this->provideValidAttributeValues() as $attribute) {
-            $response[$attribute[0]] = $attribute[1];
-        }
-        $repository = $this->createRepository('namespace1/repo1', response: $response);
+        $repository = $this->createRepositoryFromValidAttributes();
 
         $config = ['attribute' => ['description' => 'AAA']];
         $expected = ['description' => 'AAA'];
@@ -170,6 +182,56 @@ final class GithubProfileTest extends ProfileTestCase
         ];
         $expected = [];
         yield [self::REPOSITORY_SCENARIO_BASIC, $repository, $config, $expected];
+    }
+
+    protected function provideRepositoriesUserChange(): iterable
+    {
+        $repository = $this->createRepositoryFromValidAttributes(users: [['theseus', 'guest']]);
+        $repositoryWithBoth = $this->createRepositoryFromValidAttributes(users: [['theseus', 'admin'], ['ariadne', 'guest']]);
+
+        // single template with a single target to update
+        $config = ['user' => ['theseus' => ['username' => 'theseus', 'role' => 'admin']]];
+        $expected = [
+            NamedResourceUpdate::fromResource(new RepositoryUser('theseus', 'admin'), [
+                new NamedResourceAttributeUpdate(new Attribute('role'), 'guest', 'admin'),
+            ]),
+        ];
+        yield [self::REPOSITORY_SCENARIO_USER, $repository, $config, $expected];
+
+        // already up to date
+        $config = ['user' => ['theseus' => ['username' => 'theseus', 'role' => 'guest']]];
+        $expected = [];
+        yield [self::REPOSITORY_SCENARIO_USER, $repository, $config, $expected];
+
+        // update two users
+        $config = ['user' => ['theseus' => ['username' => 'theseus', 'role' => 'admin'], 'ariadne' => ['username' => 'ariadne', 'role' => 'admin']]];
+        $expected = [
+            NamedResourceUpdate::fromResource(new RepositoryUser('ariadne', 'admin'), [
+                new NamedResourceAttributeUpdate(new Attribute('role'), 'guest', 'admin'),
+            ]),
+        ];
+        yield [self::REPOSITORY_SCENARIO_USERS, $repositoryWithBoth, $config, $expected];
+
+        // add a user
+        $config = ['user' => ['ariadne' => ['username' => 'ariadne', 'role' => 'admin'], 'theseus' => ['username' => 'theseus', 'role' => 'guest']]];
+        $expected = [
+            NamedResourceCreate::fromResource(new RepositoryUser('ariadne', 'admin'), [
+                new NamedResourceAttributeUpdate(new Attribute('role'), null, 'admin'),
+            ]),
+        ];
+        yield [self::REPOSITORY_SCENARIO_USER, $repository, $config, $expected];
+
+        // add a user, delete a user
+        $config = ['user' => ['ariadne' => ['username' => 'ariadne', 'role' => 'admin']]];
+        $expected = [
+            NamedResourceCreate::fromResource(new RepositoryUser('ariadne', 'admin'), [
+                new NamedResourceAttributeUpdate(new Attribute('role'), null, 'admin'),
+            ]),
+            NamedResourceDelete::fromResource(new RepositoryUser('theseus', 'guest'), [
+                new NamedResourceAttributeUpdate(new Attribute('role'), 'guest', null),
+            ]),
+        ];
+        yield [self::REPOSITORY_SCENARIO_USER, $repository, $config, $expected];
     }
 
     protected function provideValidOptions(): iterable
