@@ -43,7 +43,8 @@ abstract class ProfileTestCase extends TestCase
     protected const REPOSITORY_SCENARIO_BASIC = 'basic repository';
     protected const REPOSITORY_SCENARIO_FORK = 'forked repository';
     protected const REPOSITORY_SCENARIO_PRIVATE = 'private repository';
-    protected const REPOSITORY_SCENARIO_USERS = 'repository with users';
+    protected const REPOSITORY_SCENARIO_USER = 'repository with a single user';
+    protected const REPOSITORY_SCENARIO_USERS = 'repository with multiple users';
     protected const REPOSITORY_SCENARIO_TOPICS = 'repository with topics';
     protected const REPOSITORY_SCENARIO_LANGUAGES = 'repository with languages';
 
@@ -56,7 +57,7 @@ abstract class ProfileTestCase extends TestCase
         yield [self::REPOSITORY_SCENARIO_FORK, $this->createRepository('namespace1/repo1', type: 'fork')];
         yield [self::REPOSITORY_SCENARIO_PRIVATE, $this->createRepository('namespace1/repo1', visibility: 'private')];
         yield [
-            self::REPOSITORY_SCENARIO_USERS,
+            self::REPOSITORY_SCENARIO_USER,
             $this->createRepository('namespace1/repo1', users: [['theseus', 'admin']]),
             ['user' => ['theseus' => ['username' => 'theseus', 'role' => 'admin']]],
         ];

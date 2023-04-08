@@ -113,7 +113,7 @@ final class GitlabProfileTest extends ProfileTestCase
                     [(object) ['id' => $repository->id, 'visibility' => 'private', 'path_with_namespace' => $repository->path, 'topics' => []]],
                 ],
             ]),
-            self::REPOSITORY_SCENARIO_USERS => $this->createHttpClient([
+            self::REPOSITORY_SCENARIO_USER => $this->createHttpClient([
                 [
                     $this->createRequest(null, 'GET', '/projects?membership=false&owned=true&per_page=50'),
                     [(object) ['id' => $repository->id, 'visibility' => 'public', 'path_with_namespace' => $repository->path, 'topics' => []]],
@@ -121,6 +121,16 @@ final class GitlabProfileTest extends ProfileTestCase
                 [
                     $this->createRequest(null, 'GET', '/projects/12345/members/all?per_page=50'),
                     [(object) ['username' => 'theseus', 'access_level' => 50]],
+                ],
+            ]),
+            self::REPOSITORY_SCENARIO_USERS => $this->createHttpClient([
+                [
+                    $this->createRequest(null, 'GET', '/projects?membership=false&owned=true&per_page=50'),
+                    [(object) ['id' => $repository->id, 'visibility' => 'public', 'path_with_namespace' => $repository->path, 'topics' => []]],
+                ],
+                [
+                    $this->createRequest(null, 'GET', '/projects/12345/members/all?per_page=50'),
+                    [(object) ['username' => 'theseus', 'access_level' => 50], (object) ['username' => 'ariadne', 'access_level' => 50]],
                 ],
             ]),
             self::REPOSITORY_SCENARIO_TOPICS => $this->createHttpClient([
@@ -182,6 +192,7 @@ final class GitlabProfileTest extends ProfileTestCase
     protected function provideRepositoriesUserChange(): iterable
     {
         $repository = $this->createRepositoryFromValidAttributes(users: [['theseus', 'guest']]);
+        $repositoryWithBoth = $this->createRepositoryFromValidAttributes(users: [['theseus', 'admin'], ['ariadne', 'guest']]);
 
         // single template with a single target to update
         $config = ['user' => ['theseus' => ['username' => 'theseus', 'role' => 'admin']]];
@@ -190,12 +201,21 @@ final class GitlabProfileTest extends ProfileTestCase
                 new NamedResourceAttributeUpdate(new Attribute('role'), 'guest', 'admin'),
             ]),
         ];
-        yield [self::REPOSITORY_SCENARIO_USERS, $repository, $config, $expected];
+        yield [self::REPOSITORY_SCENARIO_USER, $repository, $config, $expected];
 
         // already up to date
         $config = ['user' => ['theseus' => ['username' => 'theseus', 'role' => 'guest']]];
         $expected = [];
-        yield [self::REPOSITORY_SCENARIO_USERS, $repository, $config, $expected];
+        yield [self::REPOSITORY_SCENARIO_USER, $repository, $config, $expected];
+
+        // update two users
+        $config = ['user' => ['theseus' => ['username' => 'theseus', 'role' => 'admin'], 'ariadne' => ['username' => 'ariadne', 'role' => 'admin']]];
+        $expected = [
+            NamedResourceUpdate::fromResource(new RepositoryUser('ariadne', 'admin'), [
+                new NamedResourceAttributeUpdate(new Attribute('role'), 'guest', 'admin'),
+            ]),
+        ];
+        yield [self::REPOSITORY_SCENARIO_USERS, $repositoryWithBoth, $config, $expected];
 
         // add a user
         $config = ['user' => ['ariadne' => ['username' => 'ariadne', 'role' => 'admin'], 'theseus' => ['username' => 'theseus', 'role' => 'guest']]];
@@ -204,7 +224,7 @@ final class GitlabProfileTest extends ProfileTestCase
                 new NamedResourceAttributeUpdate(new Attribute('role'), null, 'admin'),
             ]),
         ];
-        yield [self::REPOSITORY_SCENARIO_USERS, $repository, $config, $expected];
+        yield [self::REPOSITORY_SCENARIO_USER, $repository, $config, $expected];
 
         // add a user, delete a user
         $config = ['user' => ['ariadne' => ['username' => 'ariadne', 'role' => 'admin']]];
@@ -216,7 +236,7 @@ final class GitlabProfileTest extends ProfileTestCase
                 new NamedResourceAttributeUpdate(new Attribute('role'), 'guest', null),
             ]),
         ];
-        yield [self::REPOSITORY_SCENARIO_USERS, $repository, $config, $expected];
+        yield [self::REPOSITORY_SCENARIO_USER, $repository, $config, $expected];
     }
 
     protected function provideValidOptions(): iterable
