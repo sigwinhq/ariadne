@@ -25,6 +25,14 @@ use Sigwin\Ariadne\NamedResourceChange;
 trait NamedResourceChangeTrait
 {
     /**
+     * @param TResource     $resource
+     * @param list<TChange> $changes
+     */
+    private function __construct(private readonly NamedResource $resource, private readonly array $changes)
+    {
+    }
+
+    /**
      * @template STResource of NamedResource
      * @template STChange of NamedResourceChange
      *
@@ -35,7 +43,7 @@ trait NamedResourceChangeTrait
      */
     public static function fromResource(NamedResource $resource, array $changes): self
     {
-        return new self($resource, NamedResourceArrayChangeCollection::fromResource($resource, $changes));
+        return new self($resource, $changes);
     }
 
     /**
@@ -51,7 +59,7 @@ trait NamedResourceChangeTrait
      */
     public function getIterator(): \Traversable
     {
-        return $this->changes;
+        return new \ArrayIterator($this->changes);
     }
 
     public function count(): int

@@ -29,31 +29,4 @@ final class NamedResourceArrayChangeCollection implements NamedResourceChangeCol
      * @use NamedResourceChangeTrait<TResource, TChange>
      */
     use NamedResourceChangeTrait;
-
-    /**
-     * @param TResource     $resource
-     * @param list<TChange> $changes
-     */
-    private function __construct(private readonly NamedResource $resource, private readonly array $changes)
-    {
-    }
-
-    /**
-     * @template STResource of NamedResource
-     * @template STChange of NamedResourceChange
-     *
-     * @param STResource     $resource
-     * @param list<STChange> $changes
-     *
-     * @return self<STResource, STChange>
-     */
-    public static function fromResource(NamedResource $resource, array $changes): self
-    {
-        return new self($resource, $changes);
-    }
-
-    public function getIterator(): \Traversable
-    {
-        return new \ArrayIterator($this->changes);
-    }
 }

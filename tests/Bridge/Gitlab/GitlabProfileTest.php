@@ -17,8 +17,12 @@ use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Sigwin\Ariadne\Bridge\Gitlab\GitlabProfile;
+use Sigwin\Ariadne\Model\Attribute;
+use Sigwin\Ariadne\Model\Change\NamedResourceAttributeUpdate;
+use Sigwin\Ariadne\Model\Change\NamedResourceUpdate;
 use Sigwin\Ariadne\Model\Config\ProfileConfig;
 use Sigwin\Ariadne\Model\Repository;
+use Sigwin\Ariadne\Model\RepositoryUser;
 use Sigwin\Ariadne\Profile;
 use Sigwin\Ariadne\ProfileTemplateFactory;
 use Sigwin\Ariadne\Test\Bridge\ProfileTestCase;
@@ -139,11 +143,7 @@ final class GitlabProfileTest extends ProfileTestCase
 
     protected function provideRepositoriesAttributeChange(): iterable
     {
-        $response = [];
-        foreach ($this->provideValidAttributeValues() as $attribute) {
-            $response[$attribute[0]] = $attribute[1];
-        }
-        $repository = $this->createRepository('namespace1/repo1', response: $response);
+        $repository = $this->createRepositoryFromValidAttributes();
 
         // single template with a single target to change
         $config = ['attribute' => ['description' => 'AAA']];
@@ -175,6 +175,20 @@ final class GitlabProfileTest extends ProfileTestCase
         ];
         $expected = [];
         yield [self::REPOSITORY_SCENARIO_BASIC, $repository, $config, $expected];
+    }
+
+    protected function provideRepositoriesUserChange(): iterable
+    {
+        $repository = $this->createRepositoryFromValidAttributes(users: [['theseus', 'guest']]);
+
+        // single template with a single target to change
+        $config = ['user' => ['theseus' => ['username' => 'theseus', 'role' => 'admin']]];
+        $expected = [
+            NamedResourceUpdate::fromResource(new RepositoryUser('theseus', 'admin'), [
+                new NamedResourceAttributeUpdate(new Attribute('role'), 'guest', 'admin'),
+            ]),
+        ];
+        yield [self::REPOSITORY_SCENARIO_USERS, $repository, $config, $expected];
     }
 
     protected function provideValidOptions(): iterable

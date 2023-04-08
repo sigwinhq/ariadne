@@ -41,42 +41,12 @@ parameters:
 			path: src/Model/Change/NamedResourceCreate.php
 
 		-
-			message: "#^Method Sigwin\\\\Ariadne\\\\Model\\\\Change\\\\NamedResourceCreate\\:\\:fromResource\\(\\) should return Sigwin\\\\Ariadne\\\\Model\\\\Change\\\\NamedResourceCreate\\<STResource of Sigwin\\\\Ariadne\\\\NamedResource, STChange of Sigwin\\\\Ariadne\\\\NamedResourceChange\\> but returns Sigwin\\\\Ariadne\\\\Model\\\\Change\\\\NamedResourceCreate\\<STResource of Sigwin\\\\Ariadne\\\\NamedResource, Sigwin\\\\Ariadne\\\\NamedResourceChange\\>\\.$#"
-			count: 1
-			path: src/Model/Change/NamedResourceCreate.php
-
-		-
-			message: "#^Method Sigwin\\\\Ariadne\\\\Model\\\\Change\\\\NamedResourceCreate\\:\\:getIterator\\(\\) should return Traversable\\<mixed, TChanges of Sigwin\\\\Ariadne\\\\NamedResourceChange\\> but returns Sigwin\\\\Ariadne\\\\NamedResourceChangeCollection\\<TResource of Sigwin\\\\Ariadne\\\\NamedResource, Sigwin\\\\Ariadne\\\\NamedResourceChange\\>\\.$#"
-			count: 1
-			path: src/Model/Change/NamedResourceCreate.php
-
-		-
 			message: "#^Method Sigwin\\\\Ariadne\\\\Model\\\\Change\\\\NamedResourceDelete\\:\\:filter\\(\\) should return Sigwin\\\\Ariadne\\\\Model\\\\Change\\\\NamedResourceDelete\\<TResource of Sigwin\\\\Ariadne\\\\NamedResource, TChanges of Sigwin\\\\Ariadne\\\\NamedResourceChange\\> but returns Sigwin\\\\Ariadne\\\\Model\\\\Change\\\\NamedResourceDelete\\<TResource of Sigwin\\\\Ariadne\\\\NamedResource, Sigwin\\\\Ariadne\\\\NamedResourceChange\\>\\.$#"
 			count: 1
 			path: src/Model/Change/NamedResourceDelete.php
 
 		-
-			message: "#^Method Sigwin\\\\Ariadne\\\\Model\\\\Change\\\\NamedResourceDelete\\:\\:fromResource\\(\\) should return Sigwin\\\\Ariadne\\\\Model\\\\Change\\\\NamedResourceDelete\\<STResource of Sigwin\\\\Ariadne\\\\NamedResource, STChange of Sigwin\\\\Ariadne\\\\NamedResourceChange\\> but returns Sigwin\\\\Ariadne\\\\Model\\\\Change\\\\NamedResourceDelete\\<STResource of Sigwin\\\\Ariadne\\\\NamedResource, Sigwin\\\\Ariadne\\\\NamedResourceChange\\>\\.$#"
-			count: 1
-			path: src/Model/Change/NamedResourceDelete.php
-
-		-
-			message: "#^Method Sigwin\\\\Ariadne\\\\Model\\\\Change\\\\NamedResourceDelete\\:\\:getIterator\\(\\) should return Traversable\\<mixed, TChanges of Sigwin\\\\Ariadne\\\\NamedResourceChange\\> but returns Sigwin\\\\Ariadne\\\\NamedResourceChangeCollection\\<TResource of Sigwin\\\\Ariadne\\\\NamedResource, Sigwin\\\\Ariadne\\\\NamedResourceChange\\>\\.$#"
-			count: 1
-			path: src/Model/Change/NamedResourceDelete.php
-
-		-
 			message: "#^Method Sigwin\\\\Ariadne\\\\Model\\\\Change\\\\NamedResourceUpdate\\:\\:filter\\(\\) should return Sigwin\\\\Ariadne\\\\Model\\\\Change\\\\NamedResourceUpdate\\<TResource of Sigwin\\\\Ariadne\\\\NamedResource, TChanges of Sigwin\\\\Ariadne\\\\NamedResourceChange\\> but returns Sigwin\\\\Ariadne\\\\Model\\\\Change\\\\NamedResourceUpdate\\<TResource of Sigwin\\\\Ariadne\\\\NamedResource, Sigwin\\\\Ariadne\\\\NamedResourceChange\\>\\.$#"
-			count: 1
-			path: src/Model/Change/NamedResourceUpdate.php
-
-		-
-			message: "#^Method Sigwin\\\\Ariadne\\\\Model\\\\Change\\\\NamedResourceUpdate\\:\\:fromResource\\(\\) should return Sigwin\\\\Ariadne\\\\Model\\\\Change\\\\NamedResourceUpdate\\<STResource of Sigwin\\\\Ariadne\\\\NamedResource, STChange of Sigwin\\\\Ariadne\\\\NamedResourceChange\\> but returns Sigwin\\\\Ariadne\\\\Model\\\\Change\\\\NamedResourceUpdate\\<STResource of Sigwin\\\\Ariadne\\\\NamedResource, Sigwin\\\\Ariadne\\\\NamedResourceChange\\>\\.$#"
-			count: 1
-			path: src/Model/Change/NamedResourceUpdate.php
-
-		-
-			message: "#^Method Sigwin\\\\Ariadne\\\\Model\\\\Change\\\\NamedResourceUpdate\\:\\:getIterator\\(\\) should return Traversable\\<mixed, TChanges of Sigwin\\\\Ariadne\\\\NamedResourceChange\\> but returns Sigwin\\\\Ariadne\\\\NamedResourceChangeCollection\\<TResource of Sigwin\\\\Ariadne\\\\NamedResource, Sigwin\\\\Ariadne\\\\NamedResourceChange\\>\\.$#"
 			count: 1
 			path: src/Model/Change/NamedResourceUpdate.php
 

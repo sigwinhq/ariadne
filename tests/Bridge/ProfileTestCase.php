@@ -18,8 +18,12 @@ use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Sigwin\Ariadne\Model\Change\NamedResourceAttributeUpdate;
+use Sigwin\Ariadne\Model\Change\NamedResourceCreate;
+use Sigwin\Ariadne\Model\Change\NamedResourceDelete;
+use Sigwin\Ariadne\Model\Change\NamedResourceUpdate;
 use Sigwin\Ariadne\Model\Config\ProfileConfig;
 use Sigwin\Ariadne\Model\Repository;
+use Sigwin\Ariadne\Model\RepositoryUser;
 use Sigwin\Ariadne\Profile;
 use Sigwin\Ariadne\ProfileTemplateFactory;
 use Sigwin\Ariadne\Test\ModelGeneratorTrait;
@@ -126,6 +130,23 @@ abstract class ProfileTestCase extends TestCase
     }
 
     /**
+     * @group plan
+     *
+     * @dataProvider provideRepositoriesUserChange
+     *
+     * @param array<string, bool|int|string> $expected
+     * @param TConfig                        $config
+     */
+    public function testCanPlanUserChanges(string $name, Repository $repository, array $config, array $expected): void
+    {
+        $profile = $this->createProfileForRepositoryScenario($name, $repository, $config);
+        $plan = $profile->plan($repository);
+
+        static::assertSame($repository->getName(), $plan->getResource()->getName());
+        static::assertSame(\count($expected) === 0, $plan->isActual());
+    }
+
+    /**
      * @dataProvider provideValidOptions
      */
     public function testCanSetValidOptions(string $name, bool|string $value): void
@@ -195,6 +216,19 @@ abstract class ProfileTestCase extends TestCase
         yield 'custom' => ['https://example.com'];
     }
 
+    /**
+     * @param list<array{string, string}>|null $users
+     */
+    protected function createRepositoryFromValidAttributes(?array $users = null): Repository
+    {
+        $response = [];
+        foreach ($this->provideValidAttributeValues() as $attribute) {
+            $response[$attribute[0]] = $attribute[1];
+        }
+
+        return $this->createRepository('namespace1/repo1', response: $response, users: $users);
+    }
+
     abstract protected function validateRequest(RequestInterface $request): void;
 
     /**
@@ -221,6 +255,16 @@ abstract class ProfileTestCase extends TestCase
      * @return iterable<array-key, array{0: string, 1: Repository, 2: TConfig, 3: array<string, bool|int|string>}>
      */
     abstract protected function provideRepositoriesAttributeChange(): iterable;
+
+    /**
+     * @return iterable<array-key, array{
+     *     string,
+     *     Repository,
+     *     TConfig,
+     *     list<NamedResourceCreate<RepositoryUser, NamedResourceAttributeUpdate>|NamedResourceUpdate<RepositoryUser, NamedResourceAttributeUpdate>|NamedResourceDelete<RepositoryUser, NamedResourceAttributeUpdate>>
+     * }>
+     */
+    abstract protected function provideRepositoriesUserChange(): iterable;
 
     abstract protected function createProfileInstance(ProfileConfig $config, ClientInterface $client, ProfileTemplateFactory $factory, CacheItemPoolInterface $cachePool): Profile;
 

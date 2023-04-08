@@ -29,12 +29,4 @@ final class NamedResourceDelete implements NamedResourceChangeCollection
      * @use NamedResourceChangeTrait<TResource, TChanges>
      */
     use NamedResourceChangeTrait;
-
-    /**
-     * @param TResource                                                     $resource
-     * @param NamedResourceChangeCollection<TResource, NamedResourceChange> $changes
-     */
-    private function __construct(private readonly NamedResource $resource, private readonly NamedResourceChangeCollection $changes)
-    {
-    }
 }
