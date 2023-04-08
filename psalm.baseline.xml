@@ -273,7 +273,6 @@
       <code>SortedNamedResourceCollection::fromArray($repositories)</code>
     </ArgumentTypeCoercion>
     <MixedArrayOffset>
-      <code>$attributes[$idx]</code>
       <code>$configs[$idx++]</code>
       <code>$configs[$idx]</code>
       <code>$items[$idx++]</code>

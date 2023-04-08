@@ -145,6 +145,10 @@ abstract class ProfileTestCase extends TestCase
 
         static::assertSame($repository->getName(), $plan->getResource()->getName());
         static::assertSame(\count($expected) === 0, $plan->isActual());
+
+        $actual = iterator_to_array($plan);
+
+        static::assertEqualsIgnoringCase($expected, $actual);
     }
 
     /**
