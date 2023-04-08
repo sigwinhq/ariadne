@@ -131,6 +131,7 @@ abstract class ProfileTestCase extends TestCase
 
     /**
      * @group plan
+     * @group user
      *
      * @dataProvider provideRepositoriesUserChange
      *
@@ -287,14 +288,10 @@ abstract class ProfileTestCase extends TestCase
     private function createProfileForRepositoryScenario(string $name, Repository $fixture, array $config): Profile
     {
         $profileConfig = $this->createConfig(templates: $config['templates'] ?? null, options: $config['options'] ?? null, attribute: $config['attribute'] ?? null, user: $config['user'] ?? null, filter: $config['filter'] ?? null);
-        $attributes = [];
-        foreach ($profileConfig->templates as $template) {
-            $attributes[] = $template->target->attribute;
-        }
         $repositories = array_fill(0, \count($profileConfig->templates), [$fixture]);
 
         $httpClient = $this->createHttpClientForRepositoryScenario($name, $fixture);
-        $factory = $this->createTemplateFactory(attributes: $attributes, repositories: $repositories);
+        $factory = $this->createTemplateFactory(repositories: $repositories);
         $cachePool = $this->createActiveCachePool();
 
         return $this->createProfileInstance($profileConfig, $httpClient, $factory, $cachePool);

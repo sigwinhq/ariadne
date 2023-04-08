@@ -70,18 +70,17 @@ trait ModelGeneratorTrait
     }
 
     /**
-     * @param list<array<string, bool|int|string>> $attributes
-     * @param list<list{Repository}>        $repositories
+     * @param list<list{Repository}> $repositories
      */
-    protected function createTemplateFactory(array $attributes = [], array $repositories = []): ProfileTemplateFactory
+    protected function createTemplateFactory(array $repositories = []): ProfileTemplateFactory
     {
         $factory = $this->getMockBuilder(ProfileTemplateFactory::class)->getMock();
 
         $idx = 0;
         $factory
             ->method('fromConfig')
-            ->willReturnCallback(function (ProfileTemplateConfig $config) use (&$idx, $attributes, $repositories): ProfileTemplate {
-                $template = $this->createTemplate($config->name, $attributes[$idx] ?? [], $repositories[$idx] ?? []);
+            ->willReturnCallback(function (ProfileTemplateConfig $config) use (&$idx, $repositories): ProfileTemplate {
+                $template = $this->createTemplate($config->name, $config->target->attribute, $repositories[$idx] ?? []);
                 ++$idx;
 
                 return $template;
