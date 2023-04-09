@@ -167,11 +167,18 @@ final class GithubProfileTest extends ProfileTestCase
 
     protected function provideVendorSpecificRepositories(): iterable
     {
-        yield [
-            self::REPOSITORY_SCENARIO_EXTENDED,
-            $this->createRepository('namespace1/repo1'),
-            ['attribute' => ['allow_squash_merge' => true]],
-        ];
+        /** @var list<array{string, string|int|bool}> $values */
+        $values = $this->provideValidAttributeValues();
+        $values = array_combine(array_column($values, 0), array_column($values, 1));
+        $extendedAttributes = ['allow_squash_merge', 'allow_merge_commit', 'allow_rebase_merge', 'allow_auto_merge', 'allow_update_branch', 'delete_branch_on_merge', 'use_squash_pr_title_as_default'];
+
+        foreach ($extendedAttributes as $extendedAttribute) {
+            yield [
+                self::REPOSITORY_SCENARIO_EXTENDED,
+                $this->createRepository('namespace1/repo1'),
+                ['attribute' => [$extendedAttribute => $values[$extendedAttribute] ?? throw new \LogicException(sprintf('Missing value for "%1$s".', $extendedAttribute))]],
+            ];
+        }
     }
 
     protected function provideRepositoriesAttributeChange(): iterable
@@ -273,6 +280,12 @@ final class GithubProfileTest extends ProfileTestCase
     {
         return [
             ['allow_squash_merge', true],
+            ['allow_merge_commit', true],
+            ['allow_rebase_merge', true],
+            ['allow_auto_merge', true],
+            ['allow_update_branch', true],
+            ['delete_branch_on_merge', true],
+            ['use_squash_pr_title_as_default', true],
             ['description', 'desc'],
             ['has_discussions', true],
             ['has_downloads', true],

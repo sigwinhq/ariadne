@@ -180,6 +180,12 @@ final class GithubProfile implements Profile
     {
         return [
             'allow_squash_merge' => ['access' => RepositoryAttributeAccess::READ_WRITE, 'extended' => true],
+            'allow_merge_commit' => ['access' => RepositoryAttributeAccess::READ_WRITE, 'extended' => true],
+            'allow_rebase_merge' => ['access' => RepositoryAttributeAccess::READ_WRITE, 'extended' => true],
+            'allow_auto_merge' => ['access' => RepositoryAttributeAccess::READ_WRITE, 'extended' => true],
+            'allow_update_branch' => ['access' => RepositoryAttributeAccess::READ_WRITE, 'extended' => true],
+            'delete_branch_on_merge' => ['access' => RepositoryAttributeAccess::READ_WRITE, 'extended' => true],
+            'use_squash_pr_title_as_default' => ['access' => RepositoryAttributeAccess::READ_WRITE, 'extended' => true],
             'description' => ['access' => RepositoryAttributeAccess::READ_WRITE],
             'has_discussions' => ['access' => RepositoryAttributeAccess::READ_WRITE],
             'has_downloads' => ['access' => RepositoryAttributeAccess::READ_WRITE],
