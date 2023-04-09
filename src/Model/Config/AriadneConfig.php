@@ -18,7 +18,7 @@ namespace Sigwin\Ariadne\Model\Config;
  *
  * @psalm-import-type TProfile from \Sigwin\Ariadne\Model\Config\ProfileConfig
  *
- * @psalm-type TConfig = array{profiles: list<TProfile>}
+ * @psalm-type TConfig = array{profiles: array<string, TProfile>}
  */
 final class AriadneConfig implements \IteratorAggregate
 {
@@ -35,7 +35,9 @@ final class AriadneConfig implements \IteratorAggregate
     public static function fromArray(string $url, array $config): self
     {
         $profiles = [];
-        foreach ($config['profiles'] as $profile) {
+        foreach ($config['profiles'] as $name => $profile) {
+            $profile['name'] = $name;
+
             $profiles[] = ProfileConfig::fromArray($profile);
         }
 

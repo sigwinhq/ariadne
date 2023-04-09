@@ -41,8 +41,8 @@ final class FilteredProfileGeneratorCollectionTest extends TestCase
     public function testWillFilterOutUnmatchedProfiles(ProfileFilter $filter, int $matches): void
     {
         $config = AriadneConfig::fromArray('file:///ariadne.yaml', ['profiles' => [
-            ['type' => 'fake', 'name' => 'Foo Indeed', 'client' => ['auth' => ['token' => 'ABC', 'type' => 'token'], 'options' => []],  'templates' => []],
-            ['type' => 'fake', 'name' => 'This one is bar', 'client' => ['auth' => ['token' => 'ABC', 'type' => 'token'], 'options' => []],  'templates' => []],
+            'Foo Indeed' => ['type' => 'fake', 'name' => 'Foo Indeed', 'client' => ['auth' => ['token' => 'ABC', 'type' => 'token'], 'options' => []],  'templates' => []],
+            'This one is bar' => ['type' => 'fake', 'name' => 'This one is bar', 'client' => ['auth' => ['token' => 'ABC', 'type' => 'token'], 'options' => []],  'templates' => []],
         ]]);
 
         $collection = new FilteredProfileGeneratorCollection(

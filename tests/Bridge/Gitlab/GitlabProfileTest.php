@@ -316,12 +316,12 @@ final class GitlabProfileTest extends ProfileTestCase
         if ($templates !== null) {
             $specs = [];
             foreach ($templates as $template) {
-                $specs[] = array_replace_recursive($spec, $template);
+                $specs[$template['name']] = array_replace_recursive($spec, $template);
             }
-            /** @var list<TTemplate> $templates */
+            /** @var array<string, TTemplate> $templates */
             $templates = $specs;
         } else {
-            $templates = [$spec];
+            $templates = [$spec['name'] => $spec];
         }
 
         $config = [
