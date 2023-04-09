@@ -42,13 +42,13 @@ final class DiffCommand extends Command
         $style = new AriadneStyle($input, $output);
         try {
             $profiles = $this->getProfileCollection($input, $style);
+            if (\count($profiles) === 0) {
+                $style->warning('No profiles found.');
+
+                return self::INVALID;
+            }
         } catch (ConfigException $exception) {
             return $style->exception($exception);
-        }
-        if (\count($profiles) === 0) {
-            $style->warning('No profiles found.');
-
-            return self::INVALID;
         }
 
         foreach ($profiles as $profile) {

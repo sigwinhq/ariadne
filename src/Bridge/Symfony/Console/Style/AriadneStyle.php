@@ -56,7 +56,9 @@ final class AriadneStyle extends SymfonyStyle
 
     public function exception(ConfigException $exception): int
     {
-        $this->config($exception->url);
+        if ($exception->url !== null) {
+            $this->config($exception->url);
+        }
         $this->error($exception->getMessage());
 
         return $exception->getCode();

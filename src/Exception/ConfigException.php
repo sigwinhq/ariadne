@@ -13,17 +13,29 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne\Exception;
 
+use Sigwin\Ariadne\Model\Config\ProfileConfig;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
+use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
 
 final class ConfigException extends \RuntimeException
 {
-    private function __construct(public readonly string $url, string $message, \Throwable $previous)
+    private function __construct(string $message, \Throwable $previous, public readonly ?string $url = null)
     {
         parent::__construct($message, $previous->getCode(), $previous);
     }
 
     public static function fromConfigException(string $prefix, string $url, InvalidConfigurationException $exception): self
     {
-        return new self($url, str_replace($prefix, '', $exception->getMessage()), $exception);
+        return new self(str_replace($prefix, '', $exception->getMessage()), $exception, $url);
+    }
+
+    public static function fromOptionsException(string $path, ProfileConfig $config, InvalidOptionsException $exception): self
+    {
+        $message = $exception->getMessage();
+        if (preg_match('/^The option "(?<name>[a-zA-Z0-9-_]+)" with value "(?<value>[a-zA-Z0-9-_]+)" is invalid. Accepted values are: (?<permissible>[^\.]+).$/', $message, $matches) === 1) {
+            $message = sprintf('The value "%1$s" is not allowed for path "%2$s". Permissible values: %3$s', $matches['value'], 'profiles.'.$config->name.$path.'.'.$matches['name'], $matches['permissible']);
+        }
+
+        return new self($message, $exception);
     }
 }
