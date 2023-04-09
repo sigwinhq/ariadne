@@ -109,6 +109,9 @@ final class GithubProfile implements Profile
 
         $attributes = [];
         foreach ($plan->filter(NamedResourceAttributeUpdate::class) as $change) {
+            if ($change->isActual()) {
+                continue;
+            }
             $attributes[$change->getResource()->getName()] = $change->expected;
         }
         $this->client->repositories()->update($username, $repository, $attributes);
@@ -122,23 +125,31 @@ final class GithubProfile implements Profile
         if (! isset($this->repositories)) {
             $repositories = [];
             $needsUsers = $this->needsUsers();
+            $needsExtendedRepository = $this->needsExtendedRepository();
 
             $pager = new ResultPager($this->client);
             /** @var list<TRepository> $response */
             $response = $pager->fetchAll($this->client->user(), 'myRepositories');
             foreach ($response as $repository) {
                 $users = [];
-                if ($needsUsers) {
+                if ($needsUsers || $needsExtendedRepository) {
                     $parts = explode('/', $repository['full_name']);
                     if (\count($parts) !== 2) {
                         throw new \InvalidArgumentException('Invalid repository name');
                     }
                     [$username, $name] = $parts;
 
-                    /** @var list<TCollaborator> $collaborators */
-                    $collaborators = $pager->fetchAll($this->client->repository()->collaborators(), 'all', [$username, $name]);
-                    foreach ($collaborators as $collaborator) {
-                        $users[] = new RepositoryUser($collaborator['login'], $collaborator['role_name']);
+                    if ($needsExtendedRepository) {
+                        /** @var TRepository $repository */
+                        $repository = $this->client->repositories()->show($username, $name);
+                    }
+
+                    if ($needsUsers) {
+                        /** @var list<TCollaborator> $collaborators */
+                        $collaborators = $pager->fetchAll($this->client->repository()->collaborators(), 'all', [$username, $name]);
+                        foreach ($collaborators as $collaborator) {
+                            $users[] = new RepositoryUser($collaborator['login'], $collaborator['role_name']);
+                        }
                     }
                 }
                 $users = SortedNamedResourceCollection::fromArray($users);
@@ -163,11 +174,18 @@ final class GithubProfile implements Profile
     }
 
     /**
-     * @return array<string, array{access: RepositoryAttributeAccess}>
+     * @return array<string, array{access: RepositoryAttributeAccess, extended?: bool}>
      */
     private function getAttributes(): array
     {
         return [
+            'allow_squash_merge' => ['access' => RepositoryAttributeAccess::READ_WRITE, 'extended' => true],
+            'allow_merge_commit' => ['access' => RepositoryAttributeAccess::READ_WRITE, 'extended' => true],
+            'allow_rebase_merge' => ['access' => RepositoryAttributeAccess::READ_WRITE, 'extended' => true],
+            'allow_auto_merge' => ['access' => RepositoryAttributeAccess::READ_WRITE, 'extended' => true],
+            'allow_update_branch' => ['access' => RepositoryAttributeAccess::READ_WRITE, 'extended' => true],
+            'delete_branch_on_merge' => ['access' => RepositoryAttributeAccess::READ_WRITE, 'extended' => true],
+            'use_squash_pr_title_as_default' => ['access' => RepositoryAttributeAccess::READ_WRITE, 'extended' => true],
             'description' => ['access' => RepositoryAttributeAccess::READ_WRITE],
             'has_discussions' => ['access' => RepositoryAttributeAccess::READ_WRITE],
             'has_downloads' => ['access' => RepositoryAttributeAccess::READ_WRITE],
@@ -179,5 +197,17 @@ final class GithubProfile implements Profile
             'stargazers_count' => ['access' => RepositoryAttributeAccess::READ_ONLY],
             'watchers_count' => ['access' => RepositoryAttributeAccess::READ_ONLY],
         ];
+    }
+
+    private function needsExtendedRepository(): bool
+    {
+        $extendedAttributes = array_filter($this->getAttributes(), static fn (array $attribute) => $attribute['extended'] ?? false);
+        foreach ($this->config->templates as $template) {
+            if (array_intersect_key($template->target->attribute, $extendedAttributes) !== []) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

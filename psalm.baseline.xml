@@ -2,7 +2,7 @@
 <files psalm-version="5.8.0@9cf4f60a333f779ad3bc704a555920e81d4fdcda">
   <file src="src/Bridge/Github/GithubProfile.php">
     <LessSpecificReturnType>
-      <code><![CDATA[array<string, array{access: RepositoryAttributeAccess}>]]></code>
+      <code><![CDATA[array<string, array{access: RepositoryAttributeAccess, extended?: bool}>]]></code>
     </LessSpecificReturnType>
     <MixedAssignment>
       <code><![CDATA[$attributes[$change->getResource()->getName()]]]></code>
