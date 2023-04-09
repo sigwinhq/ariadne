@@ -75,7 +75,7 @@ final class GithubProfile implements Profile
             /** @var array{type: string, token: string} $auth */
             $auth = $resolver->resolve($config->client->auth);
         } catch (InvalidOptionsException $exception) {
-            throw ConfigException::fromOptionsException('client.auth', $config, $exception);
+            throw ConfigException::fromInvalidOptionsException('client.auth', $config, $exception);
         }
 
         $builder = new Builder($client);
