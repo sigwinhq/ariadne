@@ -101,6 +101,16 @@ final class GithubProfileTest extends ProfileTestCase
                     [(object) ['id' => $repository->id, 'full_name' => $repository->path, 'fork' => false, 'private' => false, 'topics' => [], 'archived' => false]],
                 ],
             ]),
+            self::REPOSITORY_SCENARIO_EXTENDED => $this->createHttpClient([
+                [
+                    $this->createRequest(null, 'GET', '/user/repos?per_page=100'),
+                    [(object) ['id' => $repository->id, 'full_name' => $repository->path, 'fork' => false, 'private' => false, 'topics' => [], 'archived' => false]],
+                ],
+                [
+                    $this->createRequest(null, 'GET', '/repos/namespace1/repo1'),
+                    ['id' => $repository->id, 'full_name' => $repository->path, 'fork' => false, 'private' => false, 'topics' => [], 'archived' => false, 'allow_squash_merge' => true],
+                ],
+            ]),
             self::REPOSITORY_SCENARIO_FORK => $this->createHttpClient([
                 [
                     $this->createRequest(null, 'GET', '/user/repos?per_page=100'),
@@ -153,6 +163,15 @@ final class GithubProfileTest extends ProfileTestCase
             ]),
             default => throw new \InvalidArgumentException(sprintf('Unknown repository scenario "%1$s".', $name)),
         };
+    }
+
+    protected function provideVendorSpecificRepositories(): iterable
+    {
+        yield [
+            self::REPOSITORY_SCENARIO_EXTENDED,
+            $this->createRepository('namespace1/repo1'),
+            ['attribute' => ['allow_squash_merge' => true]],
+        ];
     }
 
     protected function provideRepositoriesAttributeChange(): iterable
@@ -253,6 +272,7 @@ final class GithubProfileTest extends ProfileTestCase
     protected function provideValidAttributeValues(): iterable
     {
         return [
+            ['allow_squash_merge', true],
             ['description', 'desc'],
             ['has_discussions', true],
             ['has_downloads', true],

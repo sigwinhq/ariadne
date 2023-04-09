@@ -143,7 +143,7 @@ trait ModelGeneratorTrait
     }
 
     /**
-     * @param list<array{string, string|array<int|object>}> $items
+     * @param list<array{string, string|array<array<string|int>|int|object|bool|string>}> $items
      */
     protected function createHttpClient(array $items = []): ClientInterface
     {

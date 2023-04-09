@@ -42,6 +42,7 @@ abstract class ProfileTestCase extends TestCase
     use ModelGeneratorTrait;
 
     protected const REPOSITORY_SCENARIO_BASIC = 'basic repository';
+    protected const REPOSITORY_SCENARIO_EXTENDED = 'extended repository';
     protected const REPOSITORY_SCENARIO_FORK = 'forked repository';
     protected const REPOSITORY_SCENARIO_PRIVATE = 'private repository';
     protected const REPOSITORY_SCENARIO_USER = 'repository with a single user';
@@ -73,7 +74,16 @@ abstract class ProfileTestCase extends TestCase
     }
 
     /**
+     * @return iterable<array-key, array{0: string, 1: Repository, 2?: TConfig}>
+     */
+    protected function provideVendorSpecificRepositories(): iterable
+    {
+        return [];
+    }
+
+    /**
      * @dataProvider provideRepositories
+     * @dataProvider provideVendorSpecificRepositories
      *
      * @param TConfig $config
      */
