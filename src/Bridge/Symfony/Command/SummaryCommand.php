@@ -15,6 +15,7 @@ namespace Sigwin\Ariadne\Bridge\Symfony\Command;
 
 use Sigwin\Ariadne\Bridge\Symfony\Console\Style\AriadneStyle;
 use Sigwin\Ariadne\ConfigReader;
+use Sigwin\Ariadne\Exception\ConfigException;
 use Sigwin\Ariadne\ProfileCollectionFactory;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -39,7 +40,11 @@ final class SummaryCommand extends Command
     public function execute(InputInterface $input, OutputInterface $output): int
     {
         $style = new AriadneStyle($input, $output);
-        $profiles = $this->getProfileCollection($input, $style);
+        try {
+            $profiles = $this->getProfileCollection($input, $style);
+        } catch (ConfigException $exception) {
+            return $style->exception($exception);
+        }
         if (\count($profiles) === 0) {
             $style->warning('No profiles found.');
 

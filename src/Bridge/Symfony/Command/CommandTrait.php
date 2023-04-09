@@ -44,7 +44,7 @@ trait CommandTrait
         $style->heading();
 
         $config = $this->configReader->read($this->getConfigUrl($input));
-        $style->note(sprintf('Using config: %1$s', $config->url));
+        $style->config($config->url);
 
         $names = $this->getConfigProfileAttributes($config, 'name');
         $types = $this->getConfigProfileAttributes($config, 'type');
