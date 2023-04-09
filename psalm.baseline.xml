@@ -184,6 +184,8 @@
     </PossiblyInvalidArgument>
     <PossiblyUndefinedStringArrayOffset>
       <code><![CDATA[$matches['name']]]></code>
+      <code><![CDATA[$matches['name']]]></code>
+      <code><![CDATA[$matches['permissible']]]></code>
       <code><![CDATA[$matches['permissible']]]></code>
       <code><![CDATA[$matches['value']]]></code>
     </PossiblyUndefinedStringArrayOffset>
