@@ -37,7 +37,7 @@ use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * @psalm-type TRepository array{id: int, fork: bool, full_name: string, private: bool, topics: array<string>, language?: string}
+ * @psalm-type TRepository array{id: int, fork: bool, full_name: string, private: bool, topics: array<string>, language?: string, archived: bool}
  * @psalm-type TCollaborator array{login: string, role_name: string}
  */
 final class GithubProfile implements Profile
@@ -152,6 +152,7 @@ final class GithubProfile implements Profile
                     $repository['full_name'],
                     $repository['topics'],
                     isset($repository['language']) && $repository['language'] !== '' ? (array) $repository['language'] : [],
+                    $repository['archived'],
                 );
             }
 

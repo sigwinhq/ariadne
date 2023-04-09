@@ -39,7 +39,8 @@ final class Repository implements NamedResource
         public readonly int $id,
         public readonly string $path,
         public readonly array $topics,
-        public readonly array $languages
+        public readonly array $languages,
+        public readonly bool $archived,
     ) {
     }
 

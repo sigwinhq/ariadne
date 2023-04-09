@@ -48,6 +48,7 @@ abstract class ProfileTestCase extends TestCase
     protected const REPOSITORY_SCENARIO_USERS = 'repository with multiple users';
     protected const REPOSITORY_SCENARIO_TOPICS = 'repository with topics';
     protected const REPOSITORY_SCENARIO_LANGUAGES = 'repository with languages';
+    protected const REPOSITORY_SCENARIO_ARCHIVED = 'archived repository';
 
     /**
      * @return iterable<array-key, array{0: string, 1: Repository, 2?: TConfig}>
@@ -57,6 +58,7 @@ abstract class ProfileTestCase extends TestCase
         yield [self::REPOSITORY_SCENARIO_BASIC, $this->createRepository('namespace1/repo1')];
         yield [self::REPOSITORY_SCENARIO_FORK, $this->createRepository('namespace1/repo1', type: 'fork')];
         yield [self::REPOSITORY_SCENARIO_PRIVATE, $this->createRepository('namespace1/repo1', visibility: 'private')];
+        yield [self::REPOSITORY_SCENARIO_ARCHIVED, $this->createRepository('namespace1/repo1', archived: true)];
         yield [
             self::REPOSITORY_SCENARIO_USER,
             $this->createRepository('namespace1/repo1', users: [['theseus', 'admin']]),
@@ -88,6 +90,7 @@ abstract class ProfileTestCase extends TestCase
                 static::assertSame($fixture->path, $repository->path);
                 static::assertSame($fixture->topics, $repository->topics);
                 static::assertSame($fixture->languages, $repository->languages);
+                static::assertSame($fixture->archived, $repository->archived);
 
                 return;
             }

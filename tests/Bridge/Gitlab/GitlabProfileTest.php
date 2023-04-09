@@ -98,25 +98,31 @@ final class GitlabProfileTest extends ProfileTestCase
             self::REPOSITORY_SCENARIO_BASIC => $this->createHttpClient([
                 [
                     $this->createRequest(null, 'GET', '/projects?membership=false&owned=true&per_page=50'),
-                    [(object) ['id' => $repository->id, 'visibility' => 'public', 'path_with_namespace' => $repository->path, 'topics' => []]],
+                    [(object) ['id' => $repository->id, 'visibility' => 'public', 'path_with_namespace' => $repository->path, 'topics' => [], 'archived' => false]],
                 ],
             ]),
             self::REPOSITORY_SCENARIO_FORK => $this->createHttpClient([
                 [
                     $this->createRequest(null, 'GET', '/projects?membership=false&owned=true&per_page=50'),
-                    [(object) ['id' => $repository->id, 'visibility' => 'public', 'path_with_namespace' => $repository->path, 'topics' => [], 'forked_from_project' => (object) ['id' => 1]]],
+                    [(object) ['id' => $repository->id, 'visibility' => 'public', 'path_with_namespace' => $repository->path, 'topics' => [], 'archived' => false, 'forked_from_project' => (object) ['id' => 1]]],
                 ],
             ]),
             self::REPOSITORY_SCENARIO_PRIVATE => $this->createHttpClient([
                 [
                     $this->createRequest(null, 'GET', '/projects?membership=false&owned=true&per_page=50'),
-                    [(object) ['id' => $repository->id, 'visibility' => 'private', 'path_with_namespace' => $repository->path, 'topics' => []]],
+                    [(object) ['id' => $repository->id, 'visibility' => 'private', 'path_with_namespace' => $repository->path, 'topics' => [], 'archived' => false]],
+                ],
+            ]),
+            self::REPOSITORY_SCENARIO_ARCHIVED => $this->createHttpClient([
+                [
+                    $this->createRequest(null, 'GET', '/projects?membership=false&owned=true&per_page=50'),
+                    [(object) ['id' => $repository->id, 'visibility' => 'public', 'path_with_namespace' => $repository->path, 'topics' => [], 'archived' => true]],
                 ],
             ]),
             self::REPOSITORY_SCENARIO_USER => $this->createHttpClient([
                 [
                     $this->createRequest(null, 'GET', '/projects?membership=false&owned=true&per_page=50'),
-                    [(object) ['id' => $repository->id, 'visibility' => 'public', 'path_with_namespace' => $repository->path, 'topics' => []]],
+                    [(object) ['id' => $repository->id, 'visibility' => 'public', 'path_with_namespace' => $repository->path, 'topics' => [], 'archived' => false]],
                 ],
                 [
                     $this->createRequest(null, 'GET', '/projects/12345/members/all?per_page=50'),
@@ -126,7 +132,7 @@ final class GitlabProfileTest extends ProfileTestCase
             self::REPOSITORY_SCENARIO_USERS => $this->createHttpClient([
                 [
                     $this->createRequest(null, 'GET', '/projects?membership=false&owned=true&per_page=50'),
-                    [(object) ['id' => $repository->id, 'visibility' => 'public', 'path_with_namespace' => $repository->path, 'topics' => []]],
+                    [(object) ['id' => $repository->id, 'visibility' => 'public', 'path_with_namespace' => $repository->path, 'topics' => [], 'archived' => false]],
                 ],
                 [
                     $this->createRequest(null, 'GET', '/projects/12345/members/all?per_page=50'),
@@ -136,13 +142,13 @@ final class GitlabProfileTest extends ProfileTestCase
             self::REPOSITORY_SCENARIO_TOPICS => $this->createHttpClient([
                 [
                     $this->createRequest(null, 'GET', '/projects?membership=false&owned=true&per_page=50'),
-                    [(object) ['id' => $repository->id, 'visibility' => 'public', 'path_with_namespace' => $repository->path, 'topics' => ['topic1', 'topic2']]],
+                    [(object) ['id' => $repository->id, 'visibility' => 'public', 'path_with_namespace' => $repository->path, 'topics' => ['topic1', 'topic2'], 'archived' => false]],
                 ],
             ]),
             self::REPOSITORY_SCENARIO_LANGUAGES => $this->createHttpClient([
                 [
                     $this->createRequest(null, 'GET', '/projects?membership=false&owned=true&per_page=50'),
-                    [(object) ['id' => $repository->id, 'visibility' => 'public', 'path_with_namespace' => $repository->path, 'topics' => []]],
+                    [(object) ['id' => $repository->id, 'visibility' => 'public', 'path_with_namespace' => $repository->path, 'topics' => [], 'archived' => false]],
                 ],
                 [
                     $this->createRequest(null, 'GET', '/projects/12345/languages'),

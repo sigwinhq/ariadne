@@ -127,7 +127,7 @@ trait ModelGeneratorTrait
      * @param null|list<string> $topics
      * @param null|list<string> $languages
      */
-    protected function createRepository(string $path, array $response = [], ?string $type = null, ?string $visibility = null, ?array $users = null, ?array $topics = null, ?array $languages = null): Repository
+    protected function createRepository(string $path, array $response = [], ?string $type = null, ?string $visibility = null, ?array $users = null, ?array $topics = null, ?array $languages = null, ?bool $archived = null): Repository
     {
         return new Repository(
             array_replace($response, ['id' => 12345, 'path' => $path]),
@@ -137,7 +137,8 @@ trait ModelGeneratorTrait
             12345,
             $path,
             $topics ?? [],
-            $languages ?? []
+            $languages ?? [],
+            $archived ?? false,
         );
     }
 
