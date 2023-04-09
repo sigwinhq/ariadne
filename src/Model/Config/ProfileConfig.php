@@ -17,7 +17,7 @@ namespace Sigwin\Ariadne\Model\Config;
  * @psalm-import-type TProfileTemplate from ProfileTemplateConfig
  * @psalm-import-type TProfileClient from ProfileClientConfig
  *
- * @psalm-type TProfile = array{type: string, name: string, client: TProfileClient, templates: list<TProfileTemplate>}
+ * @psalm-type TProfile = array{type: string, name: string, client: TProfileClient, templates: array<string, TProfileTemplate>}
  */
 final class ProfileConfig
 {
@@ -34,7 +34,9 @@ final class ProfileConfig
     public static function fromArray(array $config): self
     {
         $templates = [];
-        foreach ($config['templates'] as $template) {
+        foreach ($config['templates'] as $name => $template) {
+            $template['name'] = $name;
+
             $templates[] = ProfileTemplateConfig::fromArray($template);
         }
 
