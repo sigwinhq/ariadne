@@ -178,6 +178,18 @@
       <code>RuntimeEnvProcessor</code>
     </UnusedClass>
   </file>
+  <file src="src/Exception/ConfigException.php">
+    <PossiblyInvalidArgument>
+      <code><![CDATA[$previous->getCode()]]></code>
+    </PossiblyInvalidArgument>
+    <PossiblyUndefinedStringArrayOffset>
+      <code><![CDATA[$matches['name']]]></code>
+      <code><![CDATA[$matches['name']]]></code>
+      <code><![CDATA[$matches['permissible']]]></code>
+      <code><![CDATA[$matches['permissible']]]></code>
+      <code><![CDATA[$matches['value']]]></code>
+    </PossiblyUndefinedStringArrayOffset>
+  </file>
   <file src="src/Model/Change/NamedResourceChangeTrait.php">
     <ArgumentTypeCoercion>
       <code>$changes</code>

@@ -17,6 +17,7 @@ use PHPUnit\Framework\TestCase;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
+use Sigwin\Ariadne\Exception\ConfigException;
 use Sigwin\Ariadne\Model\Change\NamedResourceAttributeUpdate;
 use Sigwin\Ariadne\Model\Change\NamedResourceCreate;
 use Sigwin\Ariadne\Model\Change\NamedResourceDelete;
@@ -169,10 +170,12 @@ abstract class ProfileTestCase extends TestCase
 
     /**
      * @dataProvider provideInvalidOptions
+     *
+     * @uses \Sigwin\Ariadne\Exception\ConfigException
      */
     public function testCannotSetInvalidOptions(string $name, bool|string $value, string $message): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(ConfigException::class);
         $this->expectExceptionMessage(sprintf($message, $name));
 
         $httpClient = $this->createHttpClient();

@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Sigwin\Ariadne\Bridge\Symfony\Console\Style;
 
 use Sigwin\Ariadne\Bridge\Symfony\Console\Logo;
+use Sigwin\Ariadne\Exception\ConfigException;
 use Sigwin\Ariadne\Model\Change\NamedResourceAttributeUpdate;
 use Sigwin\Ariadne\Model\Change\NamedResourceCreate;
 use Sigwin\Ariadne\Model\Change\NamedResourceDelete;
@@ -51,6 +52,21 @@ final class AriadneStyle extends SymfonyStyle
     public function heading(): void
     {
         $this->writeln(sprintf('<info>%1$s</>', Logo::ASCII));
+    }
+
+    public function exception(ConfigException $exception): int
+    {
+        if ($exception->url !== null) {
+            $this->config($exception->url);
+        }
+        $this->error($exception->getMessage());
+
+        return $exception->getCode();
+    }
+
+    public function config(string $url): void
+    {
+        $this->note(sprintf('Using config: %1$s', $url));
     }
 
     public function summary(Profile $profile): void

@@ -254,6 +254,7 @@ final class GitlabProfileTest extends ProfileTestCase
         return [
             ['membership', 'aa', $error],
             ['owned', 'aa', $error],
+            ['unknown', 'aa', 'Unrecognized option "%1$s" under "profiles.GL,client.options". Permissible values: "membership", "owned"'],
         ];
     }
 

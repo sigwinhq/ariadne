@@ -19,6 +19,7 @@ use Gitlab\ResultPager;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Client\ClientInterface;
 use Sigwin\Ariadne\Bridge\ProfileTrait;
+use Sigwin\Ariadne\Exception\ConfigException;
 use Sigwin\Ariadne\Model\Change\NamedResourceAttributeUpdate;
 use Sigwin\Ariadne\Model\Collection\SortedNamedResourceCollection;
 use Sigwin\Ariadne\Model\Config\ProfileConfig;
@@ -32,6 +33,8 @@ use Sigwin\Ariadne\NamedResourceChangeCollection;
 use Sigwin\Ariadne\NamedResourceCollection;
 use Sigwin\Ariadne\Profile;
 use Sigwin\Ariadne\ProfileTemplateFactory;
+use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
+use Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -81,8 +84,12 @@ final class GitlabProfile implements Profile
             ->setDefined('token')
             ->setAllowedTypes('token', 'string')
         ;
-        /** @var array{type: string, token: string} $auth */
-        $auth = $resolver->resolve($config->client->auth);
+        try {
+            /** @var array{type: string, token: string} $auth */
+            $auth = $resolver->resolve($config->client->auth);
+        } catch (InvalidOptionsException $exception) {
+            throw ConfigException::fromInvalidOptionsException('client.auth', $config, $exception);
+        }
 
         $builder = new Builder($client);
         $builder->addCache($cachePool);
@@ -191,8 +198,14 @@ final class GitlabProfile implements Profile
             ->setAllowedTypes('owned', ['boolean'])
         ;
 
-        /** @var array{membership: bool, owned: bool} $options */
-        $options = $resolver->resolve($options);
+        try {
+            /** @var array{membership: bool, owned: bool} $options */
+            $options = $resolver->resolve($options);
+        } catch (InvalidOptionsException $exception) {
+            throw ConfigException::fromInvalidOptionsException('client.options', $this->config, $exception);
+        } catch (UndefinedOptionsException $exception) {
+            throw ConfigException::fromUndefinedOptionsException('client.options', $this->config, $exception);
+        }
 
         return $options;
     }

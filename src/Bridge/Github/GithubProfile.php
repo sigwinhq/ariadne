@@ -19,6 +19,7 @@ use Github\ResultPager;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Client\ClientInterface;
 use Sigwin\Ariadne\Bridge\ProfileTrait;
+use Sigwin\Ariadne\Exception\ConfigException;
 use Sigwin\Ariadne\Model\Change\NamedResourceAttributeUpdate;
 use Sigwin\Ariadne\Model\Collection\SortedNamedResourceCollection;
 use Sigwin\Ariadne\Model\Config\ProfileConfig;
@@ -32,6 +33,7 @@ use Sigwin\Ariadne\NamedResourceChangeCollection;
 use Sigwin\Ariadne\NamedResourceCollection;
 use Sigwin\Ariadne\Profile;
 use Sigwin\Ariadne\ProfileTemplateFactory;
+use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -68,8 +70,13 @@ final class GithubProfile implements Profile
             ->setDefined('token')
             ->setAllowedTypes('token', 'string')
         ;
-        /** @var array{type: string, token: string} $auth */
-        $auth = $resolver->resolve($config->client->auth);
+
+        try {
+            /** @var array{type: string, token: string} $auth */
+            $auth = $resolver->resolve($config->client->auth);
+        } catch (InvalidOptionsException $exception) {
+            throw ConfigException::fromInvalidOptionsException('client.auth', $config, $exception);
+        }
 
         $builder = new Builder($client);
         $sdk = new Client($builder, enterpriseUrl: $config->client->url);

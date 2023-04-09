@@ -14,11 +14,13 @@ declare(strict_types=1);
 namespace Sigwin\Ariadne\Bridge\Symfony\Config;
 
 use Sigwin\Ariadne\ConfigReader;
+use Sigwin\Ariadne\Exception\ConfigException;
 use Sigwin\Ariadne\Model\Config\AriadneConfig;
 use Sigwin\Ariadne\Model\RepositoryType;
 use Sigwin\Ariadne\Model\RepositoryVisibility;
 use Sigwin\Ariadne\Resolver\XdgEnvironmentResolver;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
+use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Yaml\Yaml;
@@ -28,6 +30,8 @@ use Symfony\Component\Yaml\Yaml;
  */
 final class ValidatingYamlConfigReader implements ConfigReader
 {
+    private const CONFIG_PREFIX = 'ariadne';
+
     /**
      * @param array<string, class-string<\Sigwin\Ariadne\Profile>> $profilesMap
      */
@@ -78,7 +82,7 @@ final class ValidatingYamlConfigReader implements ConfigReader
          */
         $payload = Yaml::parseFile($url);
 
-        $builder = new TreeBuilder('ariadne');
+        $builder = new TreeBuilder(self::CONFIG_PREFIX);
         $builder
             ->getRootNode()
             ->children()
@@ -175,8 +179,12 @@ final class ValidatingYamlConfigReader implements ConfigReader
 
         $processor = new Processor();
 
-        /** @var TConfig $config */
-        $config = $processor->process($builder->buildTree(), [$payload]);
+        try {
+            /** @var TConfig $config */
+            $config = $processor->process($builder->buildTree(), [$payload]);
+        } catch (InvalidConfigurationException $exception) {
+            throw ConfigException::fromConfigException(self::CONFIG_PREFIX.'.', $url, $exception);
+        }
 
         return AriadneConfig::fromArray($url, $config);
     }
