@@ -65,7 +65,7 @@ final class FilteredProfileTemplateFactory implements Evaluator, ProfileTemplate
                     continue;
                 }
 
-                if (str_starts_with($value, self::PREFIX)) {
+                if (\is_string($value) && str_starts_with($value, self::PREFIX)) {
                     $expressionValue = $this->expressionLanguage->evaluate(mb_substr($value, mb_strlen(self::PREFIX)), [
                         'property' => $name,
                         'repository' => $repository,

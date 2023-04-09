@@ -82,6 +82,7 @@
       <code>arrayPrototype</code>
       <code>beforeNormalization</code>
       <code>beforeNormalization</code>
+      <code>booleanNode</code>
       <code>cannotBeEmpty</code>
       <code>cannotBeEmpty</code>
       <code>cannotBeEmpty</code>
@@ -93,6 +94,8 @@
       <code>children</code>
       <code>children</code>
       <code>children</code>
+      <code>defaultFalse</code>
+      <code>end</code>
       <code>end</code>
       <code>end</code>
       <code>end</code>

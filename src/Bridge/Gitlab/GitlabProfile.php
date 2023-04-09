@@ -38,7 +38,7 @@ use Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * @psalm-type TRepository array{id: int, path_with_namespace: string, visibility: string, forked_from_project: ?array<string, int|string>, topics: array<string>}
+ * @psalm-type TRepository array{id: int, path_with_namespace: string, visibility: string, forked_from_project: ?array<string, int|string>, topics: array<string>, archived: bool}
  * @psalm-type TCollaborator array{username: string, access_level: int}
  */
 final class GitlabProfile implements Profile
@@ -159,6 +159,7 @@ final class GitlabProfile implements Profile
                     $repository['path_with_namespace'],
                     $repository['topics'],
                     $languages,
+                    $repository['archived'],
                 );
             }
             $this->repositories = SortedNamedResourceCollection::fromArray($repositories);

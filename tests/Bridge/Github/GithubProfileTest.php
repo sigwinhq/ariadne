@@ -98,25 +98,31 @@ final class GithubProfileTest extends ProfileTestCase
             self::REPOSITORY_SCENARIO_BASIC => $this->createHttpClient([
                 [
                     $this->createRequest(null, 'GET', '/user/repos?per_page=100'),
-                    [(object) ['id' => $repository->id, 'full_name' => $repository->path, 'fork' => false, 'private' => false, 'topics' => []]],
+                    [(object) ['id' => $repository->id, 'full_name' => $repository->path, 'fork' => false, 'private' => false, 'topics' => [], 'archived' => false]],
                 ],
             ]),
             self::REPOSITORY_SCENARIO_FORK => $this->createHttpClient([
                 [
                     $this->createRequest(null, 'GET', '/user/repos?per_page=100'),
-                    [(object) ['id' => $repository->id, 'full_name' => $repository->path, 'fork' => true, 'private' => false, 'topics' => []]],
+                    [(object) ['id' => $repository->id, 'full_name' => $repository->path, 'fork' => true, 'private' => false, 'topics' => [], 'archived' => false]],
                 ],
             ]),
             self::REPOSITORY_SCENARIO_PRIVATE => $this->createHttpClient([
                 [
                     $this->createRequest(null, 'GET', '/user/repos?per_page=100'),
-                    [(object) ['id' => $repository->id, 'full_name' => $repository->path, 'fork' => false, 'private' => true, 'topics' => []]],
+                    [(object) ['id' => $repository->id, 'full_name' => $repository->path, 'fork' => false, 'private' => true, 'topics' => [], 'archived' => false]],
+                ],
+            ]),
+            self::REPOSITORY_SCENARIO_ARCHIVED => $this->createHttpClient([
+                [
+                    $this->createRequest(null, 'GET', '/user/repos?per_page=100'),
+                    [(object) ['id' => $repository->id, 'full_name' => $repository->path, 'fork' => false, 'private' => false, 'topics' => [], 'archived' => true]],
                 ],
             ]),
             self::REPOSITORY_SCENARIO_USER => $this->createHttpClient([
                 [
                     $this->createRequest(null, 'GET', '/user/repos?per_page=100'),
-                    [(object) ['id' => $repository->id, 'full_name' => $repository->path, 'fork' => false, 'private' => false, 'topics' => []]],
+                    [(object) ['id' => $repository->id, 'full_name' => $repository->path, 'fork' => false, 'private' => false, 'topics' => [], 'archived' => false]],
                 ],
                 [
                     $this->createRequest(null, 'GET', '/repos/namespace1/repo1/collaborators?per_page=100'),
@@ -126,7 +132,7 @@ final class GithubProfileTest extends ProfileTestCase
             self::REPOSITORY_SCENARIO_USERS => $this->createHttpClient([
                 [
                     $this->createRequest(null, 'GET', '/user/repos?per_page=100'),
-                    [(object) ['id' => $repository->id, 'full_name' => $repository->path, 'fork' => false, 'private' => false, 'topics' => []]],
+                    [(object) ['id' => $repository->id, 'full_name' => $repository->path, 'fork' => false, 'private' => false, 'topics' => [], 'archived' => false]],
                 ],
                 [
                     $this->createRequest(null, 'GET', '/repos/namespace1/repo1/collaborators?per_page=100'),
@@ -136,13 +142,13 @@ final class GithubProfileTest extends ProfileTestCase
             self::REPOSITORY_SCENARIO_TOPICS => $this->createHttpClient([
                 [
                     $this->createRequest(null, 'GET', '/user/repos?per_page=100'),
-                    [(object) ['id' => $repository->id, 'full_name' => $repository->path, 'fork' => false, 'private' => false, 'topics' => ['topic1', 'topic2']]],
+                    [(object) ['id' => $repository->id, 'full_name' => $repository->path, 'fork' => false, 'private' => false, 'topics' => ['topic1', 'topic2'], 'archived' => false]],
                 ],
             ]),
             self::REPOSITORY_SCENARIO_LANGUAGES => $this->createHttpClient([
                 [
                     $this->createRequest(null, 'GET', '/user/repos?per_page=100'),
-                    [(object) ['id' => $repository->id, 'full_name' => $repository->path, 'fork' => false, 'private' => false, 'topics' => [], 'language' => 'language1']],
+                    [(object) ['id' => $repository->id, 'full_name' => $repository->path, 'fork' => false, 'private' => false, 'topics' => [], 'language' => 'language1', 'archived' => false]],
                 ],
             ]),
             default => throw new \InvalidArgumentException(sprintf('Unknown repository scenario "%1$s".', $name)),
