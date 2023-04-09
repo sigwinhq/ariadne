@@ -188,6 +188,10 @@ final class AriadneStyle extends SymfonyStyle
      */
     private function enumerate(array $list): string
     {
+        if ($list === []) {
+            return '<error>none</error>';
+        }
+
         $enumeration = [];
         foreach ($list as $item => $count) {
             if ($count > 0) {
