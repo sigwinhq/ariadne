@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Sigwin\Ariadne\Bridge\Github;
 
+use Github\Api\Repository\Pages;
 use Github\Client;
 use Github\HttpClient\Builder;
 use Github\ResultPager;
@@ -114,7 +115,21 @@ final class GithubProfile implements Profile
             }
             $attributes[$change->getResource()->getName()] = $change->expected;
         }
-        $this->client->repositories()->update($username, $repository, $attributes);
+
+        if (isset($attributes['has_pages'])) {
+            /** @var Pages $pages */
+            $pages = $this->client->repositories()->pages();
+            if ($attributes['has_pages'] === true) {
+                $pages->enable($username, $repository);
+            } else {
+                $pages->disable($username, $repository);
+            }
+            unset($attributes['has_pages']);
+        }
+
+        if ($attributes !== []) {
+            $this->client->repositories()->update($username, $repository, $attributes);
+        }
     }
 
     /**
