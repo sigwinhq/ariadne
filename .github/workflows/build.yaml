@@ -13,7 +13,7 @@ jobs:
                 uses: "actions/checkout@v3"
             -
                 name: Build PHAR file
-                run: make phar
+                run: make phar/build
             -
                 uses: actions/upload-artifact@v3
                 name: Upload the PHAR artifact
