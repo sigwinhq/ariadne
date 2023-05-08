@@ -1,6 +1,6 @@
 {
     "name": "sigwin/ariadne",
-    "description": "Find the common thread on all of your Glabyrinth projects",
+    "description": "Find the common thread in your Git repos labyrinth",
     "license": "MIT",
     "require": {
         "php": "^8.1",
