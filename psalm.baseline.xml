@@ -193,6 +193,11 @@
       <code><![CDATA[$matches['value']]]></code>
     </PossiblyUndefinedStringArrayOffset>
   </file>
+  <file src="src/Exception/RuntimeException.php">
+    <PossiblyInvalidArgument>
+      <code><![CDATA[$exception->getCode()]]></code>
+    </PossiblyInvalidArgument>
+  </file>
   <file src="src/Model/Change/NamedResourceChangeTrait.php">
     <ArgumentTypeCoercion>
       <code>$changes</code>

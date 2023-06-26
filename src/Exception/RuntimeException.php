@@ -17,6 +17,6 @@ final class RuntimeException extends \RuntimeException
 {
     public static function fromRuntimeException(\RuntimeException $exception): self
     {
-        return new self($exception->getMessage(), (int) $exception->getCode(), $exception);
+        return new self($exception->getMessage(), $exception->getCode(), $exception);
     }
 }
