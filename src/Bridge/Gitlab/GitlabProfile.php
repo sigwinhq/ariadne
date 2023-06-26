@@ -20,6 +20,7 @@ use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Client\ClientInterface;
 use Sigwin\Ariadne\Bridge\ProfileTrait;
 use Sigwin\Ariadne\Exception\ConfigException;
+use Sigwin\Ariadne\Exception\RuntimeException;
 use Sigwin\Ariadne\Model\Change\NamedResourceAttributeUpdate;
 use Sigwin\Ariadne\Model\Collection\SortedNamedResourceCollection;
 use Sigwin\Ariadne\Model\Config\ProfileConfig;
@@ -130,39 +131,44 @@ final class GitlabProfile implements Profile
             $needsLanguages = $this->needsLanguages();
 
             $pager = new ResultPager($this->client);
-            /** @var list<TRepository> $response */
-            $response = $pager->fetchAllLazy($this->client->projects(), 'all', ['parameters' => $this->options]);
-            foreach ($response as $repository) {
-                $languages = [];
-                if ($needsLanguages) {
-                    /** @var array<string, int> $languages */
-                    $languages = $this->client->projects()->languages($repository['id']);
-                    $languages = array_keys($languages);
-                }
-
-                $users = [];
-                if ($needsUsers) {
-                    /** @var list<TCollaborator> $collaborators */
-                    $collaborators = $pager->fetchAll($this->client->projects(), 'allMembers', [$repository['id']]);
-                    foreach ($collaborators as $collaborator) {
-                        $users[] = new RepositoryUser($collaborator['username'], self::USER_ROLE[$collaborator['access_level']]);
+            try {
+                /** @var list<TRepository> $response */
+                $response = $pager->fetchAllLazy($this->client->projects(), 'all', ['parameters' => $this->options]);
+                foreach ($response as $repository) {
+                    $languages = [];
+                    if ($needsLanguages) {
+                        /** @var array<string, int> $languages */
+                        $languages = $this->client->projects()->languages($repository['id']);
+                        $languages = array_keys($languages);
                     }
-                }
-                $users = SortedNamedResourceCollection::fromArray($users);
 
-                $repositories[] = new Repository(
-                    $repository,
-                    RepositoryType::fromFork(isset($repository['forked_from_project'])),
-                    RepositoryVisibility::from($repository['visibility']),
-                    $users,
-                    $repository['id'],
-                    $repository['path_with_namespace'],
-                    $repository['topics'],
-                    $languages,
-                    $repository['archived'],
-                );
+                    $users = [];
+                    if ($needsUsers) {
+                        /** @var list<TCollaborator> $collaborators */
+                        $collaborators = $pager->fetchAll($this->client->projects(), 'allMembers', [$repository['id']]);
+                        foreach ($collaborators as $collaborator) {
+                            $users[] = new RepositoryUser($collaborator['username'], self::USER_ROLE[$collaborator['access_level']]);
+                        }
+                    }
+                    $users = SortedNamedResourceCollection::fromArray($users);
+
+                    $repositories[] = new Repository(
+                        $repository,
+                        RepositoryType::fromFork(isset($repository['forked_from_project'])),
+                        RepositoryVisibility::from($repository['visibility']),
+                        $users,
+                        $repository['id'],
+                        $repository['path_with_namespace'],
+                        $repository['topics'],
+                        $languages,
+                        $repository['archived'],
+                    );
+                }
+            } catch (\Gitlab\Exception\RuntimeException $exception) {
+                throw RuntimeException::fromRuntimeException($exception);
+            } finally {
+                $this->repositories = SortedNamedResourceCollection::fromArray($repositories);
             }
-            $this->repositories = SortedNamedResourceCollection::fromArray($repositories);
         }
 
         return $this->repositories;

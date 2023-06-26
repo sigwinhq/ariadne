@@ -15,6 +15,7 @@ namespace Sigwin\Ariadne\Bridge\Symfony\Console\Style;
 
 use Sigwin\Ariadne\Bridge\Symfony\Console\Logo;
 use Sigwin\Ariadne\Exception\ConfigException;
+use Sigwin\Ariadne\Exception\RuntimeException;
 use Sigwin\Ariadne\Model\Change\NamedResourceAttributeUpdate;
 use Sigwin\Ariadne\Model\Change\NamedResourceCreate;
 use Sigwin\Ariadne\Model\Change\NamedResourceDelete;
@@ -71,7 +72,9 @@ final class AriadneStyle extends SymfonyStyle
 
     public function summary(Profile $profile): void
     {
-        $this->profile($profile);
+        if ($this->profile($profile) === false) {
+            return;
+        }
 
         $summary = $profile->getSummary();
         $this->horizontalTable(
@@ -110,15 +113,23 @@ final class AriadneStyle extends SymfonyStyle
         }
     }
 
-    public function profile(Profile $profile): void
+    public function profile(Profile $profile): bool
     {
         $this->title($profile->getName());
-        $summary = $profile->getSummary();
+        try {
+            $summary = $profile->getSummary();
+        } catch (RuntimeException $exception) {
+            $this->error($exception->getMessage());
+
+            return false;
+        }
         foreach ($summary->getTemplates() as $template => $count) {
             if ($count === 0) {
                 $this->warning(sprintf('Template "%1$s" does not match any repositories.', $template));
             }
         }
+
+        return true;
     }
 
     /**
