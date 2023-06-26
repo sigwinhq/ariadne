@@ -119,6 +119,9 @@ final class AriadneStyle extends SymfonyStyle
         try {
             $summary = $profile->getSummary();
         } catch (RuntimeException $exception) {
+            if ($this->isVerbose()) {
+                throw $exception;
+            }
             $this->error($exception->getMessage());
 
             return false;
