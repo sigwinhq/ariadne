@@ -176,6 +176,8 @@
       <code>string</code>
     </LessSpecificReturnType>
     <MixedArgument>
+      <code><![CDATA[Helper::removeDecoration($this->getFormatter(), $line)]]></code>
+      <code><![CDATA[Helper::removeDecoration($this->getFormatter(), $prefix)]]></code>
       <code><![CDATA[Helper::removeDecoration($this->getFormatter(), ($this->dumper)($change->actual))]]></code>
     </MixedArgument>
   </file>

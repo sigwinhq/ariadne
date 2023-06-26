@@ -244,7 +244,7 @@ final class AriadneStyle extends SymfonyStyle
     private function createBlock(array $messages, string $type = null, string $style = null, string $prefix = ' ', bool $padding = false, bool $escape = false): array
     {
         $indentLength = 0;
-        $prefixLength = Helper::width((string) Helper::removeDecoration($this->getFormatter(), $prefix));
+        $prefixLength = Helper::width(Helper::removeDecoration($this->getFormatter(), $prefix));
         $lines = [];
 
         $lineIndentation = '';
@@ -288,7 +288,7 @@ final class AriadneStyle extends SymfonyStyle
             }
 
             $line = $prefix.$line;
-            $line .= str_repeat(' ', max($this->lineLength - Helper::width((string) Helper::removeDecoration($this->getFormatter(), $line)), 0));
+            $line .= str_repeat(' ', max($this->lineLength - Helper::width(Helper::removeDecoration($this->getFormatter(), $line)), 0));
 
             if ($style !== null) {
                 $line = sprintf('<%s>%s</>', $style, $line);
