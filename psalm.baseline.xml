@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <files psalm-version="5.9.0@8b9ad1eb9e8b7d3101f949291da2b9f7767cd163">
   <file src="src/Bridge/Github/GithubProfile.php">
-    <LessSpecificReturnType>
-      <code><![CDATA[array<string, array{access: RepositoryAttributeAccess, extended?: bool}>]]></code>
-    </LessSpecificReturnType>
     <MixedAssignment>
       <code><![CDATA[$attributes[$change->getResource()->getName()]]]></code>
     </MixedAssignment>
@@ -18,9 +15,6 @@
     </RedundantPropertyInitializationCheck>
   </file>
   <file src="src/Bridge/Gitlab/GitlabProfile.php">
-    <LessSpecificReturnType>
-      <code><![CDATA[array<string, array{access: RepositoryAttributeAccess}>]]></code>
-    </LessSpecificReturnType>
     <MixedAssignment>
       <code><![CDATA[$attributes[$change->getResource()->getName()]]]></code>
     </MixedAssignment>
@@ -38,9 +32,6 @@
     <LessSpecificImplementedReturnType>
       <code>NamedResourceChangeCollection</code>
     </LessSpecificImplementedReturnType>
-    <LessSpecificReturnType>
-      <code><![CDATA[array<string>]]></code>
-    </LessSpecificReturnType>
   </file>
   <file src="src/Bridge/Symfony/Command/ApplyCommand.php">
     <UnusedClass>
@@ -51,11 +42,6 @@
     <InvalidArgument>
       <code>$plan</code>
     </InvalidArgument>
-    <LessSpecificReturnType>
-      <code>array</code>
-      <code>array</code>
-      <code><![CDATA[array<string>]]></code>
-    </LessSpecificReturnType>
   </file>
   <file src="src/Bridge/Symfony/Command/DiffCommand.php">
     <UnusedClass>
@@ -171,10 +157,6 @@
     </UnusedClass>
   </file>
   <file src="src/Bridge/Symfony/Console/Style/AriadneStyle.php">
-    <LessSpecificReturnType>
-      <code><![CDATA[array<string>]]></code>
-      <code>string</code>
-    </LessSpecificReturnType>
     <MixedArgument>
       <code><![CDATA[Helper::removeDecoration($this->getFormatter(), $line)]]></code>
       <code><![CDATA[Helper::removeDecoration($this->getFormatter(), $prefix)]]></code>
@@ -254,11 +236,6 @@
       <code>$repository</code>
     </UnusedParam>
   </file>
-  <file src="src/Model/Repository.php">
-    <LessSpecificReturnType>
-      <code>?array</code>
-    </LessSpecificReturnType>
-  </file>
   <file src="src/Profile/Collection/FilteredProfileGeneratorCollection.php">
     <PossiblyUnusedMethod>
       <code>count</code>
@@ -284,11 +261,6 @@
     <NoInterfaceProperties>
       <code><![CDATA[$change->expected]]></code>
     </NoInterfaceProperties>
-  </file>
-  <file src="tests/Bridge/Symfony/Console/Style/AriadneStyleTest.php">
-    <LessSpecificReturnType>
-      <code>Profile</code>
-    </LessSpecificReturnType>
   </file>
   <file src="tests/ModelGeneratorTrait.php">
     <ArgumentTypeCoercion>
