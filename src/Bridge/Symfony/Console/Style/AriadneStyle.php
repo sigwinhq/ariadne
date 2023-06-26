@@ -181,7 +181,7 @@ final class AriadneStyle extends SymfonyStyle
         if ($change instanceof NamedResourceAttributeUpdate) {
             $name = $change->getResource()->getName();
             if ($change->isActual()) {
-                $this->writeln($this->createBlock([sprintf('%1$s = %2$s', $name, (string) Helper::removeDecoration($this->getFormatter(), ($this->dumper)($change->actual)))], null, null, str_repeat(' ', $depth * 2)));
+                $this->writeln($this->createBlock([sprintf('%1$s = %2$s', $name, Helper::removeDecoration($this->getFormatter(), ($this->dumper)($change->actual)))], null, null, str_repeat(' ', $depth * 2)));
             } else {
                 $this->writeln($this->createBlock([sprintf('%1$s = %2$s', $name, ($this->dumper)($change->actual))], null, 'fg=red', '-'.str_repeat(' ', $depth * 2 - 1)));
                 $this->writeln($this->createBlock([sprintf('%1$s = %2$s', $name, ($this->dumper)($change->expected))], null, 'fg=green', '+'.str_repeat(' ', $depth * 2 - 1)));

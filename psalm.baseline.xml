@@ -175,6 +175,9 @@
       <code><![CDATA[array<string>]]></code>
       <code>string</code>
     </LessSpecificReturnType>
+    <MixedArgument>
+      <code><![CDATA[Helper::removeDecoration($this->getFormatter(), ($this->dumper)($change->actual))]]></code>
+    </MixedArgument>
   </file>
   <file src="src/Bridge/Symfony/DependencyInjection/RuntimeEnvProcessor.php">
     <UnusedClass>
