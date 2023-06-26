@@ -21,6 +21,7 @@ use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Client\ClientInterface;
 use Sigwin\Ariadne\Bridge\ProfileTrait;
 use Sigwin\Ariadne\Exception\ConfigException;
+use Sigwin\Ariadne\Exception\RuntimeException;
 use Sigwin\Ariadne\Model\Change\NamedResourceAttributeUpdate;
 use Sigwin\Ariadne\Model\Collection\SortedNamedResourceCollection;
 use Sigwin\Ariadne\Model\Config\ProfileConfig;
@@ -143,8 +144,12 @@ final class GithubProfile implements Profile
             $needsExtendedRepository = $this->needsExtendedRepository();
 
             $pager = new ResultPager($this->client);
-            /** @var list<TRepository> $response */
-            $response = $pager->fetchAll($this->client->user(), 'myRepositories');
+            try {
+                /** @var list<TRepository> $response */
+                $response = $pager->fetchAll($this->client->user(), 'myRepositories');
+            } catch (\Github\Exception\RuntimeException $exception) {
+                throw RuntimeException::fromRuntimeException($exception);
+            }
             foreach ($response as $repository) {
                 $users = [];
                 if ($needsUsers || $needsExtendedRepository) {

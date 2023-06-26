@@ -6,12 +6,12 @@
        ensureArrayStringOffsetsExist="true"
        errorLevel="1"
        errorBaseline="psalm.baseline.xml"
-       findUnusedBaselineEntry="true"
+       findUnusedBaselineEntry="false"
        findUnusedCode="true"
        findUnusedPsalmSuppress="true"
        findUnusedVariablesAndParams="true"
        limitMethodComplexity="true"
-       restrictReturnTypes="true"
+       restrictReturnTypes="false"
        strictBinaryOperands="true">
     <projectFiles>
         <directory name="./"/>

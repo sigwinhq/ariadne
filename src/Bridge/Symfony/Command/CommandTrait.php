@@ -57,7 +57,9 @@ trait CommandTrait
      */
     private function renderPlans(Profile $profile, AriadneStyle $style): array
     {
-        $style->profile($profile);
+        if ($style->profile($profile) === false) {
+            return [];
+        }
 
         $plans = [];
         foreach ($profile as $repository) {
