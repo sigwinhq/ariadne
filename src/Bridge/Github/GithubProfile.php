@@ -56,9 +56,6 @@ final class GithubProfile implements Profile
         return 'github';
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public static function fromConfig(ProfileConfig $config, ClientInterface $client, ProfileTemplateFactory $templateFactory, CacheItemPoolInterface $cachePool): self
     {
         $resolver = new OptionsResolver();

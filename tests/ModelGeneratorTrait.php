@@ -123,9 +123,9 @@ trait ModelGeneratorTrait
 
     /**
      * @param array<string, null|array<string, int|string>|array<string>|bool|int|string> $response
-     * @param list<array{string, string}>|null $users
-     * @param null|list<string> $topics
-     * @param null|list<string> $languages
+     * @param null|list<array{string, string}>                                            $users
+     * @param null|list<string>                                                           $topics
+     * @param null|list<string>                                                           $languages
      */
     protected function createRepository(string $path, array $response = [], ?string $type = null, ?string $visibility = null, ?array $users = null, ?array $topics = null, ?array $languages = null, ?bool $archived = null): Repository
     {
@@ -143,7 +143,7 @@ trait ModelGeneratorTrait
     }
 
     /**
-     * @param list<array{string, string|array<array<string|int>|int|object|bool|string>}> $items
+     * @param list<array{string, array<array<int|string>|bool|int|object|string>|string}> $items
      */
     protected function createHttpClient(array $items = []): ClientInterface
     {

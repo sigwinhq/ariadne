@@ -93,26 +93,26 @@ abstract class ProfileTestCase extends TestCase
 
         foreach ($profile as $repository) {
             if ($fixture->getName() === $repository->getName()) {
-                static::assertSame($fixture->type->value, $repository->type->value);
-                static::assertSame($fixture->visibility->value, $repository->visibility->value);
-                static::assertEmpty($fixture->users->diff($repository->users));
-                static::assertSame($fixture->id, $repository->id);
-                static::assertSame($fixture->path, $repository->path);
-                static::assertSame($fixture->topics, $repository->topics);
-                static::assertSame($fixture->languages, $repository->languages);
-                static::assertSame($fixture->archived, $repository->archived);
+                self::assertSame($fixture->type->value, $repository->type->value);
+                self::assertSame($fixture->visibility->value, $repository->visibility->value);
+                self::assertEmpty($fixture->users->diff($repository->users));
+                self::assertSame($fixture->id, $repository->id);
+                self::assertSame($fixture->path, $repository->path);
+                self::assertSame($fixture->topics, $repository->topics);
+                self::assertSame($fixture->languages, $repository->languages);
+                self::assertSame($fixture->archived, $repository->archived);
 
                 return;
             }
         }
 
-        static::fail(sprintf('Repository for scenario "%1$s" not found in profile.', $name));
+        self::fail(sprintf('Repository for scenario "%1$s" not found in profile.', $name));
     }
 
     /**
      * @group plan
      *
-     * @dataProvider provideRepositoriesAttributeChange
+     * @dataProvider provideCanCreatePlanAttributeChangesCases
      *
      * @param array<string, bool|int|string> $expected
      * @param TConfig                        $config
@@ -122,11 +122,11 @@ abstract class ProfileTestCase extends TestCase
         $profile = $this->createProfileForRepositoryScenario($name, $fixture, $config);
         $plan = $profile->plan($fixture);
 
-        static::assertSame($fixture->getName(), $plan->getResource()->getName());
-        static::assertSame(\count($expected) === 0, $plan->isActual());
+        self::assertSame($fixture->getName(), $plan->getResource()->getName());
+        self::assertSame(\count($expected) === 0, $plan->isActual());
 
         $changes = iterator_to_array($plan->filter(NamedResourceAttributeUpdate::class));
-        static::assertTrue(array_is_list($changes), 'Changes must be a list.');
+        self::assertTrue(array_is_list($changes), 'Changes must be a list.');
 
         // filter out changes which are already actual
         foreach ($changes as $idx => $change) {
@@ -141,14 +141,14 @@ abstract class ProfileTestCase extends TestCase
             $actual[$change->getResource()->getName()] = $change->expected;
         }
 
-        static::assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
      * @group plan
      * @group user
      *
-     * @dataProvider provideRepositoriesUserChange
+     * @dataProvider provideCanPlanUserChangesCases
      *
      * @param array<string, bool|int|string> $expected
      * @param TConfig                        $config
@@ -158,16 +158,16 @@ abstract class ProfileTestCase extends TestCase
         $profile = $this->createProfileForRepositoryScenario($name, $repository, $config);
         $plan = $profile->plan($repository);
 
-        static::assertSame($repository->getName(), $plan->getResource()->getName());
-        static::assertSame(\count($expected) === 0, $plan->isActual());
+        self::assertSame($repository->getName(), $plan->getResource()->getName());
+        self::assertSame(\count($expected) === 0, $plan->isActual());
 
         $actual = iterator_to_array($plan);
 
-        static::assertEqualsIgnoringCase($expected, $actual);
+        self::assertEqualsIgnoringCase($expected, $actual);
     }
 
     /**
-     * @dataProvider provideValidOptions
+     * @dataProvider provideCanSetValidOptionsCases
      */
     public function testCanSetValidOptions(string $name, bool|string $value): void
     {
@@ -178,11 +178,11 @@ abstract class ProfileTestCase extends TestCase
 
         $profile = $this->createProfileInstance($config, $httpClient, $factory, $cachePool);
 
-        static::assertSame($config->name, $profile->getName());
+        self::assertSame($config->name, $profile->getName());
     }
 
     /**
-     * @dataProvider provideInvalidOptions
+     * @dataProvider provideCannotSetInvalidOptionsCases
      *
      * @uses \Sigwin\Ariadne\Exception\ConfigException
      */
@@ -200,7 +200,7 @@ abstract class ProfileTestCase extends TestCase
     }
 
     /**
-     * @dataProvider provideValidAttributeValues
+     * @dataProvider provideCanSetValidAttributesCases
      */
     public function testCanSetValidAttributes(string $name, bool|string $value): void
     {
@@ -210,11 +210,11 @@ abstract class ProfileTestCase extends TestCase
         $config = $this->createConfig(attribute: [$name => $value]);
         $profile = $this->createProfileInstance($config, $httpClient, $factory, $cachePool);
 
-        static::assertSame($config->name, $profile->getName());
+        self::assertSame($config->name, $profile->getName());
     }
 
     /**
-     * @dataProvider provideInvalidAttributeValues
+     * @dataProvider provideCannotSetInvalidAttributesCases
      */
     public function testCannotSetInvalidAttributes(string $name, int|bool|string $value, string $message): void
     {
@@ -239,12 +239,12 @@ abstract class ProfileTestCase extends TestCase
     }
 
     /**
-     * @param list<array{string, string}>|null $users
+     * @param null|list<array{string, string}> $users
      */
     protected function createRepositoryFromValidAttributes(?array $users = null): Repository
     {
         $response = [];
-        foreach ($this->provideValidAttributeValues() as $attribute) {
+        foreach ($this->provideCanSetValidAttributesCases() as $attribute) {
             $response[$attribute[0]] = $attribute[1];
         }
 
@@ -256,27 +256,27 @@ abstract class ProfileTestCase extends TestCase
     /**
      * @return iterable<array-key, array{string, bool|string}>
      */
-    abstract protected function provideValidOptions(): iterable;
+    abstract protected function provideCanSetValidOptionsCases(): iterable;
 
     /**
      * @return iterable<array-key, array{string, bool|string, string}>
      */
-    abstract protected function provideInvalidOptions(): iterable;
+    abstract protected function provideCannotSetInvalidOptionsCases(): iterable;
 
     /**
      * @return iterable<array-key, array{string, bool|string}>
      */
-    abstract protected function provideValidAttributeValues(): iterable;
+    abstract protected function provideCanSetValidAttributesCases(): iterable;
 
     /**
-     * @return iterable<array-key, array{string, int|bool|string, string}>
+     * @return iterable<array-key, array{string, bool|int|string, string}>
      */
-    abstract protected function provideInvalidAttributeValues(): iterable;
+    abstract protected function provideCannotSetInvalidAttributesCases(): iterable;
 
     /**
      * @return iterable<array-key, array{0: string, 1: Repository, 2: TConfig, 3: array<string, bool|int|string>}>
      */
-    abstract protected function provideRepositoriesAttributeChange(): iterable;
+    abstract protected function provideCanCreatePlanAttributeChangesCases(): iterable;
 
     /**
      * @return iterable<array-key, array{
@@ -286,7 +286,7 @@ abstract class ProfileTestCase extends TestCase
      *     list<NamedResourceCreate<RepositoryUser, NamedResourceAttributeUpdate>|NamedResourceUpdate<RepositoryUser, NamedResourceAttributeUpdate>|NamedResourceDelete<RepositoryUser, NamedResourceAttributeUpdate>>
      * }>
      */
-    abstract protected function provideRepositoriesUserChange(): iterable;
+    abstract protected function provideCanPlanUserChangesCases(): iterable;
 
     abstract protected function createProfileInstance(ProfileConfig $config, ClientInterface $client, ProfileTemplateFactory $factory, CacheItemPoolInterface $cachePool): Profile;
 

@@ -40,6 +40,6 @@ final class FilteredProfileGeneratorCollectionFactoryTest extends TestCase
         $config = AriadneConfig::fromArray('file:///ariadne.yaml', ['profiles' => []]);
         $filter = ProfileFilter::create('test', 'type');
 
-        static::assertInstanceOf(FilteredProfileGeneratorCollection::class, $factory->fromConfig($config, $filter));
+        self::assertInstanceOf(FilteredProfileGeneratorCollection::class, $factory->fromConfig($config, $filter));
     }
 }

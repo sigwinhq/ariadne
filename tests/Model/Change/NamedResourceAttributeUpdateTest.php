@@ -33,7 +33,7 @@ final class NamedResourceAttributeUpdateTest extends TestCase
         $attribute = new Attribute('foo');
         $change = new NamedResourceAttributeUpdate($attribute, null, null);
 
-        static::assertSame($attribute, $change->getResource());
+        self::assertSame($attribute, $change->getResource());
     }
 
     public function testIsActualIfActualIsEqualToExpected(): void
@@ -41,6 +41,6 @@ final class NamedResourceAttributeUpdateTest extends TestCase
         $attribute = new Attribute('foo');
         $change = new NamedResourceAttributeUpdate($attribute, 'bar', 'bar');
 
-        static::assertTrue($change->isActual());
+        self::assertTrue($change->isActual());
     }
 }

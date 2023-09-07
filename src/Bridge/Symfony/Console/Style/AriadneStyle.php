@@ -241,7 +241,7 @@ final class AriadneStyle extends SymfonyStyle
      *
      * @author https://github.com/symfony/symfony
      */
-    private function createBlock(array $messages, string $type = null, string $style = null, string $prefix = ' ', bool $padding = false, bool $escape = false): array
+    private function createBlock(array $messages, ?string $type = null, ?string $style = null, string $prefix = ' ', bool $padding = false, bool $escape = false): array
     {
         $indentLength = 0;
         $prefixLength = Helper::width(Helper::removeDecoration($this->getFormatter(), $prefix));
