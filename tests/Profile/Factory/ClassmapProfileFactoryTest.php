@@ -62,7 +62,7 @@ final class ClassmapProfileFactoryTest extends TestCase implements Profile
 
     public static function fromConfig(ProfileConfig $config, ClientInterface $client, ProfileTemplateFactory $templateFactory, CacheItemPoolInterface $cachePool): Profile
     {
-        static::assertSame('My Self', $config->name);
+        self::assertSame('My Self', $config->name);
 
         /** @psalm-suppress InternalMethod */
         return new self();

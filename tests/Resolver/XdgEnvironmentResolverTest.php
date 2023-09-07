@@ -28,24 +28,24 @@ final class XdgEnvironmentResolverTest extends TestCase
     public function testWillUseXdgCacheHomeIfPassed(): void
     {
         $resolver = new XdgEnvironmentResolver('/cacheee', null, '/home');
-        static::assertSame('/cacheee/ariadne', $resolver->getCacheDir());
+        self::assertSame('/cacheee/ariadne', $resolver->getCacheDir());
     }
 
     public function testWillFallBackToHomeCacheIfXdgCacheHomeNotPassed(): void
     {
         $resolver = new XdgEnvironmentResolver(null, null, '/home');
-        static::assertSame('/home/.cache/ariadne', $resolver->getCacheDir());
+        self::assertSame('/home/.cache/ariadne', $resolver->getCacheDir());
     }
 
     public function testWillUseXdgConfigHomeIfPassed(): void
     {
         $resolver = new XdgEnvironmentResolver(null, '/configgg', '/home');
-        static::assertSame('/configgg/ariadne', $resolver->getConfigDir());
+        self::assertSame('/configgg/ariadne', $resolver->getConfigDir());
     }
 
     public function testWillFallBackToHomeConfigIfXdgConfigHomeNotPassed(): void
     {
         $resolver = new XdgEnvironmentResolver(null, null, '/home');
-        static::assertSame('/home/.config/ariadne', $resolver->getConfigDir());
+        self::assertSame('/home/.config/ariadne', $resolver->getConfigDir());
     }
 }

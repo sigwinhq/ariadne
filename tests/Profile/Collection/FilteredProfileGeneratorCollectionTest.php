@@ -36,7 +36,7 @@ final class FilteredProfileGeneratorCollectionTest extends TestCase
     use ModelGeneratorTrait;
 
     /**
-     * @dataProvider provideFilterConfigAndExpectedMatches
+     * @dataProvider provideWillFilterOutUnmatchedProfilesCases
      */
     public function testWillFilterOutUnmatchedProfiles(ProfileFilter $filter, int $matches): void
     {
@@ -51,13 +51,13 @@ final class FilteredProfileGeneratorCollectionTest extends TestCase
             $filter
         );
 
-        static::assertCount($matches, $collection);
+        self::assertCount($matches, $collection);
     }
 
     /**
      * @return list<array{ProfileFilter, int}>
      */
-    public function provideFilterConfigAndExpectedMatches(): array
+    public function provideWillFilterOutUnmatchedProfilesCases(): iterable
     {
         return [
             [ProfileFilter::create(null, null), 2],

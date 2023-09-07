@@ -46,7 +46,7 @@ final class FilteredProfileTemplateFactoryTest extends TestCase
     use ModelGeneratorTrait;
 
     /**
-     * @dataProvider provideFilterAndRepositories
+     * @dataProvider provideWillFilterOutUnmatchedRepositoriesCases
      *
      * @param TFilter          $filter
      * @param list<Repository> $all
@@ -62,8 +62,8 @@ final class FilteredProfileTemplateFactoryTest extends TestCase
 
         $actual = iterator_to_array($template);
 
-        static::assertSame('test', $template->getName());
-        static::assertCount(\count($expected), $actual);
+        self::assertSame('test', $template->getName());
+        self::assertCount(\count($expected), $actual);
 
         self::assertArrayInArrayByKey($all, $expected, $actual);
     }
@@ -84,7 +84,7 @@ final class FilteredProfileTemplateFactoryTest extends TestCase
     /**
      * @return array<string, array{TFilter, list<Repository>, list<int>}>
      */
-    public function provideFilterAndRepositories(): array
+    public function provideWillFilterOutUnmatchedRepositoriesCases(): iterable
     {
         return [
             'everything is empty' => [

@@ -28,6 +28,6 @@ final class AttributeTest extends TestCase
     public function testCanSetName(): void
     {
         $attribute = new Attribute('name');
-        static::assertSame('name', $attribute->getName());
+        self::assertSame('name', $attribute->getName());
     }
 }

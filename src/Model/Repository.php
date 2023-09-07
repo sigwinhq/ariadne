@@ -106,10 +106,10 @@ final class Repository implements NamedResource
      *
      * @param-out array<\Sigwin\Ariadne\NamedResourceChange> $changes
      *
-     * @param array<\Sigwin\Ariadne\NamedResourceChange> $changes
-     * @param NamedResourceCollection<T>                 $expected
-     * @param NamedResourceCollection<T>                 $actual
-     * @param \Closure(T|null, T|null): (null|array<\Sigwin\Ariadne\NamedResourceChange>) $compare
+     * @param array<\Sigwin\Ariadne\NamedResourceChange>                                  $changes
+     * @param NamedResourceCollection<T>                                                  $expected
+     * @param NamedResourceCollection<T>                                                  $actual
+     * @param \Closure(null|T, null|T): (null|array<\Sigwin\Ariadne\NamedResourceChange>) $compare
      */
     private function appendChangesForCollections(array &$changes, NamedResourceCollection $expected, NamedResourceCollection $actual, \Closure $compare): void
     {

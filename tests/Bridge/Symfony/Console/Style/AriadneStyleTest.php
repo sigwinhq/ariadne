@@ -48,7 +48,7 @@ final class AriadneStyleTest extends TestCase
     /**
      * @return array<string, array{0: \Closure(AriadneStyle): void, 1: string}>
      */
-    protected function provideStyleAndTester(): array
+    protected function provideOutputsCases(): iterable
     {
         return [
             'heading' => [
@@ -92,7 +92,7 @@ final class AriadneStyleTest extends TestCase
     }
 
     /**
-     * @dataProvider provideStyleAndTester
+     * @dataProvider provideOutputsCases
      */
     public function testOutputs(\Closure $closure, string $output): void
     {
@@ -104,14 +104,14 @@ final class AriadneStyleTest extends TestCase
 
         $closure($style);
 
-        static::assertSame($output, preg_replace('/\s+$/m', '', $tester->getDisplay(true)));
+        self::assertSame($output, preg_replace('/\s+$/m', '', $tester->getDisplay(true)));
     }
 
     private function mockProfile(string $name): Profile
     {
         $profile = $this->createMock(Profile::class);
         $profile
-            ->expects(static::once())
+            ->expects(self::once())
             ->method('getName')
             ->willReturn($name)
         ;

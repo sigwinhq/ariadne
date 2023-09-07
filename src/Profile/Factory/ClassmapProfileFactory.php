@@ -29,9 +29,6 @@ final class ClassmapProfileFactory implements ProfileFactory
     {
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function fromConfig(ProfileConfig $config): Profile
     {
         if (! \array_key_exists($config->type, $this->profilesMap)) {

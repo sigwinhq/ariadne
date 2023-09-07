@@ -69,9 +69,6 @@ final class GitlabProfile implements Profile
         return 'gitlab';
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public static function fromConfig(ProfileConfig $config, ClientInterface $client, ProfileTemplateFactory $templateFactory, CacheItemPoolInterface $cachePool): self
     {
         $resolver = new OptionsResolver();

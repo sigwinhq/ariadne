@@ -22,7 +22,7 @@ final class ExpressionLanguage extends \Symfony\Component\ExpressionLanguage\Exp
     /**
      * @param array<ExpressionFunctionProviderInterface> $providers
      */
-    public function __construct(CacheItemPoolInterface $cache = null, array $providers = [])
+    public function __construct(?CacheItemPoolInterface $cache = null, array $providers = [])
     {
         array_unshift($providers, new FilterExpressionLanguageProvider());
 

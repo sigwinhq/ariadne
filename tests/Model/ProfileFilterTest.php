@@ -32,36 +32,36 @@ final class ProfileFilterTest extends TestCase
     {
         $filter = ProfileFilter::create(null, null);
 
-        static::assertTrue($filter->match($this->createProfile()));
+        self::assertTrue($filter->match($this->createProfile()));
     }
 
     public function testCanMatchByNameOnly(): void
     {
         $filter = ProfileFilter::create('foo', null);
 
-        static::assertTrue($filter->match($this->createProfile()));
+        self::assertTrue($filter->match($this->createProfile()));
     }
 
     public function testCanMatchByTypeOnly(): void
     {
         $filter = ProfileFilter::create(null, 'fake');
 
-        static::assertTrue($filter->match($this->createProfile()));
+        self::assertTrue($filter->match($this->createProfile()));
     }
 
     public function testCanMatchByNameAndType(): void
     {
         $filter = ProfileFilter::create('foo', 'fake');
 
-        static::assertTrue($filter->match($this->createProfile()));
+        self::assertTrue($filter->match($this->createProfile()));
     }
 
     public function testBothNameAndTypeMustMatch(): void
     {
         $filter = ProfileFilter::create('foo', 'not fake');
-        static::assertFalse($filter->match($this->createProfile()));
+        self::assertFalse($filter->match($this->createProfile()));
 
         $filter = ProfileFilter::create('not foo', 'fake');
-        static::assertFalse($filter->match($this->createProfile()));
+        self::assertFalse($filter->match($this->createProfile()));
     }
 }

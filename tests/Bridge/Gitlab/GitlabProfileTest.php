@@ -73,7 +73,7 @@ final class GitlabProfileTest extends ProfileTestCase
         $profile = $this->createProfileInstance($config, $httpClient, $factory, $cachePool);
         $login = $profile->getApiUser();
 
-        static::assertSame('ariadne', $login->getName());
+        self::assertSame('ariadne', $login->getName());
     }
 
     /**
@@ -89,7 +89,7 @@ final class GitlabProfileTest extends ProfileTestCase
         $config = $this->createConfig($baseUrl);
         $profile = $this->createProfileInstance($config, $httpClient, $factory, $cachePool);
 
-        static::assertCount(1, $profile->getSummary()->getTemplates());
+        self::assertCount(1, $profile->getSummary()->getTemplates());
     }
 
     protected function createHttpClientForRepositoryScenario(string $name, Repository $repository): ClientInterface
@@ -159,7 +159,7 @@ final class GitlabProfileTest extends ProfileTestCase
         };
     }
 
-    protected function provideRepositoriesAttributeChange(): iterable
+    protected function provideCanCreatePlanAttributeChangesCases(): iterable
     {
         $repository = $this->createRepositoryFromValidAttributes();
 
@@ -195,7 +195,7 @@ final class GitlabProfileTest extends ProfileTestCase
         yield [self::REPOSITORY_SCENARIO_BASIC, $repository, $config, $expected];
     }
 
-    protected function provideRepositoriesUserChange(): iterable
+    protected function provideCanPlanUserChangesCases(): iterable
     {
         $repository = $this->createRepositoryFromValidAttributes(users: [['theseus', 'guest']]);
         $repositoryWithBoth = $this->createRepositoryFromValidAttributes(users: [['theseus', 'admin'], ['ariadne', 'guest']]);
@@ -245,7 +245,7 @@ final class GitlabProfileTest extends ProfileTestCase
         yield [self::REPOSITORY_SCENARIO_USER, $repository, $config, $expected];
     }
 
-    protected function provideValidOptions(): iterable
+    protected function provideCanSetValidOptionsCases(): iterable
     {
         return [
             ['membership', false],
@@ -253,7 +253,7 @@ final class GitlabProfileTest extends ProfileTestCase
         ];
     }
 
-    protected function provideInvalidOptions(): iterable
+    protected function provideCannotSetInvalidOptionsCases(): iterable
     {
         $error = 'The option "%1$s" with value "aa" is expected to be of type "boolean", but is of type "string".';
 
@@ -264,7 +264,7 @@ final class GitlabProfileTest extends ProfileTestCase
         ];
     }
 
-    protected function provideValidAttributeValues(): iterable
+    protected function provideCanSetValidAttributesCases(): iterable
     {
         return [
             ['description', 'foo'],
@@ -295,7 +295,7 @@ final class GitlabProfileTest extends ProfileTestCase
         ];
     }
 
-    protected function provideInvalidAttributeValues(): iterable
+    protected function provideCannotSetInvalidAttributesCases(): iterable
     {
         $readOnlyError = 'Attribute "%1$s" is read-only.';
         $notExistsError = 'Attribute "%1$s" does not exist.';
@@ -309,7 +309,7 @@ final class GitlabProfileTest extends ProfileTestCase
 
     protected function validateRequest(RequestInterface $request): void
     {
-        static::assertSame('ABC', $request->getHeaderLine('PRIVATE-TOKEN'));
+        self::assertSame('ABC', $request->getHeaderLine('PRIVATE-TOKEN'));
     }
 
     protected function createProfileInstance(ProfileConfig $config, ClientInterface $client, ProfileTemplateFactory $factory, CacheItemPoolInterface $cachePool): Profile
