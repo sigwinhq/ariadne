@@ -48,7 +48,7 @@ final class AriadneStyleTest extends TestCase
     /**
      * @return array<string, array{0: \Closure(AriadneStyle): void, 1: string}>
      */
-    protected function provideOutputsCases(): iterable
+    public function provideOutputsCases(): iterable
     {
         return [
             'heading' => [
@@ -116,9 +116,9 @@ final class AriadneStyleTest extends TestCase
             ->willReturn($name)
         ;
 
-        $repo1NS1 = $this->createRepository('namespace1/repo1');
-        $repo2NS1 = $this->createRepository('namespace1/repo2');
-        $repo1NS2 = $this->createRepository('namespace2/repo1');
+        $repo1NS1 = self::createRepository('namespace1/repo1');
+        $repo2NS1 = self::createRepository('namespace1/repo2');
+        $repo1NS2 = self::createRepository('namespace2/repo1');
 
         $summary = new ProfileSummary(
             SortedNamedResourceCollection::fromArray([

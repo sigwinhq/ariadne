@@ -39,6 +39,26 @@
     </UnusedClass>
   </file>
   <file src="src/Bridge/Symfony/Command/CommandTrait.php">
+    <ArgumentTypeCoercion>
+      <code><![CDATA[function (CompletionInput $input): array {
+                return $this->getConfigProfileAttributes($this->configReader->read($this->getConfigUrl($input)), 'name');
+            }]]></code>
+      <code><![CDATA[function (CompletionInput $input): array {
+                return $this->getConfigProfileAttributes($this->configReader->read($this->getConfigUrl($input)), 'name');
+            }]]></code>
+      <code><![CDATA[function (CompletionInput $input): array {
+                return $this->getConfigProfileAttributes($this->configReader->read($this->getConfigUrl($input)), 'name');
+            }]]></code>
+      <code><![CDATA[function (CompletionInput $input): array {
+                return $this->getConfigProfileAttributes($this->configReader->read($this->getConfigUrl($input)), 'type');
+            }]]></code>
+      <code><![CDATA[function (CompletionInput $input): array {
+                return $this->getConfigProfileAttributes($this->configReader->read($this->getConfigUrl($input)), 'type');
+            }]]></code>
+      <code><![CDATA[function (CompletionInput $input): array {
+                return $this->getConfigProfileAttributes($this->configReader->read($this->getConfigUrl($input)), 'type');
+            }]]></code>
+    </ArgumentTypeCoercion>
     <InvalidArgument>
       <code>$plan</code>
     </InvalidArgument>

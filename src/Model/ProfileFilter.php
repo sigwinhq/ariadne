@@ -17,9 +17,7 @@ use Sigwin\Ariadne\Profile;
 
 final class ProfileFilter
 {
-    private function __construct(private readonly ?string $name, private readonly ?string $type)
-    {
-    }
+    private function __construct(private readonly ?string $name, private readonly ?string $type) {}
 
     public function match(Profile $profile): bool
     {

@@ -24,9 +24,7 @@ final class ProfileClientConfig
      * @param TProfileClientAuth    $auth
      * @param TProfileClientOptions $options
      */
-    private function __construct(public readonly array $auth, public readonly array $options, public readonly ?string $url = null)
-    {
-    }
+    private function __construct(public readonly array $auth, public readonly array $options, public readonly ?string $url = null) {}
 
     /**
      * @param TProfileClient $config

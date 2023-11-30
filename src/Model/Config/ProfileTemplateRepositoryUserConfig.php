@@ -18,9 +18,7 @@ namespace Sigwin\Ariadne\Model\Config;
  */
 final class ProfileTemplateRepositoryUserConfig
 {
-    public function __construct(public readonly string $username, public readonly string $role)
-    {
-    }
+    public function __construct(public readonly string $username, public readonly string $role) {}
 
     /**
      * @param TProfileTemplateRepositoryUser $user

@@ -24,9 +24,7 @@ final class ProfileConfig
     /**
      * @param array<ProfileTemplateConfig> $templates
      */
-    private function __construct(public readonly string $type, public readonly string $name, public readonly ProfileClientConfig $client, public readonly array $templates)
-    {
-    }
+    private function __construct(public readonly string $type, public readonly string $name, public readonly ProfileClientConfig $client, public readonly array $templates) {}
 
     /**
      * @param TProfile $config

@@ -26,9 +26,7 @@ final class ProfileTemplate implements \Countable, \IteratorAggregate, NamedReso
     /**
      * @param NamedResourceCollection<Repository> $repositories
      */
-    public function __construct(private readonly string $name, private readonly ProfileTemplateTarget $target, private readonly NamedResourceCollection $repositories)
-    {
-    }
+    public function __construct(private readonly string $name, private readonly ProfileTemplateTarget $target, private readonly NamedResourceCollection $repositories) {}
 
     public function count(): int
     {

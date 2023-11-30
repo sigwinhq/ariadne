@@ -84,7 +84,7 @@ final class FilteredProfileTemplateFactoryTest extends TestCase
     /**
      * @return array<string, array{TFilter, list<Repository>, list<int>}>
      */
-    public function provideWillFilterOutUnmatchedRepositoriesCases(): iterable
+    public static function provideWillFilterOutUnmatchedRepositoriesCases(): iterable
     {
         return [
             'everything is empty' => [
@@ -95,128 +95,128 @@ final class FilteredProfileTemplateFactoryTest extends TestCase
             'literal on a string' => [
                 ['path' => 'foo/bar'],
                 [
-                    $this->createRepository('foo/bar'),
-                    $this->createRepository('bar/foo'),
+                    self::createRepository('foo/bar'),
+                    self::createRepository('bar/foo'),
                 ],
                 [0], // matches foo/bar
             ],
             'expression on a string' => [
                 ['path' => '@=match("^foo")'],
                 [
-                    $this->createRepository('foo/bar'),
-                    $this->createRepository('bar/foo'),
+                    self::createRepository('foo/bar'),
+                    self::createRepository('bar/foo'),
                 ],
                 [0], // matches foo/bar
             ],
             'expression without the prefix will be treated as a literal' => [
                 ['path' => 'match("^foo")'],
                 [
-                    $this->createRepository('foo/bar'),
-                    $this->createRepository('bar/foo'),
+                    self::createRepository('foo/bar'),
+                    self::createRepository('bar/foo'),
                 ],
                 [], // no matches
             ],
             'match on an enum' => [
                 ['type' => 'fork'],
                 [
-                    $this->createRepository('foo/bar', type: 'source'),
-                    $this->createRepository('bar/foo', type: 'fork'),
+                    self::createRepository('foo/bar', type: 'source'),
+                    self::createRepository('bar/foo', type: 'fork'),
                 ],
                 [1], // matches bar/foo
             ],
             'match on an array' => [
                 ['topics' => ['bar']],
                 [
-                    $this->createRepository('foo/bar', topics: ['foo']),
-                    $this->createRepository('bar/foo', topics: ['bar']),
+                    self::createRepository('foo/bar', topics: ['foo']),
+                    self::createRepository('bar/foo', topics: ['bar']),
                 ],
                 [1], // matches bar/foo
             ],
             'match on an array with an unknown requirement' => [
                 ['topics' => ['unknown']],
                 [
-                    $this->createRepository('foo/bar', topics: ['foo']),
-                    $this->createRepository('bar/foo', topics: ['bar']),
+                    self::createRepository('foo/bar', topics: ['foo']),
+                    self::createRepository('bar/foo', topics: ['bar']),
                 ],
                 [], // no matches
             ],
             'match on an array must match at least one element' => [
                 ['topics' => ['unknown', 'foo']],
                 [
-                    $this->createRepository('foo/bar', topics: ['foo']),
-                    $this->createRepository('bar/foo', topics: ['bar']),
+                    self::createRepository('foo/bar', topics: ['foo']),
+                    self::createRepository('bar/foo', topics: ['bar']),
                 ],
                 [0], // matches foo/bar
             ],
             'filter can be an array even if the property is not' => [
                 ['path' => ['unknown', 'bar/foo']],
                 [
-                    $this->createRepository('foo/bar'),
-                    $this->createRepository('bar/foo'),
+                    self::createRepository('foo/bar'),
+                    self::createRepository('bar/foo'),
                 ],
                 [1], // matches bar/foo
             ],
             'property can be an array even if the filter is not' => [
                 ['topics' => 'foo'],
                 [
-                    $this->createRepository('foo/bar', topics: ['foo']),
-                    $this->createRepository('bar/foo', topics: ['bar']),
+                    self::createRepository('foo/bar', topics: ['foo']),
+                    self::createRepository('bar/foo', topics: ['bar']),
                 ],
                 [0], // matches foo/bar
             ],
             'match on both arrays before a miss' => [
                 ['topics' => ['foo'], 'path' => 'invalid'],
                 [
-                    $this->createRepository('foo/bar', topics: ['foo']),
-                    $this->createRepository('bar/foo', topics: ['bar']),
+                    self::createRepository('foo/bar', topics: ['foo']),
+                    self::createRepository('bar/foo', topics: ['bar']),
                 ],
                 [], // no matches
             ],
             'match on an array filter before a miss' => [
                 ['path' => ['foo/bar'], 'topics' => 'invalid'],
                 [
-                    $this->createRepository('foo/bar', topics: ['foo']),
-                    $this->createRepository('bar/foo', topics: ['bar']),
+                    self::createRepository('foo/bar', topics: ['foo']),
+                    self::createRepository('bar/foo', topics: ['bar']),
                 ],
                 [], // no matches
             ],
             'match on an array property before a miss' => [
                 ['topics' => 'foo', 'path' => 'invalid'],
                 [
-                    $this->createRepository('foo/bar', topics: ['foo']),
-                    $this->createRepository('bar/foo', topics: ['bar']),
+                    self::createRepository('foo/bar', topics: ['foo']),
+                    self::createRepository('bar/foo', topics: ['bar']),
                 ],
                 [], // no matches
             ],
             'match on an enum before a literal' => [
                 ['type' => 'fork', 'path' => 'foo/bar'],
                 [
-                    $this->createRepository('foo/bar', type: 'source'),
-                    $this->createRepository('bar/foo', type: 'fork'),
+                    self::createRepository('foo/bar', type: 'source'),
+                    self::createRepository('bar/foo', type: 'fork'),
                 ],
                 [], // no matches
             ],
             'filter on multiple items, one eliminates each' => [
                 ['path' => '@=match("^foo")', 'type' => 'fork'],
                 [
-                    $this->createRepository('foo/bar', type: 'source'),
-                    $this->createRepository('bar/foo', type: 'fork'),
+                    self::createRepository('foo/bar', type: 'source'),
+                    self::createRepository('bar/foo', type: 'fork'),
                 ],
                 [], // no matches
             ],
             'filter on multiple items, both eliminates one, both match the other' => [
                 ['path' => '@=match("^foo")', 'type' => 'source'],
                 [
-                    $this->createRepository('foo/bar', type: 'source'),
-                    $this->createRepository('bar/foo', type: 'fork'),
+                    self::createRepository('foo/bar', type: 'source'),
+                    self::createRepository('bar/foo', type: 'fork'),
                 ],
                 [0], // matches foo/bar
             ],
             'order of the filters is irrelevant' => [
                 ['type' => 'source', 'path' => '@=match("^foo")'],
                 [
-                    $this->createRepository('foo/bar', type: 'source'),
-                    $this->createRepository('bar/foo', type: 'fork'),
+                    self::createRepository('foo/bar', type: 'source'),
+                    self::createRepository('bar/foo', type: 'fork'),
                 ],
                 [0], // matches foo/bar
             ],

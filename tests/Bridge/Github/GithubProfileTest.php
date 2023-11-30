@@ -165,25 +165,25 @@ final class GithubProfileTest extends ProfileTestCase
         };
     }
 
-    protected function provideVendorSpecificRepositories(): iterable
+    public static function provideVendorSpecificRepositories(): iterable
     {
         /** @var list<array{string, bool|int|string}> $values */
-        $values = $this->provideCanSetValidAttributesCases();
+        $values = self::provideCanSetValidAttributesCases();
         $values = array_combine(array_column($values, 0), array_column($values, 1));
         $extendedAttributes = ['allow_squash_merge', 'allow_merge_commit', 'allow_rebase_merge', 'allow_auto_merge', 'allow_update_branch', 'delete_branch_on_merge', 'use_squash_pr_title_as_default'];
 
         foreach ($extendedAttributes as $extendedAttribute) {
             yield [
                 self::REPOSITORY_SCENARIO_EXTENDED,
-                $this->createRepository('namespace1/repo1'),
+                self::createRepository('namespace1/repo1'),
                 ['attribute' => [$extendedAttribute => $values[$extendedAttribute] ?? throw new \LogicException(sprintf('Missing value for "%1$s".', $extendedAttribute))]],
             ];
         }
     }
 
-    protected function provideCanCreatePlanAttributeChangesCases(): iterable
+    public static function provideCanCreatePlanAttributeChangesCases(): iterable
     {
-        $repository = $this->createRepositoryFromValidAttributes();
+        $repository = self::createRepositoryFromValidAttributes();
 
         $config = ['attribute' => ['description' => 'AAA']];
         $expected = ['description' => 'AAA'];
@@ -216,10 +216,10 @@ final class GithubProfileTest extends ProfileTestCase
         yield [self::REPOSITORY_SCENARIO_BASIC, $repository, $config, $expected];
     }
 
-    protected function provideCanPlanUserChangesCases(): iterable
+    public static function provideCanPlanUserChangesCases(): iterable
     {
-        $repository = $this->createRepositoryFromValidAttributes(users: [['theseus', 'guest']]);
-        $repositoryWithBoth = $this->createRepositoryFromValidAttributes(users: [['theseus', 'admin'], ['ariadne', 'guest']]);
+        $repository = self::createRepositoryFromValidAttributes(users: [['theseus', 'guest']]);
+        $repositoryWithBoth = self::createRepositoryFromValidAttributes(users: [['theseus', 'admin'], ['ariadne', 'guest']]);
 
         // single template with a single target to update
         $config = ['user' => ['theseus' => ['username' => 'theseus', 'role' => 'admin']]];
@@ -266,17 +266,17 @@ final class GithubProfileTest extends ProfileTestCase
         yield [self::REPOSITORY_SCENARIO_USER, $repository, $config, $expected];
     }
 
-    protected function provideCanSetValidOptionsCases(): iterable
+    public static function provideCanSetValidOptionsCases(): iterable
     {
         self::markTestSkipped('Github profile does not provide options');
     }
 
-    protected function provideCannotSetInvalidOptionsCases(): iterable
+    public static function provideCannotSetInvalidOptionsCases(): iterable
     {
         self::markTestSkipped('Github profile does not provide options');
     }
 
-    protected function provideCanSetValidAttributesCases(): iterable
+    public static function provideCanSetValidAttributesCases(): iterable
     {
         return [
             ['allow_squash_merge', true],
@@ -296,7 +296,7 @@ final class GithubProfileTest extends ProfileTestCase
         ];
     }
 
-    protected function provideCannotSetInvalidAttributesCases(): iterable
+    public static function provideCannotSetInvalidAttributesCases(): iterable
     {
         $readOnlyError = 'Attribute "%1$s" is read-only.';
         $notExistsError = 'Attribute "%1$s" does not exist.';

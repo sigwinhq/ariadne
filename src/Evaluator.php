@@ -18,5 +18,5 @@ interface Evaluator
     /**
      * @param array<string, mixed> $variables
      */
-    public function evaluate(string|int|bool $value, array $variables): string|int|bool;
+    public function evaluate(bool|int|string $value, array $variables): bool|int|string;
 }

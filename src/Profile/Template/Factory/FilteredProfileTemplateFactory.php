@@ -27,9 +27,7 @@ final class FilteredProfileTemplateFactory implements Evaluator, ProfileTemplate
 {
     private const PREFIX = '@=';
 
-    public function __construct(private readonly ExpressionLanguage $expressionLanguage)
-    {
-    }
+    public function __construct(private readonly ExpressionLanguage $expressionLanguage) {}
 
     public function fromConfig(ProfileTemplateConfig $config, NamedResourceCollection $repositories): ProfileTemplate
     {
@@ -100,7 +98,7 @@ final class FilteredProfileTemplateFactory implements Evaluator, ProfileTemplate
         }));
     }
 
-    public function evaluate(string|int|bool $value, array $variables): string|int|bool
+    public function evaluate(bool|int|string $value, array $variables): bool|int|string
     {
         if (! \is_string($value) || ! str_starts_with($value, self::PREFIX)) {
             return $value;

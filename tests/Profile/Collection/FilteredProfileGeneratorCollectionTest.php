@@ -57,7 +57,7 @@ final class FilteredProfileGeneratorCollectionTest extends TestCase
     /**
      * @return list<array{ProfileFilter, int}>
      */
-    public function provideWillFilterOutUnmatchedProfilesCases(): iterable
+    public static function provideWillFilterOutUnmatchedProfilesCases(): iterable
     {
         return [
             [ProfileFilter::create(null, null), 2],

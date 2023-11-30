@@ -159,9 +159,9 @@ final class GitlabProfileTest extends ProfileTestCase
         };
     }
 
-    protected function provideCanCreatePlanAttributeChangesCases(): iterable
+    public static function provideCanCreatePlanAttributeChangesCases(): iterable
     {
-        $repository = $this->createRepositoryFromValidAttributes();
+        $repository = self::createRepositoryFromValidAttributes();
 
         // single template with a single target to change
         $config = ['attribute' => ['description' => 'AAA']];
@@ -195,10 +195,10 @@ final class GitlabProfileTest extends ProfileTestCase
         yield [self::REPOSITORY_SCENARIO_BASIC, $repository, $config, $expected];
     }
 
-    protected function provideCanPlanUserChangesCases(): iterable
+    public static function provideCanPlanUserChangesCases(): iterable
     {
-        $repository = $this->createRepositoryFromValidAttributes(users: [['theseus', 'guest']]);
-        $repositoryWithBoth = $this->createRepositoryFromValidAttributes(users: [['theseus', 'admin'], ['ariadne', 'guest']]);
+        $repository = self::createRepositoryFromValidAttributes(users: [['theseus', 'guest']]);
+        $repositoryWithBoth = self::createRepositoryFromValidAttributes(users: [['theseus', 'admin'], ['ariadne', 'guest']]);
 
         // single template with a single target to update
         $config = ['user' => ['theseus' => ['username' => 'theseus', 'role' => 'admin']]];
@@ -245,7 +245,7 @@ final class GitlabProfileTest extends ProfileTestCase
         yield [self::REPOSITORY_SCENARIO_USER, $repository, $config, $expected];
     }
 
-    protected function provideCanSetValidOptionsCases(): iterable
+    public static function provideCanSetValidOptionsCases(): iterable
     {
         return [
             ['membership', false],
@@ -253,7 +253,7 @@ final class GitlabProfileTest extends ProfileTestCase
         ];
     }
 
-    protected function provideCannotSetInvalidOptionsCases(): iterable
+    public static function provideCannotSetInvalidOptionsCases(): iterable
     {
         $error = 'The option "%1$s" with value "aa" is expected to be of type "boolean", but is of type "string".';
 
@@ -264,7 +264,7 @@ final class GitlabProfileTest extends ProfileTestCase
         ];
     }
 
-    protected function provideCanSetValidAttributesCases(): iterable
+    public static function provideCanSetValidAttributesCases(): iterable
     {
         return [
             ['description', 'foo'],
@@ -295,7 +295,7 @@ final class GitlabProfileTest extends ProfileTestCase
         ];
     }
 
-    protected function provideCannotSetInvalidAttributesCases(): iterable
+    public static function provideCannotSetInvalidAttributesCases(): iterable
     {
         $readOnlyError = 'Attribute "%1$s" is read-only.';
         $notExistsError = 'Attribute "%1$s" does not exist.';

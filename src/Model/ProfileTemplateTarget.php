@@ -23,9 +23,7 @@ use Sigwin\Ariadne\NamedResourceCollection;
  */
 final class ProfileTemplateTarget
 {
-    private function __construct(private readonly ProfileTemplateTargetConfig $config, private readonly Evaluator $evaluator)
-    {
-    }
+    private function __construct(private readonly ProfileTemplateTargetConfig $config, private readonly Evaluator $evaluator) {}
 
     /**
      * @return TProfileTemplateTargetAttribute

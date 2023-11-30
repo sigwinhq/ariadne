@@ -37,6 +37,11 @@ use Sigwin\Ariadne\ProfileTemplateFactory;
  */
 final class ClassmapProfileFactoryTest extends TestCase implements Profile
 {
+    public function getName(): string
+    {
+        return __CLASS__;
+    }
+
     public function testCanCreateAProfileInstance(): void
     {
         $httpClient = $this->getMockBuilder(ClientInterface::class)->getMock();
@@ -65,7 +70,7 @@ final class ClassmapProfileFactoryTest extends TestCase implements Profile
         self::assertSame('My Self', $config->name);
 
         /** @psalm-suppress InternalMethod */
-        return new self();
+        return new self(__CLASS__);
     }
 
     public static function getType(): string
