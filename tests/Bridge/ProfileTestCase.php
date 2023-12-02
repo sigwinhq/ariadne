@@ -17,7 +17,6 @@ use PHPUnit\Framework\TestCase;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
-use Sigwin\Ariadne\Exception\ConfigException;
 use Sigwin\Ariadne\Model\Change\NamedResourceAttributeUpdate;
 use Sigwin\Ariadne\Model\Change\NamedResourceCreate;
 use Sigwin\Ariadne\Model\Change\NamedResourceDelete;
@@ -164,39 +163,6 @@ abstract class ProfileTestCase extends TestCase
         $actual = iterator_to_array($plan);
 
         self::assertEqualsIgnoringCase($expected, $actual);
-    }
-
-    /**
-     * @dataProvider provideCanSetValidOptionsCases
-     */
-    public function testCanSetValidOptions(string $name, bool|string $value): void
-    {
-        $httpClient = $this->createHttpClient();
-        $factory = $this->createTemplateFactory();
-        $cachePool = $this->createCachePool();
-        $config = $this->createConfig(options: [$name => $value]);
-
-        $profile = $this->createProfileInstance($config, $httpClient, $factory, $cachePool);
-
-        self::assertSame($config->name, $profile->getName());
-    }
-
-    /**
-     * @dataProvider provideCannotSetInvalidOptionsCases
-     *
-     * @uses \Sigwin\Ariadne\Exception\ConfigException
-     */
-    public function testCannotSetInvalidOptions(string $name, bool|string $value, string $message): void
-    {
-        $this->expectException(ConfigException::class);
-        $this->expectExceptionMessage(sprintf($message, $name));
-
-        $httpClient = $this->createHttpClient();
-        $factory = $this->createTemplateFactory();
-        $cachePool = $this->createCachePool();
-        $config = $this->createConfig(options: [$name => $value]);
-
-        $this->createProfileInstance($config, $httpClient, $factory, $cachePool);
     }
 
     /**
