@@ -28,14 +28,14 @@ use Symfony\Component\Yaml\Yaml;
 /**
  * @psalm-import-type TConfig from AriadneConfig
  */
-final class ValidatingYamlConfigReader implements ConfigReader
+final readonly class ValidatingYamlConfigReader implements ConfigReader
 {
     private const CONFIG_PREFIX = 'ariadne';
 
     /**
      * @param array<string, class-string<\Sigwin\Ariadne\Profile>> $profilesMap
      */
-    public function __construct(private readonly array $profilesMap, private readonly XdgEnvironmentResolver $environmentResolver) {}
+    public function __construct(private array $profilesMap, private XdgEnvironmentResolver $environmentResolver) {}
 
     public function read(?string $url = null): AriadneConfig
     {

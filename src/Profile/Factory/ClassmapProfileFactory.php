@@ -20,12 +20,12 @@ use Sigwin\Ariadne\Profile;
 use Sigwin\Ariadne\ProfileFactory;
 use Sigwin\Ariadne\ProfileTemplateFactory;
 
-final class ClassmapProfileFactory implements ProfileFactory
+final readonly class ClassmapProfileFactory implements ProfileFactory
 {
     /**
      * @param array<string, class-string<Profile>> $profilesMap
      */
-    public function __construct(private readonly array $profilesMap, private readonly ClientInterface $httpClient, private readonly ProfileTemplateFactory $templateFactory, private readonly CacheItemPoolInterface $cachePool) {}
+    public function __construct(private array $profilesMap, private ClientInterface $httpClient, private ProfileTemplateFactory $templateFactory, private CacheItemPoolInterface $cachePool) {}
 
     public function fromConfig(ProfileConfig $config): Profile
     {

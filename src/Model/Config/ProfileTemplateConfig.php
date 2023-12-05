@@ -19,12 +19,12 @@ namespace Sigwin\Ariadne\Model\Config;
  * @psalm-type TProfileTemplateFilter = array{type?: value-of<\Sigwin\Ariadne\Model\RepositoryType>, path?: list<string>|string, visibility?: value-of<\Sigwin\Ariadne\Model\RepositoryVisibility>, topics?: array<string>, languages?: array<string>, archived?: bool}
  * @psalm-type TProfileTemplate = array{name: string, filter: TProfileTemplateFilter, target: TProfileTemplateTarget}
  */
-final class ProfileTemplateConfig
+final readonly class ProfileTemplateConfig
 {
     /**
      * @param TProfileTemplateFilter $filter
      */
-    public function __construct(public readonly string $name, public readonly array $filter, public readonly ProfileTemplateTargetConfig $target) {}
+    public function __construct(public string $name, public array $filter, public ProfileTemplateTargetConfig $target) {}
 
     /**
      * @param TProfileTemplate $config

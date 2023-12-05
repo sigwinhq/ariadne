@@ -56,7 +56,6 @@ final class FilteredProfileTemplateFactoryTest extends TestCase
     use ModelGeneratorTrait;
 
     /**
-     *
      * @param TFilter          $filter
      * @param list<Repository> $all
      * @param list<int>        $expected

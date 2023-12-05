@@ -23,11 +23,11 @@ use Sigwin\Ariadne\Model\Repository;
 use Sigwin\Ariadne\NamedResourceCollection;
 use Sigwin\Ariadne\ProfileTemplateFactory;
 
-final class FilteredProfileTemplateFactory implements Evaluator, ProfileTemplateFactory
+final readonly class FilteredProfileTemplateFactory implements Evaluator, ProfileTemplateFactory
 {
     private const PREFIX = '@=';
 
-    public function __construct(private readonly ExpressionLanguage $expressionLanguage) {}
+    public function __construct(private ExpressionLanguage $expressionLanguage) {}
 
     public function fromConfig(ProfileTemplateConfig $config, NamedResourceCollection $repositories): ProfileTemplate
     {

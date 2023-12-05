@@ -36,9 +36,9 @@ use Symfony\Component\Console\Terminal;
 
 final class AriadneStyle extends SymfonyStyle
 {
-    private Dumper $dumper;
+    private readonly Dumper $dumper;
 
-    private int $lineLength;
+    private readonly int $lineLength;
 
     public function __construct(InputInterface $input, OutputInterface $output)
     {

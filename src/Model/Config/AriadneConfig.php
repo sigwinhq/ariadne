@@ -20,12 +20,12 @@ namespace Sigwin\Ariadne\Model\Config;
  *
  * @psalm-type TConfig = array{profiles: array<string, TProfile>}
  */
-final class AriadneConfig implements \IteratorAggregate
+final readonly class AriadneConfig implements \IteratorAggregate
 {
     /**
      * @param array<ProfileConfig> $clientConfig
      */
-    private function __construct(public readonly string $url, private readonly array $clientConfig) {}
+    private function __construct(public string $url, private array $clientConfig) {}
 
     /**
      * @param TConfig $config

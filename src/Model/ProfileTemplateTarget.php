@@ -21,9 +21,9 @@ use Sigwin\Ariadne\NamedResourceCollection;
 /**
  * @psalm-import-type TProfileTemplateTargetAttribute from ProfileTemplateTargetConfig
  */
-final class ProfileTemplateTarget
+final readonly class ProfileTemplateTarget
 {
-    private function __construct(private readonly ProfileTemplateTargetConfig $config, private readonly Evaluator $evaluator) {}
+    private function __construct(private ProfileTemplateTargetConfig $config, private Evaluator $evaluator) {}
 
     /**
      * @return TProfileTemplateTargetAttribute

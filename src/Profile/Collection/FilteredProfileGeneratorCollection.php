@@ -18,9 +18,9 @@ use Sigwin\Ariadne\Model\ProfileFilter;
 use Sigwin\Ariadne\ProfileCollection;
 use Sigwin\Ariadne\ProfileFactory;
 
-final class FilteredProfileGeneratorCollection implements ProfileCollection
+final readonly class FilteredProfileGeneratorCollection implements ProfileCollection
 {
-    public function __construct(private readonly ProfileFactory $profileFactory, private readonly AriadneConfig $config, private readonly ProfileFilter $filter) {}
+    public function __construct(private ProfileFactory $profileFactory, private AriadneConfig $config, private ProfileFilter $filter) {}
 
     public function getIterator(): \Traversable
     {
