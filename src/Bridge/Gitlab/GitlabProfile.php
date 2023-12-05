@@ -163,9 +163,8 @@ final class GitlabProfile implements Profile
                 }
             } catch (\Gitlab\Exception\RuntimeException $exception) {
                 throw RuntimeException::fromRuntimeException($exception);
-            } finally {
-                $this->repositories = SortedNamedResourceCollection::fromArray($repositories);
             }
+            $this->repositories = SortedNamedResourceCollection::fromArray($repositories);
         }
 
         return $this->repositories;

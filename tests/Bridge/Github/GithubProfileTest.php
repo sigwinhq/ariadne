@@ -165,36 +165,37 @@ final class GithubProfileTest extends ProfileTestCase
         };
     }
 
-    protected function provideVendorSpecificRepositories(): iterable
+    public static function provideVendorSpecificRepositories(): iterable
     {
         /** @var list<array{string, bool|int|string}> $values */
-        $values = $this->provideCanSetValidAttributesCases();
-        $values = array_combine(array_column($values, 0), array_column($values, 1));
-        $extendedAttributes = ['allow_squash_merge', 'allow_merge_commit', 'allow_rebase_merge', 'allow_auto_merge', 'allow_update_branch', 'delete_branch_on_merge', 'use_squash_pr_title_as_default'];
+        $values = self::provideCanSetValidAttributesCases();
+        $map = [];
+        foreach ($values as $item) {
+            $map[$item[0]] = $item[1];
+        }
 
+        $extendedAttributes = ['allow_squash_merge', 'allow_merge_commit', 'allow_rebase_merge', 'allow_auto_merge', 'allow_update_branch', 'delete_branch_on_merge', 'use_squash_pr_title_as_default'];
         foreach ($extendedAttributes as $extendedAttribute) {
-            yield [
+            yield $extendedAttribute => [
                 self::REPOSITORY_SCENARIO_EXTENDED,
-                $this->createRepository('namespace1/repo1'),
-                ['attribute' => [$extendedAttribute => $values[$extendedAttribute] ?? throw new \LogicException(sprintf('Missing value for "%1$s".', $extendedAttribute))]],
+                self::createRepository('namespace1/repo1'),
+                ['attribute' => [$extendedAttribute => $map[$extendedAttribute] ?? throw new \LogicException(sprintf('Missing value for "%1$s".', $extendedAttribute))]],
             ];
         }
     }
 
-    protected function provideCanCreatePlanAttributeChangesCases(): iterable
+    public static function provideCanCreatePlanAttributeChangesCases(): iterable
     {
-        $repository = $this->createRepositoryFromValidAttributes();
+        $repository = self::createRepositoryFromValidAttributes();
 
         $config = ['attribute' => ['description' => 'AAA']];
         $expected = ['description' => 'AAA'];
-        yield [self::REPOSITORY_SCENARIO_BASIC, $repository, $config, $expected];
+        yield self::REPOSITORY_SCENARIO_BASIC => [self::REPOSITORY_SCENARIO_BASIC, $repository, $config, $expected];
 
-        // single template with a multiple targets to change, one of them to actually change
         $config = ['attribute' => ['description' => 'AAA', 'has_wiki' => true]];
         $expected = ['description' => 'AAA'];
-        yield [self::REPOSITORY_SCENARIO_BASIC, $repository, $config, $expected];
+        yield 'single template with a multiple targets to change, one of them to actually change' => [self::REPOSITORY_SCENARIO_BASIC, $repository, $config, $expected];
 
-        // multiple templates, one does a change and then the next one undoes the change
         $config = [
             'templates' => [
                 ['name' => 'disable wikis', 'target' => ['attribute' => ['description' => 'AAA', 'has_wiki' => false]], 'filter' => []],
@@ -203,9 +204,8 @@ final class GithubProfileTest extends ProfileTestCase
             ],
         ];
         $expected = ['description' => 'AAA'];
-        yield [self::REPOSITORY_SCENARIO_BASIC, $repository, $config, $expected];
+        yield 'multiple templates, one does a change and then the next one undoes the change' => [self::REPOSITORY_SCENARIO_BASIC, $repository, $config, $expected];
 
-        // multiple templates, will not sort templates by name
         $config = [
             'templates' => [
                 ['name' => 'ZZZZZ', 'target' => ['attribute' => ['has_wiki' => false]], 'filter' => []],
@@ -213,47 +213,42 @@ final class GithubProfileTest extends ProfileTestCase
             ],
         ];
         $expected = [];
-        yield [self::REPOSITORY_SCENARIO_BASIC, $repository, $config, $expected];
+        yield 'multiple templates, will not sort templates by name' => [self::REPOSITORY_SCENARIO_BASIC, $repository, $config, $expected];
     }
 
-    protected function provideCanPlanUserChangesCases(): iterable
+    public static function provideCanPlanUserChangesCases(): iterable
     {
-        $repository = $this->createRepositoryFromValidAttributes(users: [['theseus', 'guest']]);
-        $repositoryWithBoth = $this->createRepositoryFromValidAttributes(users: [['theseus', 'admin'], ['ariadne', 'guest']]);
+        $repository = self::createRepositoryFromValidAttributes(users: [['theseus', 'guest']]);
+        $repositoryWithBoth = self::createRepositoryFromValidAttributes(users: [['theseus', 'admin'], ['ariadne', 'guest']]);
 
-        // single template with a single target to update
         $config = ['user' => ['theseus' => ['username' => 'theseus', 'role' => 'admin']]];
         $expected = [
             NamedResourceUpdate::fromResource(new RepositoryUser('theseus', 'admin'), [
                 new NamedResourceAttributeUpdate(new Attribute('role'), 'guest', 'admin'),
             ]),
         ];
-        yield [self::REPOSITORY_SCENARIO_USER, $repository, $config, $expected];
+        yield 'single template with a single target to update' => [self::REPOSITORY_SCENARIO_USER, $repository, $config, $expected];
 
-        // already up to date
         $config = ['user' => ['theseus' => ['username' => 'theseus', 'role' => 'guest']]];
         $expected = [];
-        yield [self::REPOSITORY_SCENARIO_USER, $repository, $config, $expected];
+        yield 'already up to date' => [self::REPOSITORY_SCENARIO_USER, $repository, $config, $expected];
 
-        // update two users
         $config = ['user' => ['theseus' => ['username' => 'theseus', 'role' => 'admin'], 'ariadne' => ['username' => 'ariadne', 'role' => 'admin']]];
         $expected = [
             NamedResourceUpdate::fromResource(new RepositoryUser('ariadne', 'admin'), [
                 new NamedResourceAttributeUpdate(new Attribute('role'), 'guest', 'admin'),
             ]),
         ];
-        yield [self::REPOSITORY_SCENARIO_USERS, $repositoryWithBoth, $config, $expected];
+        yield 'update two users' => [self::REPOSITORY_SCENARIO_USERS, $repositoryWithBoth, $config, $expected];
 
-        // add a user
         $config = ['user' => ['ariadne' => ['username' => 'ariadne', 'role' => 'admin'], 'theseus' => ['username' => 'theseus', 'role' => 'guest']]];
         $expected = [
             NamedResourceCreate::fromResource(new RepositoryUser('ariadne', 'admin'), [
                 new NamedResourceAttributeUpdate(new Attribute('role'), null, 'admin'),
             ]),
         ];
-        yield [self::REPOSITORY_SCENARIO_USER, $repository, $config, $expected];
+        yield 'add a user' => [self::REPOSITORY_SCENARIO_USER, $repository, $config, $expected];
 
-        // add a user, delete a user
         $config = ['user' => ['ariadne' => ['username' => 'ariadne', 'role' => 'admin']]];
         $expected = [
             NamedResourceCreate::fromResource(new RepositoryUser('ariadne', 'admin'), [
@@ -263,52 +258,48 @@ final class GithubProfileTest extends ProfileTestCase
                 new NamedResourceAttributeUpdate(new Attribute('role'), 'guest', null),
             ]),
         ];
-        yield [self::REPOSITORY_SCENARIO_USER, $repository, $config, $expected];
+        yield 'add a user, delete a user' => [self::REPOSITORY_SCENARIO_USER, $repository, $config, $expected];
     }
 
-    protected function provideCanSetValidOptionsCases(): iterable
+    public static function provideCanSetValidOptionsCases(): iterable
     {
         self::markTestSkipped('Github profile does not provide options');
     }
 
-    protected function provideCannotSetInvalidOptionsCases(): iterable
+    public static function provideCannotSetInvalidOptionsCases(): iterable
     {
         self::markTestSkipped('Github profile does not provide options');
     }
 
-    protected function provideCanSetValidAttributesCases(): iterable
+    public static function provideCanSetValidAttributesCases(): iterable
     {
-        return [
-            ['allow_squash_merge', true],
-            ['allow_merge_commit', true],
-            ['allow_rebase_merge', true],
-            ['allow_auto_merge', true],
-            ['allow_update_branch', true],
-            ['delete_branch_on_merge', true],
-            ['use_squash_pr_title_as_default', true],
-            ['description', 'desc'],
-            ['has_discussions', true],
-            ['has_downloads', true],
-            ['has_issues', true],
-            ['has_pages', true],
-            ['has_projects', true],
-            ['has_wiki', true],
-        ];
+        yield 'allow_squash_merge' => ['allow_squash_merge', true];
+        yield 'allow_merge_commit' => ['allow_merge_commit', true];
+        yield 'allow_rebase_merge' => ['allow_rebase_merge', true];
+        yield 'allow_auto_merge' => ['allow_auto_merge', true];
+        yield 'allow_update_branch' => ['allow_update_branch', true];
+        yield 'delete_branch_on_merge' => ['delete_branch_on_merge', true];
+        yield 'use_squash_pr_title_as_default' => ['use_squash_pr_title_as_default', true];
+        yield 'description' => ['description', 'desc'];
+        yield 'has_discussions' => ['has_discussions', true];
+        yield 'has_downloads' => ['has_downloads', true];
+        yield 'has_issues' => ['has_issues', true];
+        yield 'has_pages' => ['has_pages', true];
+        yield 'has_projects' => ['has_projects', true];
+        yield 'has_wiki' => ['has_wiki', true];
     }
 
-    protected function provideCannotSetInvalidAttributesCases(): iterable
+    public static function provideCannotSetInvalidAttributesCases(): iterable
     {
         $readOnlyError = 'Attribute "%1$s" is read-only.';
         $notExistsError = 'Attribute "%1$s" does not exist.';
 
-        return [
-            ['open_issues_count', -1, $readOnlyError],
-            ['stargazers_count', 10000, $readOnlyError],
-            ['watchers_count', 10000, $readOnlyError],
-            ['nah', 'aaa', $notExistsError],
-            ['desciption', 'aaa', 'Attribute "desciption" does not exist. Did you mean "description"?'],
-            ['has_pragects', true, 'Attribute "has_pragects" does not exist. Did you mean "has_pages", "has_projects"?'],
-        ];
+        yield 'open_issues_count' => ['open_issues_count', -1, $readOnlyError];
+        yield 'stargazers_count' => ['stargazers_count', 10000, $readOnlyError];
+        yield 'watchers_count' => ['watchers_count', 10000, $readOnlyError];
+        yield 'nah' => ['nah', 'aaa', $notExistsError];
+        yield 'desciption' => ['desciption', 'aaa', 'Attribute "desciption" does not exist. Did you mean "description"?'];
+        yield 'has_pragects' => ['has_pragects', true, 'Attribute "has_pragects" does not exist. Did you mean "has_pages", "has_projects"?'];
     }
 
     protected function validateRequest(RequestInterface $request): void

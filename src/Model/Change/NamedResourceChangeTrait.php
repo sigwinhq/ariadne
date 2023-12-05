@@ -28,9 +28,7 @@ trait NamedResourceChangeTrait
      * @param TResource     $resource
      * @param list<TChange> $changes
      */
-    private function __construct(private readonly NamedResource $resource, private readonly array $changes)
-    {
-    }
+    private function __construct(private readonly NamedResource $resource, private readonly array $changes) {}
 
     /**
      * @template STResource of NamedResource

@@ -111,12 +111,12 @@ trait ModelGeneratorTrait
      *
      * @return NamedResourceCollection<RepositoryUser>
      */
-    protected function createUsers(array $list = []): NamedResourceCollection
+    protected static function createUsers(array $list = []): NamedResourceCollection
     {
-        return SortedNamedResourceCollection::fromArray(array_map($this->createUser(...), array_column($list, 0), array_column($list, 1)));
+        return SortedNamedResourceCollection::fromArray(array_map(self::createUser(...), array_column($list, 0), array_column($list, 1)));
     }
 
-    protected function createUser(string $name = 'theseus', string $role = 'admin'): RepositoryUser
+    protected static function createUser(string $name = 'theseus', string $role = 'admin'): RepositoryUser
     {
         return new RepositoryUser($name, $role);
     }
@@ -127,13 +127,13 @@ trait ModelGeneratorTrait
      * @param null|list<string>                                                           $topics
      * @param null|list<string>                                                           $languages
      */
-    protected function createRepository(string $path, array $response = [], ?string $type = null, ?string $visibility = null, ?array $users = null, ?array $topics = null, ?array $languages = null, ?bool $archived = null): Repository
+    protected static function createRepository(string $path, array $response = [], ?string $type = null, ?string $visibility = null, ?array $users = null, ?array $topics = null, ?array $languages = null, ?bool $archived = null): Repository
     {
         return new Repository(
             array_replace($response, ['id' => 12345, 'path' => $path]),
             $type !== null ? RepositoryType::from($type) : RepositoryType::SOURCE,
             $visibility !== null ? RepositoryVisibility::from($visibility) : RepositoryVisibility::PUBLIC,
-            $this->createUsers($users ?? []),
+            self::createUsers($users ?? []),
             12345,
             $path,
             $topics ?? [],
@@ -179,9 +179,7 @@ trait ModelGeneratorTrait
     /**
      * @psalm-suppress PossiblyUnusedParam
      */
-    protected function validateRequest(RequestInterface $request): void
-    {
-    }
+    protected function validateRequest(RequestInterface $request): void {}
 
     /**
      * @param list<ProfileConfig> $configs
@@ -209,9 +207,7 @@ trait ModelGeneratorTrait
     protected function createProfile(string $name = 'foo'): Profile
     {
         return new class($name) implements Profile {
-            public function __construct(private readonly string $name)
-            {
-            }
+            public function __construct(private readonly string $name) {}
 
             public function getName(): string
             {

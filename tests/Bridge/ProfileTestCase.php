@@ -17,7 +17,6 @@ use PHPUnit\Framework\TestCase;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
-use Sigwin\Ariadne\Exception\ConfigException;
 use Sigwin\Ariadne\Model\Change\NamedResourceAttributeUpdate;
 use Sigwin\Ariadne\Model\Change\NamedResourceCreate;
 use Sigwin\Ariadne\Model\Change\NamedResourceDelete;
@@ -54,21 +53,21 @@ abstract class ProfileTestCase extends TestCase
     /**
      * @return iterable<array-key, array{0: string, 1: Repository, 2?: TConfig}>
      */
-    protected function provideRepositories(): iterable
+    public static function provideRepositories(): iterable
     {
-        yield [self::REPOSITORY_SCENARIO_BASIC, $this->createRepository('namespace1/repo1')];
-        yield [self::REPOSITORY_SCENARIO_FORK, $this->createRepository('namespace1/repo1', type: 'fork')];
-        yield [self::REPOSITORY_SCENARIO_PRIVATE, $this->createRepository('namespace1/repo1', visibility: 'private')];
-        yield [self::REPOSITORY_SCENARIO_ARCHIVED, $this->createRepository('namespace1/repo1', archived: true)];
-        yield [
+        yield self::REPOSITORY_SCENARIO_BASIC => [self::REPOSITORY_SCENARIO_BASIC, self::createRepository('namespace1/repo1')];
+        yield self::REPOSITORY_SCENARIO_FORK => [self::REPOSITORY_SCENARIO_FORK, self::createRepository('namespace1/repo1', type: 'fork')];
+        yield self::REPOSITORY_SCENARIO_PRIVATE => [self::REPOSITORY_SCENARIO_PRIVATE, self::createRepository('namespace1/repo1', visibility: 'private')];
+        yield self::REPOSITORY_SCENARIO_ARCHIVED => [self::REPOSITORY_SCENARIO_ARCHIVED, self::createRepository('namespace1/repo1', archived: true)];
+        yield self::REPOSITORY_SCENARIO_USER => [
             self::REPOSITORY_SCENARIO_USER,
-            $this->createRepository('namespace1/repo1', users: [['theseus', 'admin']]),
+            self::createRepository('namespace1/repo1', users: [['theseus', 'admin']]),
             ['user' => ['theseus' => ['username' => 'theseus', 'role' => 'admin']]],
         ];
-        yield [self::REPOSITORY_SCENARIO_TOPICS, $this->createRepository('namespace1/repo1', topics: ['topic1', 'topic2'])];
-        yield [
+        yield self::REPOSITORY_SCENARIO_TOPICS => [self::REPOSITORY_SCENARIO_TOPICS, self::createRepository('namespace1/repo1', topics: ['topic1', 'topic2'])];
+        yield self::REPOSITORY_SCENARIO_LANGUAGES => [
             self::REPOSITORY_SCENARIO_LANGUAGES,
-            $this->createRepository('namespace1/repo1', languages: ['language1']),
+            self::createRepository('namespace1/repo1', languages: ['language1']),
             ['filter' => ['languages' => ['language1']]],
         ];
     }
@@ -76,7 +75,7 @@ abstract class ProfileTestCase extends TestCase
     /**
      * @return iterable<array-key, array{0: string, 1: Repository, 2?: TConfig}>
      */
-    protected function provideVendorSpecificRepositories(): iterable
+    public static function provideVendorSpecificRepositories(): iterable
     {
         return [];
     }
@@ -167,39 +166,6 @@ abstract class ProfileTestCase extends TestCase
     }
 
     /**
-     * @dataProvider provideCanSetValidOptionsCases
-     */
-    public function testCanSetValidOptions(string $name, bool|string $value): void
-    {
-        $httpClient = $this->createHttpClient();
-        $factory = $this->createTemplateFactory();
-        $cachePool = $this->createCachePool();
-        $config = $this->createConfig(options: [$name => $value]);
-
-        $profile = $this->createProfileInstance($config, $httpClient, $factory, $cachePool);
-
-        self::assertSame($config->name, $profile->getName());
-    }
-
-    /**
-     * @dataProvider provideCannotSetInvalidOptionsCases
-     *
-     * @uses \Sigwin\Ariadne\Exception\ConfigException
-     */
-    public function testCannotSetInvalidOptions(string $name, bool|string $value, string $message): void
-    {
-        $this->expectException(ConfigException::class);
-        $this->expectExceptionMessage(sprintf($message, $name));
-
-        $httpClient = $this->createHttpClient();
-        $factory = $this->createTemplateFactory();
-        $cachePool = $this->createCachePool();
-        $config = $this->createConfig(options: [$name => $value]);
-
-        $this->createProfileInstance($config, $httpClient, $factory, $cachePool);
-    }
-
-    /**
      * @dataProvider provideCanSetValidAttributesCases
      */
     public function testCanSetValidAttributes(string $name, bool|string $value): void
@@ -216,7 +182,7 @@ abstract class ProfileTestCase extends TestCase
     /**
      * @dataProvider provideCannotSetInvalidAttributesCases
      */
-    public function testCannotSetInvalidAttributes(string $name, int|bool|string $value, string $message): void
+    public function testCannotSetInvalidAttributes(string $name, bool|int|string $value, string $message): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessageMatches('/^'.preg_quote(sprintf($message, $name), '/').'$/');
@@ -232,7 +198,7 @@ abstract class ProfileTestCase extends TestCase
     /**
      * @return iterable<string, array{0: null|string}>
      */
-    protected function provideUrls(): iterable
+    public static function provideUrls(): iterable
     {
         yield 'default' => [null];
         yield 'custom' => ['https://example.com'];
@@ -241,52 +207,52 @@ abstract class ProfileTestCase extends TestCase
     /**
      * @param null|list<array{string, string}> $users
      */
-    protected function createRepositoryFromValidAttributes(?array $users = null): Repository
+    protected static function createRepositoryFromValidAttributes(?array $users = null): Repository
     {
         $response = [];
-        foreach ($this->provideCanSetValidAttributesCases() as $attribute) {
+        foreach (static::provideCanSetValidAttributesCases() as $attribute) {
             $response[$attribute[0]] = $attribute[1];
         }
 
-        return $this->createRepository('namespace1/repo1', response: $response, users: $users);
+        return self::createRepository('namespace1/repo1', response: $response, users: $users);
     }
 
     abstract protected function validateRequest(RequestInterface $request): void;
 
     /**
-     * @return iterable<array-key, array{string, bool|string}>
+     * @return iterable<string, array{string, bool|string}>
      */
-    abstract protected function provideCanSetValidOptionsCases(): iterable;
+    abstract public static function provideCanSetValidOptionsCases(): iterable;
 
     /**
-     * @return iterable<array-key, array{string, bool|string, string}>
+     * @return iterable<string, array{string, bool|string, string}>
      */
-    abstract protected function provideCannotSetInvalidOptionsCases(): iterable;
+    abstract public static function provideCannotSetInvalidOptionsCases(): iterable;
 
     /**
-     * @return iterable<array-key, array{string, bool|string}>
+     * @return iterable<string, array{string, bool|string}>
      */
-    abstract protected function provideCanSetValidAttributesCases(): iterable;
+    abstract public static function provideCanSetValidAttributesCases(): iterable;
 
     /**
-     * @return iterable<array-key, array{string, bool|int|string, string}>
+     * @return iterable<string, array{string, bool|int|string, string}>
      */
-    abstract protected function provideCannotSetInvalidAttributesCases(): iterable;
+    abstract public static function provideCannotSetInvalidAttributesCases(): iterable;
 
     /**
-     * @return iterable<array-key, array{0: string, 1: Repository, 2: TConfig, 3: array<string, bool|int|string>}>
+     * @return iterable<string, array{0: string, 1: Repository, 2: TConfig, 3: array<string, bool|int|string>}>
      */
-    abstract protected function provideCanCreatePlanAttributeChangesCases(): iterable;
+    abstract public static function provideCanCreatePlanAttributeChangesCases(): iterable;
 
     /**
-     * @return iterable<array-key, array{
+     * @return iterable<string, array{
      *     string,
      *     Repository,
      *     TConfig,
      *     list<NamedResourceCreate<RepositoryUser, NamedResourceAttributeUpdate>|NamedResourceUpdate<RepositoryUser, NamedResourceAttributeUpdate>|NamedResourceDelete<RepositoryUser, NamedResourceAttributeUpdate>>
      * }>
      */
-    abstract protected function provideCanPlanUserChangesCases(): iterable;
+    abstract public static function provideCanPlanUserChangesCases(): iterable;
 
     abstract protected function createProfileInstance(ProfileConfig $config, ClientInterface $client, ProfileTemplateFactory $factory, CacheItemPoolInterface $cachePool): Profile;
 

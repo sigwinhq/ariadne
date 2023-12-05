@@ -25,9 +25,7 @@ final class AriadneConfig implements \IteratorAggregate
     /**
      * @param array<ProfileConfig> $clientConfig
      */
-    private function __construct(public readonly string $url, private readonly array $clientConfig)
-    {
-    }
+    private function __construct(public readonly string $url, private readonly array $clientConfig) {}
 
     /**
      * @param TConfig $config

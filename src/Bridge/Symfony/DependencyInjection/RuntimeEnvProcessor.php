@@ -18,9 +18,7 @@ use Symfony\Component\DependencyInjection\EnvVarProcessorInterface;
 
 final class RuntimeEnvProcessor implements EnvVarProcessorInterface
 {
-    public function __construct(private readonly XdgEnvironmentResolver $resolver)
-    {
-    }
+    public function __construct(private readonly XdgEnvironmentResolver $resolver) {}
 
     public function getEnv(string $prefix, string $name, \Closure $getEnv): string
     {

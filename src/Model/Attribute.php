@@ -17,9 +17,7 @@ use Sigwin\Ariadne\NamedResource;
 
 final class Attribute implements NamedResource
 {
-    public function __construct(private readonly string $name)
-    {
-    }
+    public function __construct(private readonly string $name) {}
 
     public function getName(): string
     {

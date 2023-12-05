@@ -15,9 +15,7 @@ namespace Sigwin\Ariadne\Resolver;
 
 final class XdgEnvironmentResolver
 {
-    public function __construct(private readonly ?string $cacheHome, private readonly ?string $configHome, private readonly string $home)
-    {
-    }
+    public function __construct(private readonly ?string $cacheHome, private readonly ?string $configHome, private readonly string $home) {}
 
     public function getCacheDir(): string
     {
