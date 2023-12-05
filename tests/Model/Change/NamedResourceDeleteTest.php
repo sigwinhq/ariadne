@@ -27,6 +27,9 @@ use Sigwin\Ariadne\Test\AssertTrait;
  *
  * @small
  */
+#[\PHPUnit\Framework\Attributes\Small]
+#[\PHPUnit\Framework\Attributes\CoversClass(\Sigwin\Ariadne\Model\Change\NamedResourceDelete::class)]
+#[\PHPUnit\Framework\Attributes\UsesClass(\Sigwin\Ariadne\Model\Change\NamedResourceArrayChangeCollection::class)]
 final class NamedResourceDeleteTest extends TestCase
 {
     use AssertTrait;

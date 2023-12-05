@@ -35,11 +35,15 @@ use Sigwin\Ariadne\ProfileTemplateFactory;
  *
  * @small
  */
+#[\PHPUnit\Framework\Attributes\Small]
+#[\PHPUnit\Framework\Attributes\CoversClass(\Sigwin\Ariadne\Profile\Factory\ClassmapProfileFactory::class)]
+#[\PHPUnit\Framework\Attributes\UsesClass(\Sigwin\Ariadne\Model\Config\ProfileClientConfig::class)]
+#[\PHPUnit\Framework\Attributes\UsesClass(\Sigwin\Ariadne\Model\Config\ProfileConfig::class)]
 final class ClassmapProfileFactoryTest extends TestCase implements Profile
 {
     public function getName(): string
     {
-        return __CLASS__;
+        return self::class;
     }
 
     public function testCanCreateAProfileInstance(): void
@@ -70,7 +74,7 @@ final class ClassmapProfileFactoryTest extends TestCase implements Profile
         self::assertSame('My Self', $config->name);
 
         /** @psalm-suppress InternalMethod */
-        return new self(__CLASS__);
+        return new self(self::class);
     }
 
     public static function getType(): string

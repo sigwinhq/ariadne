@@ -57,9 +57,7 @@ trait ModelGeneratorTrait
         $evaluator = $this->getMockBuilder(Evaluator::class)->getMock();
         $evaluator
             ->method('evaluate')
-            ->willReturnCallback(static function (bool|int|string $expression, array $context) {
-                return $context[$expression] ?? $expression;
-            })
+            ->willReturnCallback(static fn(bool|int|string $expression, array $context) => $context[$expression] ?? $expression)
         ;
 
         return new ProfileTemplate(

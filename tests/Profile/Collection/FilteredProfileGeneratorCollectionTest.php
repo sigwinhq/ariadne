@@ -31,13 +31,17 @@ use Sigwin\Ariadne\Test\ModelGeneratorTrait;
  *
  * @small
  */
+#[\PHPUnit\Framework\Attributes\Small]
+#[\PHPUnit\Framework\Attributes\CoversClass(\Sigwin\Ariadne\Profile\Collection\FilteredProfileGeneratorCollection::class)]
+#[\PHPUnit\Framework\Attributes\UsesClass(\Sigwin\Ariadne\Model\Config\AriadneConfig::class)]
+#[\PHPUnit\Framework\Attributes\UsesClass(\Sigwin\Ariadne\Model\Config\ProfileClientConfig::class)]
+#[\PHPUnit\Framework\Attributes\UsesClass(\Sigwin\Ariadne\Model\Config\ProfileConfig::class)]
+#[\PHPUnit\Framework\Attributes\UsesClass(\Sigwin\Ariadne\Model\ProfileFilter::class)]
 final class FilteredProfileGeneratorCollectionTest extends TestCase
 {
     use ModelGeneratorTrait;
 
-    /**
-     * @dataProvider provideWillFilterOutUnmatchedProfilesCases
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideWillFilterOutUnmatchedProfilesCases')]
     public function testWillFilterOutUnmatchedProfiles(ProfileFilter $filter, int $matches): void
     {
         $config = AriadneConfig::fromArray('file:///ariadne.yaml', ['profiles' => [

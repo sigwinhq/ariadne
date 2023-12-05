@@ -40,18 +40,28 @@ use Sigwin\Ariadne\Test\ModelGeneratorTrait;
  *
  * @psalm-type TFilter = array{type?: 'fork'|'source', path?: string|list<string>, visibility?:'private'|'public', topics?: string|list<string>, languages?: array<string>}
  */
+#[\PHPUnit\Framework\Attributes\Small]
+#[\PHPUnit\Framework\Attributes\CoversClass(\Sigwin\Ariadne\Profile\Template\Factory\FilteredProfileTemplateFactory::class)]
+#[\PHPUnit\Framework\Attributes\UsesClass(\Sigwin\Ariadne\Bridge\Symfony\ExpressionLanguage\ExpressionLanguage::class)]
+#[\PHPUnit\Framework\Attributes\UsesClass(\Sigwin\Ariadne\Bridge\Symfony\ExpressionLanguage\LanguageProvider\FilterExpressionLanguageProvider::class)]
+#[\PHPUnit\Framework\Attributes\UsesClass(\Sigwin\Ariadne\Model\Collection\SortedNamedResourceCollection::class)]
+#[\PHPUnit\Framework\Attributes\UsesClass(\Sigwin\Ariadne\Model\Config\ProfileTemplateConfig::class)]
+#[\PHPUnit\Framework\Attributes\UsesClass(\Sigwin\Ariadne\Model\Config\ProfileTemplateTargetConfig::class)]
+#[\PHPUnit\Framework\Attributes\UsesClass(\Sigwin\Ariadne\Model\ProfileTemplate::class)]
+#[\PHPUnit\Framework\Attributes\UsesClass(\Sigwin\Ariadne\Model\ProfileTemplateTarget::class)]
+#[\PHPUnit\Framework\Attributes\UsesClass(\Sigwin\Ariadne\Model\Repository::class)]
 final class FilteredProfileTemplateFactoryTest extends TestCase
 {
     use AssertTrait;
     use ModelGeneratorTrait;
 
     /**
-     * @dataProvider provideWillFilterOutUnmatchedRepositoriesCases
      *
      * @param TFilter          $filter
      * @param list<Repository> $all
      * @param list<int>        $expected
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideWillFilterOutUnmatchedRepositoriesCases')]
     public function testWillFilterOutUnmatchedRepositories(array $filter, array $all, array $expected): void
     {
         $factory = new FilteredProfileTemplateFactory(new ExpressionLanguage());
