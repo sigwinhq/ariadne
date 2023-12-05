@@ -55,17 +55,17 @@ abstract class ProfileTestCase extends TestCase
      */
     public static function provideRepositories(): iterable
     {
-        yield [self::REPOSITORY_SCENARIO_BASIC, self::createRepository('namespace1/repo1')];
-        yield [self::REPOSITORY_SCENARIO_FORK, self::createRepository('namespace1/repo1', type: 'fork')];
-        yield [self::REPOSITORY_SCENARIO_PRIVATE, self::createRepository('namespace1/repo1', visibility: 'private')];
-        yield [self::REPOSITORY_SCENARIO_ARCHIVED, self::createRepository('namespace1/repo1', archived: true)];
-        yield [
+        yield self::REPOSITORY_SCENARIO_BASIC => [self::REPOSITORY_SCENARIO_BASIC, self::createRepository('namespace1/repo1')];
+        yield self::REPOSITORY_SCENARIO_FORK => [self::REPOSITORY_SCENARIO_FORK, self::createRepository('namespace1/repo1', type: 'fork')];
+        yield self::REPOSITORY_SCENARIO_PRIVATE => [self::REPOSITORY_SCENARIO_PRIVATE, self::createRepository('namespace1/repo1', visibility: 'private')];
+        yield self::REPOSITORY_SCENARIO_ARCHIVED => [self::REPOSITORY_SCENARIO_ARCHIVED, self::createRepository('namespace1/repo1', archived: true)];
+        yield self::REPOSITORY_SCENARIO_USER => [
             self::REPOSITORY_SCENARIO_USER,
             self::createRepository('namespace1/repo1', users: [['theseus', 'admin']]),
             ['user' => ['theseus' => ['username' => 'theseus', 'role' => 'admin']]],
         ];
-        yield [self::REPOSITORY_SCENARIO_TOPICS, self::createRepository('namespace1/repo1', topics: ['topic1', 'topic2'])];
-        yield [
+        yield self::REPOSITORY_SCENARIO_TOPICS => [self::REPOSITORY_SCENARIO_TOPICS, self::createRepository('namespace1/repo1', topics: ['topic1', 'topic2'])];
+        yield self::REPOSITORY_SCENARIO_LANGUAGES => [
             self::REPOSITORY_SCENARIO_LANGUAGES,
             self::createRepository('namespace1/repo1', languages: ['language1']),
             ['filter' => ['languages' => ['language1']]],
@@ -220,32 +220,32 @@ abstract class ProfileTestCase extends TestCase
     abstract protected function validateRequest(RequestInterface $request): void;
 
     /**
-     * @return iterable<array-key, array{string, bool|string}>
+     * @return iterable<string, array{string, bool|string}>
      */
     abstract public static function provideCanSetValidOptionsCases(): iterable;
 
     /**
-     * @return iterable<array-key, array{string, bool|string, string}>
+     * @return iterable<string, array{string, bool|string, string}>
      */
     abstract public static function provideCannotSetInvalidOptionsCases(): iterable;
 
     /**
-     * @return iterable<array-key, array{string, bool|string}>
+     * @return iterable<string, array{string, bool|string}>
      */
     abstract public static function provideCanSetValidAttributesCases(): iterable;
 
     /**
-     * @return iterable<array-key, array{string, bool|int|string, string}>
+     * @return iterable<string, array{string, bool|int|string, string}>
      */
     abstract public static function provideCannotSetInvalidAttributesCases(): iterable;
 
     /**
-     * @return iterable<array-key, array{0: string, 1: Repository, 2: TConfig, 3: array<string, bool|int|string>}>
+     * @return iterable<string, array{0: string, 1: Repository, 2: TConfig, 3: array<string, bool|int|string>}>
      */
     abstract public static function provideCanCreatePlanAttributeChangesCases(): iterable;
 
     /**
-     * @return iterable<array-key, array{
+     * @return iterable<string, array{
      *     string,
      *     Repository,
      *     TConfig,

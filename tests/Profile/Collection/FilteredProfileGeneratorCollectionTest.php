@@ -55,16 +55,15 @@ final class FilteredProfileGeneratorCollectionTest extends TestCase
     }
 
     /**
-     * @return list<array{ProfileFilter, int}>
+     * @return iterable<string, array{ProfileFilter, int}>
      */
     public static function provideWillFilterOutUnmatchedProfilesCases(): iterable
     {
-        return [
-            [ProfileFilter::create(null, null), 2],
-            [ProfileFilter::create('Foo Indeed', null), 1],
-            [ProfileFilter::create(null, 'fake'), 2],
-            [ProfileFilter::create('Foo Indeed', 'fake'), 1],
-            [ProfileFilter::create('Foo Indeed', 'very fake'), 0],
-        ];
+        yield 'no filter' => [ProfileFilter::create(null, null), 2];
+        yield 'empty filter' => [ProfileFilter::create('', ''), 0];
+        yield 'filter by name' => [ProfileFilter::create('Foo Indeed', null), 1];
+        yield 'match all' => [ProfileFilter::create(null, 'fake'), 2];
+        yield 'match name and type' => [ProfileFilter::create('Foo Indeed', 'fake'), 1];
+        yield 'nonexistent type' => [ProfileFilter::create('Foo Indeed', 'very fake'), 0];
     }
 }
