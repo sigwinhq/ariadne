@@ -18,13 +18,13 @@ namespace Sigwin\Ariadne\Model\Config;
  * @psalm-type TProfileClientOptions = array<string, bool|string>
  * @psalm-type TProfileClient = array{auth: TProfileClientAuth, options: TProfileClientOptions, url?: string}
  */
-final class ProfileClientConfig
+final readonly class ProfileClientConfig
 {
     /**
      * @param TProfileClientAuth    $auth
      * @param TProfileClientOptions $options
      */
-    private function __construct(public readonly array $auth, public readonly array $options, public readonly ?string $url = null) {}
+    private function __construct(public array $auth, public array $options, public ?string $url = null) {}
 
     /**
      * @param TProfileClient $config

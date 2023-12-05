@@ -23,10 +23,9 @@ final class FilterExpressionLanguageProvider implements ExpressionFunctionProvid
     {
         return [
             new ExpressionFunction('match',
-                static function (string $string): string {
+                static fn (string $string): string =>
                     // TODO: don't know how this works exactly
-                    return sprintf('(is_string(%1$s) ? strtolower(%1$s) : %1$s)', $string);
-                },
+                    sprintf('(is_string(%1$s) ? strtolower(%1$s) : %1$s)', $string),
                 /** @param array{repository: Repository, property: "path"} $arguments */
                 static function (array $arguments, string $regex, ?string $value = null): bool {
                     if ($value === null) {

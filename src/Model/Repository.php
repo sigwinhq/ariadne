@@ -23,7 +23,7 @@ use Sigwin\Ariadne\NamedResourceChange;
 use Sigwin\Ariadne\NamedResourceChangeCollection;
 use Sigwin\Ariadne\NamedResourceCollection;
 
-final class Repository implements NamedResource
+final readonly class Repository implements NamedResource
 {
     /**
      * @param array<string, null|array<string, int|string>|array<string>|bool|int|string> $response
@@ -32,15 +32,15 @@ final class Repository implements NamedResource
      * @param NamedResourceCollection<RepositoryUser>                                     $users
      */
     public function __construct(
-        private readonly array $response,
-        public readonly RepositoryType $type,
-        public readonly RepositoryVisibility $visibility,
-        public readonly NamedResourceCollection $users,
-        public readonly int $id,
-        public readonly string $path,
-        public readonly array $topics,
-        public readonly array $languages,
-        public readonly bool $archived,
+        private array $response,
+        public RepositoryType $type,
+        public RepositoryVisibility $visibility,
+        public NamedResourceCollection $users,
+        public int $id,
+        public string $path,
+        public array $topics,
+        public array $languages,
+        public bool $archived,
     ) {}
 
     /**

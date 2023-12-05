@@ -26,6 +26,9 @@ use Sigwin\Ariadne\Model\Change\NamedResourceAttributeUpdate;
  *
  * @small
  */
+#[\PHPUnit\Framework\Attributes\Small]
+#[\PHPUnit\Framework\Attributes\CoversClass(\Sigwin\Ariadne\Model\Change\NamedResourceAttributeUpdate::class)]
+#[\PHPUnit\Framework\Attributes\UsesClass(\Sigwin\Ariadne\Model\Attribute::class)]
 final class NamedResourceAttributeUpdateTest extends TestCase
 {
     public function testCanGetResource(): void

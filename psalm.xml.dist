@@ -17,6 +17,7 @@
         <directory name="./"/>
         <ignoreFiles allowMissingFiles="true">
             <file name=".php-cs-fixer.dist.php"/>
+            <file name="rector.php"/>
             <directory name="var/"/>
             <directory name="vendor/"/>
         </ignoreFiles>

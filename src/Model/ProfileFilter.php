@@ -15,9 +15,9 @@ namespace Sigwin\Ariadne\Model;
 
 use Sigwin\Ariadne\Profile;
 
-final class ProfileFilter
+final readonly class ProfileFilter
 {
-    private function __construct(private readonly ?string $name, private readonly ?string $type) {}
+    private function __construct(private ?string $name, private ?string $type) {}
 
     public function match(Profile $profile): bool
     {

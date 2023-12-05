@@ -17,9 +17,9 @@ use Sigwin\Ariadne\Model\Attribute;
 use Sigwin\Ariadne\NamedResource;
 use Sigwin\Ariadne\NamedResourceChange;
 
-final class NamedResourceAttributeUpdate implements NamedResourceChange
+final readonly class NamedResourceAttributeUpdate implements NamedResourceChange
 {
-    public function __construct(private readonly Attribute $resource, public readonly null|bool|int|string $actual, public readonly null|bool|int|string $expected) {}
+    public function __construct(private Attribute $resource, public null|bool|int|string $actual, public null|bool|int|string $expected) {}
 
     public function getResource(): NamedResource
     {

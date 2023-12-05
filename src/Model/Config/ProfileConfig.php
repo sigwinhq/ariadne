@@ -19,12 +19,12 @@ namespace Sigwin\Ariadne\Model\Config;
  *
  * @psalm-type TProfile = array{type: string, name: string, client: TProfileClient, templates: array<string, TProfileTemplate>}
  */
-final class ProfileConfig
+final readonly class ProfileConfig
 {
     /**
      * @param array<ProfileTemplateConfig> $templates
      */
-    private function __construct(public readonly string $type, public readonly string $name, public readonly ProfileClientConfig $client, public readonly array $templates) {}
+    private function __construct(public string $type, public string $name, public ProfileClientConfig $client, public array $templates) {}
 
     /**
      * @param TProfile $config

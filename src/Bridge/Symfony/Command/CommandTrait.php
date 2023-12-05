@@ -29,13 +29,9 @@ trait CommandTrait
     private function createConfiguration(): void
     {
         $this
-            ->addArgument('profile-name', InputArgument::OPTIONAL, 'Profile to use', null, function (CompletionInput $input): array {
-                return $this->getConfigProfileAttributes($this->configReader->read($this->getConfigUrl($input)), 'name');
-            })
+            ->addArgument('profile-name', InputArgument::OPTIONAL, 'Profile to use', null, fn (CompletionInput $input): array => $this->getConfigProfileAttributes($this->configReader->read($this->getConfigUrl($input)), 'name'))
             ->addOption('config-file', 'C', InputOption::VALUE_OPTIONAL, 'Configuration file to use (YAML)')
-            ->addOption('profile-type', 'T', InputOption::VALUE_OPTIONAL, 'Profile type to use', null, function (CompletionInput $input): array {
-                return $this->getConfigProfileAttributes($this->configReader->read($this->getConfigUrl($input)), 'type');
-            })
+            ->addOption('profile-type', 'T', InputOption::VALUE_OPTIONAL, 'Profile type to use', null, fn (CompletionInput $input): array => $this->getConfigProfileAttributes($this->configReader->read($this->getConfigUrl($input)), 'type'))
         ;
     }
 

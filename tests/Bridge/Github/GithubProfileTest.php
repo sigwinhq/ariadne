@@ -57,11 +57,29 @@ use Sigwin\Ariadne\Test\Bridge\ProfileTestCase;
  *
  * @psalm-import-type TTemplate from ProfileTestCase
  */
+#[\PHPUnit\Framework\Attributes\Small]
+#[\PHPUnit\Framework\Attributes\CoversClass(\Sigwin\Ariadne\Bridge\Github\GithubProfile::class)]
+#[\PHPUnit\Framework\Attributes\CoversClass(\Sigwin\Ariadne\Model\Repository::class)]
+#[\PHPUnit\Framework\Attributes\CoversClass(\Sigwin\Ariadne\Model\RepositoryType::class)]
+#[\PHPUnit\Framework\Attributes\CoversClass(\Sigwin\Ariadne\Model\RepositoryUser::class)]
+#[\PHPUnit\Framework\Attributes\CoversClass(\Sigwin\Ariadne\Model\RepositoryVisibility::class)]
+#[\PHPUnit\Framework\Attributes\UsesClass(\Sigwin\Ariadne\Model\Attribute::class)]
+#[\PHPUnit\Framework\Attributes\UsesClass(\Sigwin\Ariadne\Model\Change\NamedResourceArrayChangeCollection::class)]
+#[\PHPUnit\Framework\Attributes\UsesClass(\Sigwin\Ariadne\Model\Change\NamedResourceAttributeUpdate::class)]
+#[\PHPUnit\Framework\Attributes\UsesClass(\Sigwin\Ariadne\Model\Collection\SortedNamedResourceCollection::class)]
+#[\PHPUnit\Framework\Attributes\UsesClass(\Sigwin\Ariadne\Model\Collection\UnsortedNamedResourceCollection::class)]
+#[\PHPUnit\Framework\Attributes\UsesClass(\Sigwin\Ariadne\Model\Config\ProfileClientConfig::class)]
+#[\PHPUnit\Framework\Attributes\UsesClass(\Sigwin\Ariadne\Model\Config\ProfileConfig::class)]
+#[\PHPUnit\Framework\Attributes\UsesClass(\Sigwin\Ariadne\Model\Config\ProfileTemplateConfig::class)]
+#[\PHPUnit\Framework\Attributes\UsesClass(\Sigwin\Ariadne\Model\Config\ProfileTemplateRepositoryUserConfig::class)]
+#[\PHPUnit\Framework\Attributes\UsesClass(\Sigwin\Ariadne\Model\Config\ProfileTemplateTargetConfig::class)]
+#[\PHPUnit\Framework\Attributes\UsesClass(\Sigwin\Ariadne\Model\ProfileSummary::class)]
+#[\PHPUnit\Framework\Attributes\UsesClass(\Sigwin\Ariadne\Model\ProfileTemplate::class)]
+#[\PHPUnit\Framework\Attributes\UsesClass(\Sigwin\Ariadne\Model\ProfileTemplateTarget::class)]
+#[\PHPUnit\Framework\Attributes\UsesClass(\Sigwin\Ariadne\Model\ProfileUser::class)]
 final class GithubProfileTest extends ProfileTestCase
 {
-    /**
-     * @dataProvider provideUrls
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideUrls')]
     public function testCanFetchApiUser(?string $baseUrl): void
     {
         $httpClient = $this->createHttpClient([
@@ -76,9 +94,7 @@ final class GithubProfileTest extends ProfileTestCase
         self::assertSame('ariadne', $login->getName());
     }
 
-    /**
-     * @dataProvider provideUrls
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideUrls')]
     public function testCanFetchTemplates(?string $baseUrl): void
     {
         $httpClient = $this->createHttpClient([

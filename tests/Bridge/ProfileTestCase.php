@@ -81,11 +81,10 @@ abstract class ProfileTestCase extends TestCase
     }
 
     /**
-     * @dataProvider provideRepositories
-     * @dataProvider provideVendorSpecificRepositories
-     *
      * @param TConfig $config
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideRepositories')]
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideVendorSpecificRepositories')]
     public function testCanCreateRepository(string $name, Repository $fixture, array $config = []): void
     {
         $profile = $this->createProfileForRepositoryScenario($name, $fixture, $config);
@@ -109,13 +108,11 @@ abstract class ProfileTestCase extends TestCase
     }
 
     /**
-     * @group plan
-     *
-     * @dataProvider provideCanCreatePlanAttributeChangesCases
-     *
      * @param array<string, bool|int|string> $expected
      * @param TConfig                        $config
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideCanCreatePlanAttributeChangesCases')]
+    #[\PHPUnit\Framework\Attributes\Group('plan')]
     public function testCanCreatePlanAttributeChanges(string $name, Repository $fixture, array $config, array $expected): void
     {
         $profile = $this->createProfileForRepositoryScenario($name, $fixture, $config);
@@ -144,14 +141,12 @@ abstract class ProfileTestCase extends TestCase
     }
 
     /**
-     * @group plan
-     * @group user
-     *
-     * @dataProvider provideCanPlanUserChangesCases
-     *
      * @param array<string, bool|int|string> $expected
      * @param TConfig                        $config
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideCanPlanUserChangesCases')]
+    #[\PHPUnit\Framework\Attributes\Group('plan')]
+    #[\PHPUnit\Framework\Attributes\Group('user')]
     public function testCanPlanUserChanges(string $name, Repository $repository, array $config, array $expected): void
     {
         $profile = $this->createProfileForRepositoryScenario($name, $repository, $config);
@@ -165,9 +160,7 @@ abstract class ProfileTestCase extends TestCase
         self::assertEqualsIgnoringCase($expected, $actual);
     }
 
-    /**
-     * @dataProvider provideCanSetValidAttributesCases
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideCanSetValidAttributesCases')]
     public function testCanSetValidAttributes(string $name, bool|string $value): void
     {
         $httpClient = $this->createHttpClient();
@@ -179,9 +172,7 @@ abstract class ProfileTestCase extends TestCase
         self::assertSame($config->name, $profile->getName());
     }
 
-    /**
-     * @dataProvider provideCannotSetInvalidAttributesCases
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideCannotSetInvalidAttributesCases')]
     public function testCannotSetInvalidAttributes(string $name, bool|int|string $value, string $message): void
     {
         $this->expectException(\InvalidArgumentException::class);

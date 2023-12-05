@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="5.9.0@8b9ad1eb9e8b7d3101f949291da2b9f7767cd163">
+<files psalm-version="5.16.0@2897ba636551a8cb61601cc26f6ccfbba6c36591">
   <file src="src/Bridge/Github/GithubProfile.php">
     <MixedAssignment>
       <code><![CDATA[$attributes[$change->getResource()->getName()]]]></code>
@@ -40,24 +40,12 @@
   </file>
   <file src="src/Bridge/Symfony/Command/CommandTrait.php">
     <ArgumentTypeCoercion>
-      <code><![CDATA[function (CompletionInput $input): array {
-                return $this->getConfigProfileAttributes($this->configReader->read($this->getConfigUrl($input)), 'name');
-            }]]></code>
-      <code><![CDATA[function (CompletionInput $input): array {
-                return $this->getConfigProfileAttributes($this->configReader->read($this->getConfigUrl($input)), 'name');
-            }]]></code>
-      <code><![CDATA[function (CompletionInput $input): array {
-                return $this->getConfigProfileAttributes($this->configReader->read($this->getConfigUrl($input)), 'name');
-            }]]></code>
-      <code><![CDATA[function (CompletionInput $input): array {
-                return $this->getConfigProfileAttributes($this->configReader->read($this->getConfigUrl($input)), 'type');
-            }]]></code>
-      <code><![CDATA[function (CompletionInput $input): array {
-                return $this->getConfigProfileAttributes($this->configReader->read($this->getConfigUrl($input)), 'type');
-            }]]></code>
-      <code><![CDATA[function (CompletionInput $input): array {
-                return $this->getConfigProfileAttributes($this->configReader->read($this->getConfigUrl($input)), 'type');
-            }]]></code>
+      <code><![CDATA[fn (CompletionInput $input): array => $this->getConfigProfileAttributes($this->configReader->read($this->getConfigUrl($input)), 'name')]]></code>
+      <code><![CDATA[fn (CompletionInput $input): array => $this->getConfigProfileAttributes($this->configReader->read($this->getConfigUrl($input)), 'name')]]></code>
+      <code><![CDATA[fn (CompletionInput $input): array => $this->getConfigProfileAttributes($this->configReader->read($this->getConfigUrl($input)), 'name')]]></code>
+      <code><![CDATA[fn (CompletionInput $input): array => $this->getConfigProfileAttributes($this->configReader->read($this->getConfigUrl($input)), 'type')]]></code>
+      <code><![CDATA[fn (CompletionInput $input): array => $this->getConfigProfileAttributes($this->configReader->read($this->getConfigUrl($input)), 'type')]]></code>
+      <code><![CDATA[fn (CompletionInput $input): array => $this->getConfigProfileAttributes($this->configReader->read($this->getConfigUrl($input)), 'type')]]></code>
     </ArgumentTypeCoercion>
     <InvalidArgument>
       <code>$plan</code>
@@ -271,6 +259,24 @@
       <code>$value</code>
     </PossiblyInvalidArgument>
   </file>
+  <file src="tests/Bridge/Github/GithubProfileTest.php">
+    <PossiblyUnusedMethod>
+      <code>provideCanCreatePlanAttributeChangesCases</code>
+      <code>provideCanPlanUserChangesCases</code>
+      <code>provideCanSetValidOptionsCases</code>
+      <code>provideCannotSetInvalidAttributesCases</code>
+      <code>provideCannotSetInvalidOptionsCases</code>
+    </PossiblyUnusedMethod>
+  </file>
+  <file src="tests/Bridge/Gitlab/GitlabProfileTest.php">
+    <PossiblyUnusedMethod>
+      <code>provideCanCreatePlanAttributeChangesCases</code>
+      <code>provideCanPlanUserChangesCases</code>
+      <code>provideCanSetValidOptionsCases</code>
+      <code>provideCannotSetInvalidAttributesCases</code>
+      <code>provideCannotSetInvalidOptionsCases</code>
+    </PossiblyUnusedMethod>
+  </file>
   <file src="tests/Bridge/ProfileTestCase.php">
     <InvalidArgument>
       <code>testCanPlanUserChanges</code>
@@ -281,6 +287,21 @@
     <NoInterfaceProperties>
       <code><![CDATA[$change->expected]]></code>
     </NoInterfaceProperties>
+    <PossiblyUnusedMethod>
+      <code>provideCanCreatePlanAttributeChangesCases</code>
+      <code>provideCanPlanUserChangesCases</code>
+      <code>provideCanSetValidOptionsCases</code>
+      <code>provideCannotSetInvalidAttributesCases</code>
+      <code>provideCannotSetInvalidOptionsCases</code>
+      <code>provideRepositories</code>
+      <code>provideUrls</code>
+      <code>provideVendorSpecificRepositories</code>
+    </PossiblyUnusedMethod>
+  </file>
+  <file src="tests/Bridge/Symfony/Console/Style/AriadneStyleTest.php">
+    <PossiblyUnusedMethod>
+      <code>provideOutputsCases</code>
+    </PossiblyUnusedMethod>
   </file>
   <file src="tests/ModelGeneratorTrait.php">
     <ArgumentTypeCoercion>
@@ -315,6 +336,9 @@
     <ArgumentTypeCoercion>
       <code>iterator_to_array($config) + iterator_to_array($config)</code>
     </ArgumentTypeCoercion>
+    <PossiblyUnusedMethod>
+      <code>provideWillFilterOutUnmatchedProfilesCases</code>
+    </PossiblyUnusedMethod>
   </file>
   <file src="tests/Profile/Factory/ClassmapProfileFactoryTest.php">
     <PossiblyUnusedMethod>
@@ -325,5 +349,8 @@
     <ArgumentTypeCoercion>
       <code>$actual</code>
     </ArgumentTypeCoercion>
+    <PossiblyUnusedMethod>
+      <code>provideWillFilterOutUnmatchedRepositoriesCases</code>
+    </PossiblyUnusedMethod>
   </file>
 </files>

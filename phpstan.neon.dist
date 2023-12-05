@@ -12,3 +12,4 @@ parameters:
     excludePaths:
         - var/
         - vendor/
+        - rector.php
