@@ -24,7 +24,7 @@ use Sigwin\Ariadne\Resolver\XdgEnvironmentResolver;
  * @small
  */
 #[\PHPUnit\Framework\Attributes\Small]
-#[\PHPUnit\Framework\Attributes\CoversClass(\Sigwin\Ariadne\Resolver\XdgEnvironmentResolver::class)]
+#[\PHPUnit\Framework\Attributes\CoversClass(XdgEnvironmentResolver::class)]
 final class XdgEnvironmentResolverTest extends TestCase
 {
     public function testWillUseXdgCacheHomeIfPassed(): void

@@ -21,7 +21,9 @@ final readonly class ProfileSummary
      * @param NamedResourceCollection<Repository>      $repositories
      * @param NamedResourceCollection<ProfileTemplate> $templates
      */
-    public function __construct(private NamedResourceCollection $repositories, private NamedResourceCollection $templates) {}
+    public function __construct(private NamedResourceCollection $repositories, private NamedResourceCollection $templates)
+    {
+    }
 
     /**
      * @return array<string, int>

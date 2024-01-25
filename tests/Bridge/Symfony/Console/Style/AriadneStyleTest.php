@@ -42,13 +42,13 @@ use Symfony\Component\Console\Tester\CommandTester;
  * @small
  */
 #[\PHPUnit\Framework\Attributes\Small]
-#[\PHPUnit\Framework\Attributes\CoversClass(\Sigwin\Ariadne\Bridge\Symfony\Console\Style\AriadneStyle::class)]
-#[\PHPUnit\Framework\Attributes\UsesClass(\Sigwin\Ariadne\Model\Collection\SortedNamedResourceCollection::class)]
+#[\PHPUnit\Framework\Attributes\CoversClass(AriadneStyle::class)]
+#[\PHPUnit\Framework\Attributes\UsesClass(SortedNamedResourceCollection::class)]
 #[\PHPUnit\Framework\Attributes\UsesClass(\Sigwin\Ariadne\Model\Config\ProfileTemplateTargetConfig::class)]
-#[\PHPUnit\Framework\Attributes\UsesClass(\Sigwin\Ariadne\Model\ProfileSummary::class)]
+#[\PHPUnit\Framework\Attributes\UsesClass(ProfileSummary::class)]
 #[\PHPUnit\Framework\Attributes\UsesClass(\Sigwin\Ariadne\Model\ProfileTemplate::class)]
 #[\PHPUnit\Framework\Attributes\UsesClass(\Sigwin\Ariadne\Model\ProfileTemplateTarget::class)]
-#[\PHPUnit\Framework\Attributes\UsesClass(\Sigwin\Ariadne\Model\ProfileUser::class)]
+#[\PHPUnit\Framework\Attributes\UsesClass(ProfileUser::class)]
 #[\PHPUnit\Framework\Attributes\UsesClass(\Sigwin\Ariadne\Model\Repository::class)]
 #[\PHPUnit\Framework\Attributes\UsesClass(\Sigwin\Ariadne\Model\RepositoryUser::class)]
 final class AriadneStyleTest extends TestCase

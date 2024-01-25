@@ -331,6 +331,9 @@
       <code>createTemplates</code>
       <code>createTemplates</code>
     </PossiblyUnusedMethod>
+    <PossiblyUndefinedIntArrayOffset>
+      <code>$configs[$idx]</code>
+    </PossiblyUndefinedIntArrayOffset>
   </file>
   <file src="tests/Profile/Collection/FilteredProfileGeneratorCollectionTest.php">
     <ArgumentTypeCoercion>

@@ -16,4 +16,6 @@ namespace Sigwin\Ariadne;
 /**
  * @extends \IteratorAggregate<\Sigwin\Ariadne\Profile>
  */
-interface ProfileCollection extends \Countable, \IteratorAggregate {}
+interface ProfileCollection extends \Countable, \IteratorAggregate
+{
+}

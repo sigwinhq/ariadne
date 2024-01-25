@@ -177,7 +177,9 @@ trait ModelGeneratorTrait
     /**
      * @psalm-suppress PossiblyUnusedParam
      */
-    protected function validateRequest(RequestInterface $request): void {}
+    protected function validateRequest(RequestInterface $request): void
+    {
+    }
 
     /**
      * @param list<ProfileConfig> $configs
@@ -205,7 +207,9 @@ trait ModelGeneratorTrait
     protected function createProfile(string $name = 'foo'): Profile
     {
         return new class($name) implements Profile {
-            public function __construct(private readonly string $name) {}
+            public function __construct(private readonly string $name)
+            {
+            }
 
             public function getName(): string
             {

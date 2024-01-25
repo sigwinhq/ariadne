@@ -20,7 +20,9 @@ use Sigwin\Ariadne\ProfileFactory;
 
 final readonly class FilteredProfileGeneratorCollection implements ProfileCollection
 {
-    public function __construct(private ProfileFactory $profileFactory, private AriadneConfig $config, private ProfileFilter $filter) {}
+    public function __construct(private ProfileFactory $profileFactory, private AriadneConfig $config, private ProfileFilter $filter)
+    {
+    }
 
     public function getIterator(): \Traversable
     {

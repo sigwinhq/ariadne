@@ -38,7 +38,7 @@ use Sigwin\Ariadne\ProfileTemplateFactory;
 #[\PHPUnit\Framework\Attributes\Small]
 #[\PHPUnit\Framework\Attributes\CoversClass(\Sigwin\Ariadne\Profile\Factory\ClassmapProfileFactory::class)]
 #[\PHPUnit\Framework\Attributes\UsesClass(\Sigwin\Ariadne\Model\Config\ProfileClientConfig::class)]
-#[\PHPUnit\Framework\Attributes\UsesClass(\Sigwin\Ariadne\Model\Config\ProfileConfig::class)]
+#[\PHPUnit\Framework\Attributes\UsesClass(ProfileConfig::class)]
 final class ClassmapProfileFactoryTest extends TestCase implements Profile
 {
     public function getName(): string

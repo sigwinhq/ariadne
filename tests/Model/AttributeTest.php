@@ -24,7 +24,7 @@ use Sigwin\Ariadne\Model\Attribute;
  * @small
  */
 #[\PHPUnit\Framework\Attributes\Small]
-#[\PHPUnit\Framework\Attributes\CoversClass(\Sigwin\Ariadne\Model\Attribute::class)]
+#[\PHPUnit\Framework\Attributes\CoversClass(Attribute::class)]
 final class AttributeTest extends TestCase
 {
     public function testCanSetName(): void

@@ -17,7 +17,9 @@ use Sigwin\Ariadne\NamedResource;
 
 final readonly class RepositoryUser implements NamedResource
 {
-    public function __construct(private string $username, public string $role) {}
+    public function __construct(private string $username, public string $role)
+    {
+    }
 
     public function getName(): string
     {
