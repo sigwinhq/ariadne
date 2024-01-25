@@ -22,7 +22,9 @@ use Sigwin\Ariadne\ProfileFactory;
 
 final readonly class FilteredProfileGeneratorCollectionFactory implements ProfileCollectionFactory
 {
-    public function __construct(private ProfileFactory $clientFactory) {}
+    public function __construct(private ProfileFactory $clientFactory)
+    {
+    }
 
     public function fromConfig(AriadneConfig $config, ProfileFilter $filter): ProfileCollection
     {

@@ -27,7 +27,9 @@ final readonly class FilteredProfileTemplateFactory implements Evaluator, Profil
 {
     private const PREFIX = '@=';
 
-    public function __construct(private ExpressionLanguage $expressionLanguage) {}
+    public function __construct(private ExpressionLanguage $expressionLanguage)
+    {
+    }
 
     public function fromConfig(ProfileTemplateConfig $config, NamedResourceCollection $repositories): ProfileTemplate
     {

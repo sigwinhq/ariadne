@@ -41,15 +41,15 @@ use Sigwin\Ariadne\Test\ModelGeneratorTrait;
  * @psalm-type TFilter = array{type?: 'fork'|'source', path?: string|list<string>, visibility?:'private'|'public', topics?: string|list<string>, languages?: array<string>}
  */
 #[\PHPUnit\Framework\Attributes\Small]
-#[\PHPUnit\Framework\Attributes\CoversClass(\Sigwin\Ariadne\Profile\Template\Factory\FilteredProfileTemplateFactory::class)]
-#[\PHPUnit\Framework\Attributes\UsesClass(\Sigwin\Ariadne\Bridge\Symfony\ExpressionLanguage\ExpressionLanguage::class)]
+#[\PHPUnit\Framework\Attributes\CoversClass(FilteredProfileTemplateFactory::class)]
+#[\PHPUnit\Framework\Attributes\UsesClass(ExpressionLanguage::class)]
 #[\PHPUnit\Framework\Attributes\UsesClass(\Sigwin\Ariadne\Bridge\Symfony\ExpressionLanguage\LanguageProvider\FilterExpressionLanguageProvider::class)]
-#[\PHPUnit\Framework\Attributes\UsesClass(\Sigwin\Ariadne\Model\Collection\SortedNamedResourceCollection::class)]
-#[\PHPUnit\Framework\Attributes\UsesClass(\Sigwin\Ariadne\Model\Config\ProfileTemplateConfig::class)]
+#[\PHPUnit\Framework\Attributes\UsesClass(SortedNamedResourceCollection::class)]
+#[\PHPUnit\Framework\Attributes\UsesClass(ProfileTemplateConfig::class)]
 #[\PHPUnit\Framework\Attributes\UsesClass(\Sigwin\Ariadne\Model\Config\ProfileTemplateTargetConfig::class)]
 #[\PHPUnit\Framework\Attributes\UsesClass(\Sigwin\Ariadne\Model\ProfileTemplate::class)]
 #[\PHPUnit\Framework\Attributes\UsesClass(\Sigwin\Ariadne\Model\ProfileTemplateTarget::class)]
-#[\PHPUnit\Framework\Attributes\UsesClass(\Sigwin\Ariadne\Model\Repository::class)]
+#[\PHPUnit\Framework\Attributes\UsesClass(Repository::class)]
 final class FilteredProfileTemplateFactoryTest extends TestCase
 {
     use AssertTrait;

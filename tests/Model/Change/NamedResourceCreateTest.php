@@ -28,7 +28,7 @@ use Sigwin\Ariadne\Test\AssertTrait;
  * @small
  */
 #[\PHPUnit\Framework\Attributes\Small]
-#[\PHPUnit\Framework\Attributes\CoversClass(\Sigwin\Ariadne\Model\Change\NamedResourceCreate::class)]
+#[\PHPUnit\Framework\Attributes\CoversClass(NamedResourceCreate::class)]
 #[\PHPUnit\Framework\Attributes\UsesClass(\Sigwin\Ariadne\Model\Change\NamedResourceArrayChangeCollection::class)]
 final class NamedResourceCreateTest extends TestCase
 {

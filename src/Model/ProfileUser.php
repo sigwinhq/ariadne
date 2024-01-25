@@ -17,7 +17,9 @@ use Sigwin\Ariadne\NamedResource;
 
 final readonly class ProfileUser implements NamedResource
 {
-    public function __construct(private string $username) {}
+    public function __construct(private string $username)
+    {
+    }
 
     public function getName(): string
     {

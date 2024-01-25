@@ -25,7 +25,9 @@ final readonly class ProfileTemplateTargetConfig
      * @param TProfileTemplateTargetAttribute           $attribute
      * @param list<ProfileTemplateRepositoryUserConfig> $users
      */
-    private function __construct(public array $attribute, public array $users) {}
+    private function __construct(public array $attribute, public array $users)
+    {
+    }
 
     /**
      * @param TProfileTemplateTarget $config

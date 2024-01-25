@@ -35,7 +35,9 @@ final readonly class ValidatingYamlConfigReader implements ConfigReader
     /**
      * @param array<string, class-string<\Sigwin\Ariadne\Profile>> $profilesMap
      */
-    public function __construct(private array $profilesMap, private XdgEnvironmentResolver $environmentResolver) {}
+    public function __construct(private array $profilesMap, private XdgEnvironmentResolver $environmentResolver)
+    {
+    }
 
     public function read(?string $url = null): AriadneConfig
     {

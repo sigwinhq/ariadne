@@ -24,7 +24,9 @@ final readonly class ProfileTemplateConfig
     /**
      * @param TProfileTemplateFilter $filter
      */
-    public function __construct(public string $name, public array $filter, public ProfileTemplateTargetConfig $target) {}
+    public function __construct(public string $name, public array $filter, public ProfileTemplateTargetConfig $target)
+    {
+    }
 
     /**
      * @param TProfileTemplate $config

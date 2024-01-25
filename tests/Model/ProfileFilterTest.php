@@ -25,7 +25,7 @@ use Sigwin\Ariadne\Test\ModelGeneratorTrait;
  * @small
  */
 #[\PHPUnit\Framework\Attributes\Small]
-#[\PHPUnit\Framework\Attributes\CoversClass(\Sigwin\Ariadne\Model\ProfileFilter::class)]
+#[\PHPUnit\Framework\Attributes\CoversClass(ProfileFilter::class)]
 final class ProfileFilterTest extends TestCase
 {
     use ModelGeneratorTrait;

@@ -32,10 +32,10 @@ use Sigwin\Ariadne\ProfileFactory;
  * @small
  */
 #[\PHPUnit\Framework\Attributes\Small]
-#[\PHPUnit\Framework\Attributes\CoversClass(\Sigwin\Ariadne\Profile\Collection\Factory\FilteredProfileGeneratorCollectionFactory::class)]
-#[\PHPUnit\Framework\Attributes\UsesClass(\Sigwin\Ariadne\Model\Config\AriadneConfig::class)]
-#[\PHPUnit\Framework\Attributes\UsesClass(\Sigwin\Ariadne\Model\ProfileFilter::class)]
-#[\PHPUnit\Framework\Attributes\UsesClass(\Sigwin\Ariadne\Profile\Collection\FilteredProfileGeneratorCollection::class)]
+#[\PHPUnit\Framework\Attributes\CoversClass(FilteredProfileGeneratorCollectionFactory::class)]
+#[\PHPUnit\Framework\Attributes\UsesClass(AriadneConfig::class)]
+#[\PHPUnit\Framework\Attributes\UsesClass(ProfileFilter::class)]
+#[\PHPUnit\Framework\Attributes\UsesClass(FilteredProfileGeneratorCollection::class)]
 final class FilteredProfileGeneratorCollectionFactoryTest extends TestCase
 {
     public function testWillCreateFilteredProfileGeneratorCollection(): void

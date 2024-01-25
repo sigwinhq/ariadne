@@ -41,7 +41,8 @@ final readonly class Repository implements NamedResource
         public array $topics,
         public array $languages,
         public bool $archived,
-    ) {}
+    ) {
+    }
 
     /**
      * @return NamedResourceChangeCollection<ProfileTemplate, NamedResourceChange>
