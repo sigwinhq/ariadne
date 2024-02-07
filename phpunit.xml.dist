@@ -10,6 +10,7 @@
          colors="true"
          enforceTimeLimit="true"
          executionOrder="random"
+         failOnDeprecation="true"
          failOnEmptyTestSuite="true"
          failOnRisky="true"
          failOnWarning="true"

@@ -34,6 +34,7 @@ use Sigwin\Ariadne\Test\Bridge\ProfileTestCase;
  * @internal
  *
  * @covers \Sigwin\Ariadne\Bridge\Gitlab\GitlabProfile
+ * @covers \Sigwin\Ariadne\Model\Change\NamedResourceChangeTrait
  * @covers \Sigwin\Ariadne\Model\Repository
  * @covers \Sigwin\Ariadne\Model\RepositoryType
  * @covers \Sigwin\Ariadne\Model\RepositoryUser
@@ -64,6 +65,7 @@ use Sigwin\Ariadne\Test\Bridge\ProfileTestCase;
 #[\PHPUnit\Framework\Attributes\CoversClass(\Sigwin\Ariadne\Model\RepositoryType::class)]
 #[\PHPUnit\Framework\Attributes\CoversClass(RepositoryUser::class)]
 #[\PHPUnit\Framework\Attributes\CoversClass(\Sigwin\Ariadne\Model\RepositoryVisibility::class)]
+#[\PHPUnit\Framework\Attributes\CoversClass(\Sigwin\Ariadne\Model\Change\NamedResourceChangeTrait::class)]
 #[\PHPUnit\Framework\Attributes\UsesClass(ConfigException::class)]
 #[\PHPUnit\Framework\Attributes\UsesClass(Attribute::class)]
 #[\PHPUnit\Framework\Attributes\UsesClass(\Sigwin\Ariadne\Model\Change\NamedResourceArrayChangeCollection::class)]
