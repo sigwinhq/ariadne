@@ -56,9 +56,9 @@ final class AriadneStyleTest extends TestCase
     use ModelGeneratorTrait;
 
     /**
-     * @return array<string, array{0: \Closure(AriadneStyle): void, 1: string}>
+     * @return array<string, array{0: \Closure(AriadneStyle, AriadneStyleTest): void, 1: string}>
      */
-    public function provideOutputsCases(): iterable
+    public static function provideOutputsCases(): iterable
     {
         return [
             'heading' => [
@@ -68,8 +68,8 @@ final class AriadneStyleTest extends TestCase
                 Logo::ASCII,
             ],
             'profile' => [
-                function (AriadneStyle $style): void {
-                    $style->profile($this->mockProfile('myth1'));
+                static function (AriadneStyle $style, self $mock): void {
+                    $style->profile($mock->mockProfile('myth1'));
                 },
                 <<<'EOT'
 
@@ -79,8 +79,8 @@ final class AriadneStyleTest extends TestCase
                     EOT
             ],
             'summary' => [
-                function (AriadneStyle $style): void {
-                    $style->summary($this->mockProfile('myth2'));
+                static function (AriadneStyle $style, self $mock): void {
+                    $style->summary($mock->mockProfile('myth2'));
                 },
                 <<<'EOT'
 
@@ -110,7 +110,7 @@ final class AriadneStyleTest extends TestCase
         $tester->execute([], ['interactive' => true, 'decorated' => false]);
         $style = new AriadneStyle(new ArgvInput(), $tester->getOutput());
 
-        $closure($style);
+        $closure($style, $this);
 
         self::assertSame($output, preg_replace('/\s+$/m', '', $tester->getDisplay(true)));
     }

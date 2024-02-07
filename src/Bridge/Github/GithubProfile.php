@@ -148,25 +148,23 @@ final class GithubProfile implements Profile
                 throw RuntimeException::fromRuntimeException($exception);
             }
             foreach ($response as $repository) {
+                $parts = explode('/', $repository['full_name']);
+                if (\count($parts) !== 2) {
+                    throw new \InvalidArgumentException('Invalid repository name');
+                }
+                [$username, $name] = $parts;
+
+                if ($needsExtendedRepository) {
+                    /** @var TRepository $repository */
+                    $repository = $this->client->repositories()->show($username, $name);
+                }
+
                 $users = [];
-                if ($needsUsers || $needsExtendedRepository) {
-                    $parts = explode('/', $repository['full_name']);
-                    if (\count($parts) !== 2) {
-                        throw new \InvalidArgumentException('Invalid repository name');
-                    }
-                    [$username, $name] = $parts;
-
-                    if ($needsExtendedRepository) {
-                        /** @var TRepository $repository */
-                        $repository = $this->client->repositories()->show($username, $name);
-                    }
-
-                    if ($needsUsers) {
-                        /** @var list<TCollaborator> $collaborators */
-                        $collaborators = $pager->fetchAll($this->client->repository()->collaborators(), 'all', [$username, $name]);
-                        foreach ($collaborators as $collaborator) {
-                            $users[] = new RepositoryUser($collaborator['login'], $collaborator['role_name']);
-                        }
+                if ($needsUsers) {
+                    /** @var list<TCollaborator> $collaborators */
+                    $collaborators = $pager->fetchAll($this->client->repository()->collaborators(), 'all', [$username, $name]);
+                    foreach ($collaborators as $collaborator) {
+                        $users[] = new RepositoryUser($collaborator['login'], $collaborator['role_name']);
                     }
                 }
                 $users = SortedNamedResourceCollection::fromArray($users);
